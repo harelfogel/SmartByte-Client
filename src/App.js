@@ -6,6 +6,7 @@ import Layout from "./hoc/Layout/Layout";
 import RoomsDashboard from "./containers/RoomsDashboard/RoomsDashboard";
 import asyncComponent from "./hoc/asyncComponent/asyncComponent";
 import RulesDashboard from "./containers/RulesDashboard/RulesDashboard";
+import { LocationDashboard } from "./containers/LocationDashboard/LocationDashboard";
 
 function App() {
   const AsyncRoomsDevices = asyncComponent(() =>
@@ -19,7 +20,7 @@ function App() {
           <Route path="/room/:id" element={<AsyncRoomsDevices />} />
           <Route path="/" element={<RoomsDashboard />} />
           <Route path="/rules" element={<RulesDashboard />} />
-
+          <Route path="/location" element={<LocationDashboard />} />
         </Routes>
       </Layout>
     </BrowserRouter>
