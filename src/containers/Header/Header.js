@@ -24,6 +24,9 @@ const Header = ({ toggleSideDrawer }) => {
             <NavigationItem>
               <NavLink to="/rules">Rules</NavLink>
             </NavigationItem>
+            <NavigationItem>
+              <NavLink to="/location">Location</NavLink>
+            </NavigationItem>
           </Navigation>
         </div>
         <div className={classes.MenuBtn}>
