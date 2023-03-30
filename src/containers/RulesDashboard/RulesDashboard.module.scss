@@ -1,0 +1,47 @@
+.RulesDashboard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.RulesDashboardHeader {
+  font-size: 2rem;
+  margin-bottom: 2rem;
+}
+
+.RulesDashboardInputLabel {
+  font-size: 1.5rem;
+  font-weight: bold;
+  
+}
+
+.RulesDashboardInputContainer {
+  display: flex;
+  flex-direction: column; /* add this line */
+  align-items: center; /* adjust as needed */
+  box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.3);
+  padding: 2rem;
+  border-radius: 1rem;
+  text-align: center;
+}
+
+.RulesDashboardInput {
+  border: 1px solid #ccc;
+  border-radius: 0.4rem;
+  padding: 0.5rem 1.5rem;
+  margin: 0.5rem;
+  flex-grow: 1;
+  width: 80%; /* add this line to make the input wider */
+}
+
+.RulesDashboardButton {
+  background-color: #00bcd4;
+  color: white;
+  padding: 0.4rem 1.5rem;
+  border: none;
+  border-radius: 0.4rem;
+  font-size: 1.1rem;
+  cursor: pointer;
+}
