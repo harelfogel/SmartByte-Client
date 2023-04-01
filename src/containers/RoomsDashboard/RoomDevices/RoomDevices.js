@@ -13,13 +13,54 @@ import { useParams } from "react-router";
 import classes from "./RoomDevices.module.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
+import axios from "axios";
+import { toggleAcState } from "../../../services/ac.service";
+
+const DEVICED_IDS = {
+  AC: '9EimtVDZ',
+  LAUNDRY: '21081111RG',
+  HEATER: '061751378caab5219d31'
+}
+
+const SERVER_URL = 'http://localhost:3001';
+
+const laundryToggle = async () => {
+  console.log('laundry toggled')
+}
+const heaterToggle = async () => {
+  console.log('heater toggled')
+}
+const IDS_TOGGLES_MAP = {
+  [DEVICED_IDS.AC]: toggleAcState,
+  [DEVICED_IDS.LAUNDRY]: laundryToggle, 
+  [DEVICED_IDS.HEATER]: heaterToggle 
+}
+
+console.log(IDS_TOGGLES_MAP[DEVICED_IDS.LAUNDRY])
+
 
 const RoomDevices = ({
-  devices,
+  // devices,
   fetchRoomDevices,
   toggleDeviceSwitch,
   updateDeviceControlValue
 }) => {
+
+  const [devices, setDevices] = React.useState([]);
+
+  useEffect( async() => {
+    try {
+      const devicesFromDB = await axios.get(`${SERVER_URL}/devices`);
+      setDevices(devicesFromDB.data);
+      // console.log(devicesFromDB)
+    } catch(error) {}
+  },[])
+
+  useEffect(() => {
+    console.log(devices)
+  }, [devices])
+
+
   const { id } = useParams();
 
   useEffect(() => {
@@ -51,18 +92,21 @@ const RoomDevices = ({
         <span>Back to Rooms</span>
       </NavLink>
       <div className={classes.RoomDevices}>
-        {Object.entries(devices).map(([deviceId, deviceData]) => (
-          <div key={deviceId} className={classes.Column}>
+        {devices.map(device => {
+          const {device_id} = device;
+          console.log({device_id})
+          return <div key={device_id} className={classes.Column}>
             <Device
-              deviceId={deviceId}
-              device={deviceData}
-              onToggleDeviceSwitch={() => handleToggleDeviceSwitch(deviceId)}
+              deviceId={device_id}
+              device={device}
+              onToggleDeviceSwitch={() => handleToggleDeviceSwitch(device_id)}
               onControlValueChanged={(controlId, newValue) =>
-                handleControlValueChanged(deviceId, controlId, newValue)
+                handleControlValueChanged(device_id, controlId, newValue)
               }
+              toggleDeviceState={IDS_TOGGLES_MAP[device_id]}
             />
           </div>
-        ))}
+        })}
       </div>
     </>
   );

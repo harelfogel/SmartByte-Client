@@ -10,21 +10,25 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 
 
 const Device = (props) => {
-  const { deviceId, device, onToggleDeviceSwitch, onControlValueChanged } = props;
-
+  const { deviceId, device, onToggleDeviceSwitch, onControlValueChanged, toggleDeviceState } = props;
+  
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(false);
-
+  const [state, setState] = useState(device.state === 'on');
 
 
   const onControlValueChangedHandler = (controlId, newValue) => {
     onControlValueChanged(deviceId, controlId, newValue);
   };
 
+  console.log({toggleDeviceState})
+
   const handleToggleDeviceSwitch = async () => {
     setLoading(true);
-    const newState = !device.switch;
-    await toggleAcState(newState);
+    console.log({device})
+    const newState = !state;
+    setState(newState);
+    await toggleDeviceState(newState);
     onToggleDeviceSwitch(deviceId, newState);
     setShowModal(true);
     setLoading(false);
@@ -51,19 +55,19 @@ const Device = (props) => {
       </div>
     ));
   }
-
+  console.log("yovel", {device})
   return (
     <div className={classes.Device}>
       <div className={classes.Header}>
         <div>{device.icon}</div>
         <div className={classes.Title}>{device.name}</div>
         <div className={classes.Switch}>
-          <Switch onChange={handleToggleDeviceSwitch} checked={device.switch} />
+          <Switch onChange={handleToggleDeviceSwitch} checked={state} />
         </div>
       </div>
       <div>{deviceControls}</div>
       <ACModal show={showModal} onClose={closeModalHandler} title="AC Status">
-        <p>The AC is {device.switch ? 'activated' : 'deactivated'}.</p>
+        <p>The AC is {device.state ? 'activated' : 'deactivated'}.</p>
       </ACModal>
       {loading && (
         <div className={classes.spinnerContainer}>
