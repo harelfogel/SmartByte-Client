@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import styles from './LocationDashboard.module.scss';
 
-const SERVER_URL = 'https://smartbytealpha.onrender.com';
-console.log(process.env.REACT_APP_SERVER_URL);
+// const SERVER_URL = 'https://smartbytealpha.onrender.com';
+const SERVER_URL = 'http://localhost:3001'
+// console.log(process.env.REACT_APP_SERVER_URL);
 
 export const LocationDashboard = () => {
     const [location, setLocation] = useState({ lat: null, lng: null, accuracy: null });
@@ -25,11 +26,16 @@ export const LocationDashboard = () => {
 
     useEffect(() => {
         const getDistance = async () => {
-            if (location.lat != null && location.lng != null) {
-                const response = await axios.post(`${SERVER_URL}/location`, {
-                    location
-                });
-                setDistance(response.data.distance);
+            try {
+                if (location.lat != null && location.lng != null) {
+                    const response = await axios.post(`${SERVER_URL}/location`, {
+                        location
+                    });
+                    setDistance(response.data.distance);
+                }
+
+            }catch(err){
+                console.log(err)
             }
         };
         getDistance();

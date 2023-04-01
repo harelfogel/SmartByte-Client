@@ -53,6 +53,7 @@ export const fetchRoomDevicesFailed = error => ({
 
 /** Device Switch Toggle Actions */
 export const toggleDeviceSwitch = deviceId => dispatch => {
+  console.log({deviceId});
   dispatch(toggleDeviceSwitchStart());
 
   toggleDeviceSwitchApi(deviceId)
@@ -61,7 +62,7 @@ export const toggleDeviceSwitch = deviceId => dispatch => {
 
       // This to mock an error response
       const errorResponse = {
-        message: "Error while toggle the device switch"
+        message: "AC state switched"
       };
 
       dispatch(toggleDeviceSwitchFailed(errorResponse));
