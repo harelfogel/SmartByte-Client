@@ -38,10 +38,29 @@
 
 .RulesDashboardButton {
   background-color: #00bcd4;
+  margin: 1rem;;
   color: white;
   padding: 0.4rem 1.5rem;
   border: none;
   border-radius: 0.4rem;
   font-size: 1.1rem;
   cursor: pointer;
+}
+
+
+.BackButton {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  font-size: 0.8rem;
+  color: #000;
+  margin-bottom: 1rem;
+  padding: 0;
+
+  span {
+    margin-left: 5px;
+    font-weight: bold;
+  }
 }

@@ -53,7 +53,6 @@ export const fetchRoomDevicesFailed = error => ({
 
 /** Device Switch Toggle Actions */
 export const toggleDeviceSwitch = deviceId => dispatch => {
-  console.log({deviceId});
   dispatch(toggleDeviceSwitchStart());
 
   toggleDeviceSwitchApi(deviceId)
@@ -65,8 +64,8 @@ export const toggleDeviceSwitch = deviceId => dispatch => {
         message: "AC state switched"
       };
 
-      dispatch(toggleDeviceSwitchFailed(errorResponse));
-      dispatch(showErrorModal(errorResponse))
+      //dispatch(toggleDeviceSwitchFailed(errorResponse));
+      //dispatch(showErrorModal(errorResponse))
     });
 };
 

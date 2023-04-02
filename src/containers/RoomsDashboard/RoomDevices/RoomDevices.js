@@ -35,10 +35,6 @@ const IDS_TOGGLES_MAP = {
   [DEVICED_IDS.LAUNDRY]: laundryToggle, 
   [DEVICED_IDS.HEATER]: heaterToggle 
 }
-
-console.log(IDS_TOGGLES_MAP[DEVICED_IDS.LAUNDRY])
-
-
 const RoomDevices = ({
   // devices,
   fetchRoomDevices,
@@ -72,9 +68,11 @@ const RoomDevices = ({
   /**
    * This for toggling the main switch of the device
    */
-  const handleToggleDeviceSwitch = (deviceId) => {
+  const handleToggleDeviceSwitch = async (deviceId, state) => {
+    await IDS_TOGGLES_MAP[deviceId](state);
     toggleDeviceSwitch(deviceId);
   };
+
 
   /**
    * Event handler when a device control value changed
