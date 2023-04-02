@@ -15,7 +15,11 @@ const Header = ({ toggleSideDrawer }) => {
   return (
     <header className={classes.Header}>
       <div className={classes.HeaderContainer}>
-        <div className={classes.AppName}>SmartByte</div>
+        <div className={classes.AppName}>
+          <NavLink to="/" className={classes.AppNameLink}>
+            SmartByte
+          </NavLink>
+        </div>
         <div className={classes.Navigation}>
           <Navigation>
             <NavigationItem>

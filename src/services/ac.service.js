@@ -4,8 +4,9 @@ import axios from 'axios';
 const SERVER_URL = 'http://localhost:3001';
 
 export const toggleAcState = async (state) => {
-  console.log("toggleAcStateAC ")
+  console.log('----------toggleAcState----------')
   try {
+    console.log({state});
     const response = await axios.post(`${SERVER_URL}/sensibo`, { state });
     return response.data;
   } catch (error) {

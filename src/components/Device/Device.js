@@ -4,41 +4,44 @@ import ControlsSwitcher from "./ControlsSwitcher/ControlsSwitcher";
 import classes from "./Device.module.scss";
 import Switch from "./../UI/Switch/Switch";
 import { toggleAcState } from '../../services/ac.service';
-import ACModal from './../ACModal/ACModal';
+import Modal from './../UI/Modal/Modal';
 import CircularProgress from '@material-ui/core/CircularProgress';
-
+import { toggleHeaterState } from '../../services/heater.service';
 
 
 const Device = (props) => {
   const { deviceId, device, onToggleDeviceSwitch, onControlValueChanged, toggleDeviceState } = props;
-  
+
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [state, setState] = useState(device.state === 'on');
-
 
   const onControlValueChangedHandler = (controlId, newValue) => {
     onControlValueChanged(deviceId, controlId, newValue);
   };
 
-  console.log({toggleDeviceState})
-
   const handleToggleDeviceSwitch = async () => {
     setLoading(true);
-    console.log({device})
     const newState = !state;
     setState(newState);
-    await toggleDeviceState(newState);
-    onToggleDeviceSwitch(deviceId, newState);
+    await props.onToggleDeviceSwitch(deviceId, newState);
     setShowModal(true);
     setLoading(false);
+    // Check if the device is an AC before calling toggleAcState
+    if (device.name === 'Air Conditioner' || device.name === 'ac') {
+      toggleAcState(newState);
+    }
+
+    // Check if the device is a Heater before calling toggleHeaterState
+    if (device.name === 'Heater' || device.name === 'heater') {
+      toggleHeaterState(newState);
+    }
   };
+
 
   const closeModalHandler = () => {
     setShowModal(false);
   };
-
-
 
   if (!device) return null;
 
@@ -55,7 +58,7 @@ const Device = (props) => {
       </div>
     ));
   }
-  console.log("yovel", {device})
+
   return (
     <div className={classes.Device}>
       <div className={classes.Header}>
@@ -66,9 +69,10 @@ const Device = (props) => {
         </div>
       </div>
       <div>{deviceControls}</div>
-      <ACModal show={showModal} onClose={closeModalHandler} title="AC Status">
-        <p>The AC is {device.state ? 'activated' : 'deactivated'}.</p>
-      </ACModal>
+      <Modal show={showModal} onCloseModal={closeModalHandler}>
+        <h2>{device.name} Status</h2>
+        <p>The {device.name} is {state ? "activated" : "deactivated"}.</p>
+      </Modal>
       {loading && (
         <div className={classes.spinnerContainer}>
           <CircularProgress />
