@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import { NavLink } from "react-router-dom";
 import { connect } from "react-redux";
@@ -8,10 +8,21 @@ import { faBars } from "@fortawesome/free-solid-svg-icons";
 import Button from "./../../components/UI/Button/Button";
 import Navigation from "./../../components/Layout/Navigation/Navigation";
 import NavigationItem from "./../../components/Layout/Navigation/NavigationItem/NavigationItem";
-
 import classes from "./Header.module.scss";
+import { useNavigate } from 'react-router-dom';
 
-const Header = ({ toggleSideDrawer }) => {
+const Header = ({ user, toggleSideDrawer, onLogout }) => {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    onLogout();
+    navigate('/');
+  };
+
+  useEffect(() => {
+    console.log(user);
+  }, [user]);
+
   return (
     <header className={classes.Header}>
       <div className={classes.HeaderContainer}>
@@ -23,7 +34,7 @@ const Header = ({ toggleSideDrawer }) => {
         <div className={classes.Navigation}>
           <Navigation>
             <NavigationItem>
-              <NavLink to="/">Rooms</NavLink>
+              <NavLink to="/rooms-dashboard">Rooms</NavLink>
             </NavigationItem>
             <NavigationItem>
               <NavLink to="/rules">Rules</NavLink>
@@ -33,6 +44,12 @@ const Header = ({ toggleSideDrawer }) => {
             </NavigationItem>
           </Navigation>
         </div>
+        {user && (
+          <div className={classes.UserGreeting}>
+            <span>Hello, {user.fullName}</span>
+            <Button onClick={handleLogout}>Logout</Button>
+          </div>
+        )}
         <div className={classes.MenuBtn}>
           <Button onClick={toggleSideDrawer}>
             <FontAwesomeIcon icon={faBars} />
@@ -44,6 +61,7 @@ const Header = ({ toggleSideDrawer }) => {
 };
 
 Header.propTypes = {
+  user: PropTypes.object,
   toggleSideDrawer: PropTypes.func,
 };
 
