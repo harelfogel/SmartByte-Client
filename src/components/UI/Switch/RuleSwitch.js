@@ -1,14 +1,11 @@
 import axios from 'axios';
-import React, { useEffect } from 'react'
+import React from 'react'
 import classes from "./Switch.module.scss";
 
 const SERVER_URL = 'http://localhost:3001';
 
 
 export const RuleSwitch = (props) => {
-
-
-
     const [isActive,setIsActive] = React.useState(props.isActive);
 
     const ontoggleChange = async () => {

@@ -1,29 +1,88 @@
-import React from "react";
-import { Route, Routes, BrowserRouter } from 'react-router-dom';
-
+import React, { useState } from "react";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  NavLink,
+  Navigate,
+} from "react-router-dom";
 import "./App.module.scss";
-import Layout from "./hoc/Layout/Layout";
 import RoomsDashboard from "./containers/RoomsDashboard/RoomsDashboard";
-import asyncComponent from "./hoc/asyncComponent/asyncComponent";
+import WelcomeDashboard from "./containers/WelcomeDashboard/WelcomeDashboard";
+import SignIn from "./containers/SignIn/SignIn";
+import SignUp from "./containers/SignUp/SignUp";
+import LocationDashboard from "./containers/LocationDashboard/LocationDashboard";
 import RulesDashboard from "./containers/RulesDashboard/RulesDashboard";
-import { LocationDashboard } from "./containers/LocationDashboard/LocationDashboard";
+import Header from "./containers/Header/Header";
+import Cookies from "js-cookie";
+
 
 function App() {
-  const AsyncRoomsDevices = asyncComponent(() =>
-    import("./containers/RoomsDashboard/RoomDevices/RoomDevices")
+  const [isAuthenticated, setIsAuthenticated] = useState(
+    Cookies.get("isAuthenticated") === "true" || false
   );
-  
+  const [user, setUser] = useState(JSON.parse(Cookies.get("user") || "null"));
+
+
+  const handleSignIn = (token, userData) => {
+    setIsAuthenticated(true);
+    setUser(userData);
+    Cookies.set("isAuthenticated", true, { expires: 1 }); // 1 day expiration
+    Cookies.set("user", JSON.stringify(userData), { expires: 1 });
+  };
+
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+    setUser(null);
+    Cookies.remove("isAuthenticated");
+    Cookies.remove("user");
+  };
+
   return (
-    <BrowserRouter>
-      <Layout>
-        <Routes>
-          <Route path="/room/:id" element={<AsyncRoomsDevices />} />
-          <Route path="/" element={<RoomsDashboard />} />
-          <Route path="/rules" element={<RulesDashboard />} />
-          <Route path="/location" element={<LocationDashboard />} />
-        </Routes>
-      </Layout>
-    </BrowserRouter>
+    <Router>
+      <Header user={user} onLogout={handleLogout} />
+      <Routes>
+        <Route
+          path="/"
+          element={
+            isAuthenticated ? (
+              <Navigate to="/rooms-dashboard" replace />
+            ) : (
+              <WelcomeDashboard />
+            )
+          }
+        />
+        <Route
+          path="/login"
+          element={
+            isAuthenticated ? (
+              <Navigate to="/rooms-dashboard" replace />
+            ) : (
+              <SignIn onSignInSuccess={handleSignIn} />
+            )
+          }
+        />
+        <Route path="/signup" element={<SignUp />} />
+        <Route
+          path="/rooms-dashboard"
+          element={
+            isAuthenticated ? <RoomsDashboard /> : <Navigate to="/signin" />
+          }
+        />
+        <Route
+          path="/location"
+          element={
+            isAuthenticated ? <LocationDashboard /> : <Navigate to="/signin" />
+          }
+        />
+        <Route
+          path="/rules"
+          element={
+            isAuthenticated ? <RulesDashboard /> : <Navigate to="/login" />
+          }
+        />
+      </Routes>
+    </Router>
   );
 }
 

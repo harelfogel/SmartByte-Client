@@ -6,7 +6,7 @@ import styles from './LocationDashboard.module.scss';
 const SERVER_URL = 'http://localhost:3001'
 // console.log(process.env.REACT_APP_SERVER_URL);
 
-export const LocationDashboard = () => {
+const LocationDashboard = () => {
     const [location, setLocation] = useState({ lat: null, lng: null, accuracy: null });
     const [distance, setDistance] = useState(0);
 
@@ -52,3 +52,5 @@ export const LocationDashboard = () => {
         </div>
     );
 };
+
+export default LocationDashboard;

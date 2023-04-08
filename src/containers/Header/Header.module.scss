@@ -9,6 +9,7 @@
 
   .HeaderContainer {
     display: flex;
+    align-items: center; // Add this line
     max-width: $MAX_WIDTH;
     margin: auto;
   }
@@ -25,8 +26,17 @@
   }
 
   .Navigation {
-    margin-top: auto;
+    margin-top: 0.2rem;
   }
+
+  .UserGreeting {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-left: auto;
+  }
+
+
 
   .MenuBtn {
     display: none;
