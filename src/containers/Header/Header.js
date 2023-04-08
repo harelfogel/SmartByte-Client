@@ -10,9 +10,15 @@ import Navigation from "./../../components/Layout/Navigation/Navigation";
 import NavigationItem from "./../../components/Layout/Navigation/NavigationItem/NavigationItem";
 import classes from "./Header.module.scss";
 import { useNavigate } from 'react-router-dom';
+import { getGreeting } from '../../utils/utils';
+
 
 const Header = ({ user, toggleSideDrawer, onLogout }) => {
   const navigate = useNavigate();
+
+  const firstName= user.fullName.split(' ')[0];
+  const greeting = getGreeting();
+
 
   const handleLogout = () => {
     onLogout();
@@ -46,7 +52,7 @@ const Header = ({ user, toggleSideDrawer, onLogout }) => {
         </div>
         {user && (
           <div className={classes.UserGreeting}>
-            <span>Hello, {user.fullName}</span>
+            <span>{greeting}, {firstName}</span>
             <Button onClick={handleLogout}>Logout</Button>
           </div>
         )}
