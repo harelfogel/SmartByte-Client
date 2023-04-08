@@ -16,7 +16,7 @@ import { getGreeting } from '../../utils/utils';
 const Header = ({ user, toggleSideDrawer, onLogout }) => {
   const navigate = useNavigate();
 
-  const firstName= user.fullName.split(' ')[0];
+  const firstName = user ? user.fullName.split(' ')[0] : ''; // Add this line
   const greeting = getGreeting();
 
 
