@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { fetchRooms } from "./../../store/rooms/rooms.actions";
 import Room from "../../components/Rooms/Room";
+import { Outlet } from "react-router-dom";
 
 import { useNavigate } from "react-router-dom";
 
@@ -46,6 +47,7 @@ const RoomsDashboard = ({ fetchRooms, rooms }) => {
           </div>
         );
       })}
+       <Outlet />
     </div>
   );
 };
