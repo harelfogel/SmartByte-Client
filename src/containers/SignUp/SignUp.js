@@ -1,7 +1,7 @@
-// SignUp.js
+import SignUpForm from "../../components/SignUpForm/SignUpForm";
 
-const SignUp = (props) => {
-    // Component logic
-  };
-  
-  export default SignUp;
+const SignUp = ({ onSignUpSuccess }) => {
+  return <SignUpForm onSignUpSuccess={onSignUpSuccess} />;
+};
+
+export default SignUp;

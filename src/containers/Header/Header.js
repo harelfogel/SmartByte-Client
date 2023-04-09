@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import { NavLink } from "react-router-dom";
 import { connect } from "react-redux";
@@ -9,25 +9,11 @@ import Button from "./../../components/UI/Button/Button";
 import Navigation from "./../../components/Layout/Navigation/Navigation";
 import NavigationItem from "./../../components/Layout/Navigation/NavigationItem/NavigationItem";
 import classes from "./Header.module.scss";
-import { useNavigate } from 'react-router-dom';
 import { getGreeting } from '../../utils/utils';
 
-
-const Header = ({ user, toggleSideDrawer, onLogout }) => {
-  const navigate = useNavigate();
-
-  const firstName = user ? user.fullName.split(' ')[0] : ''; // Add this line
+const Header = ({ toggleSideDrawer, user, onLogout }) => {
+  const firstName = user ? user.fullName.split(' ')[0] : '';
   const greeting = getGreeting();
-
-
-  const handleLogout = () => {
-    onLogout();
-    navigate('/');
-  };
-
-  useEffect(() => {
-    console.log(user);
-  }, [user]);
 
   return (
     <header className={classes.Header}>
@@ -53,7 +39,7 @@ const Header = ({ user, toggleSideDrawer, onLogout }) => {
         {user && (
           <div className={classes.UserGreeting}>
             <span>{greeting}, {firstName}</span>
-            <Button onClick={handleLogout}>Logout</Button>
+            <Button onClick={onLogout}>Logout</Button>
           </div>
         )}
         <div className={classes.MenuBtn}>
@@ -67,8 +53,9 @@ const Header = ({ user, toggleSideDrawer, onLogout }) => {
 };
 
 Header.propTypes = {
-  user: PropTypes.object,
   toggleSideDrawer: PropTypes.func,
+  user: PropTypes.object,
+  onLogout: PropTypes.func,
 };
 
 export default connect(null, { toggleSideDrawer })(Header);
