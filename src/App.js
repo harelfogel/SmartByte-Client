@@ -14,6 +14,8 @@ import LocationDashboard from "./containers/LocationDashboard/LocationDashboard"
 import RulesDashboard from "./containers/RulesDashboard/RulesDashboard";
 import Header from "./containers/Header/Header";
 import Cookies from "js-cookie";
+import RoomDevices from "./containers/RoomsDashboard/RoomDevices/RoomDevices";
+
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(
@@ -63,10 +65,14 @@ function App() {
         <Route path="/signup" element={<SignUp onSignUpSuccess={handleSignIn} />} />
         <Route
           path="/rooms-dashboard"
-          element={
-            isAuthenticated ? <RoomsDashboard /> : <Navigate to="/login" />
-          }
-        />
+          element={isAuthenticated ? <RoomsDashboard /> : <Navigate to="/login" />}
+        >
+          <Route
+            path="room/:id"
+            element={isAuthenticated ? <RoomDevices /> : <Navigate to="/login" />}
+          />
+
+        </Route>
         <Route
           path="/location"
           element={
@@ -77,6 +83,12 @@ function App() {
           path="/rules"
           element={
             isAuthenticated ? <RulesDashboard /> : <Navigate to="/login" />
+          }
+        />
+        <Route
+          path="/room/:id"
+          element={
+            isAuthenticated ? <RoomDevices /> : <Navigate to="/login" />
           }
         />
       </Routes>

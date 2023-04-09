@@ -32,8 +32,8 @@ const heaterToggle = async () => {
 }
 const IDS_TOGGLES_MAP = {
   [DEVICED_IDS.AC]: toggleAcState,
-  [DEVICED_IDS.LAUNDRY]: laundryToggle, 
-  [DEVICED_IDS.HEATER]: heaterToggle 
+  [DEVICED_IDS.LAUNDRY]: laundryToggle,
+  [DEVICED_IDS.HEATER]: heaterToggle
 }
 const RoomDevices = ({
   // devices,
@@ -44,13 +44,19 @@ const RoomDevices = ({
 
   const [devices, setDevices] = React.useState([]);
 
-  useEffect( async() => {
-    try {
-      const devicesFromDB = await axios.get(`${SERVER_URL}/devices`);
-      setDevices(devicesFromDB.data);
-      // console.log(devicesFromDB)
-    } catch(error) {}
-  },[])
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const devicesFromDB = await axios.get(`${SERVER_URL}/devices`);
+        setDevices(devicesFromDB.data);
+        // console.log(devicesFromDB)
+      } catch (error) { }
+    };
+
+    fetchData();
+  }, []);
+
 
   useEffect(() => {
     console.log(devices)
@@ -91,8 +97,8 @@ const RoomDevices = ({
       </NavLink>
       <div className={classes.RoomDevices}>
         {devices.map(device => {
-          const {device_id} = device;
-          console.log({device_id})
+          const { device_id } = device;
+          console.log({ device_id })
           return <div key={device_id} className={classes.Column}>
             <Device
               deviceId={device_id}
