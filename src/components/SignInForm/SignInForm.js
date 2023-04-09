@@ -6,6 +6,7 @@ const SignInForm = ({ onSignIn }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -16,7 +17,6 @@ const SignInForm = ({ onSignIn }) => {
       });
 
       console.log(response);
-
 
       if (response.status === 200) {
         onSignIn(response.data.token, response.data.user);
@@ -47,12 +47,19 @@ const SignInForm = ({ onSignIn }) => {
           <label htmlFor="password" className={classes.label}>Password:</label>
           <input
             className={classes.input}
-            type="password"
+            type={showPassword ? 'text' : 'password'} // Update the input type based on the showPassword state
             id="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
           />
+          <button
+            type="button"
+            className={classes.showPasswordButton}
+            onClick={() => setShowPassword(!showPassword)} // Toggle the showPassword state
+          >
+            {showPassword ? 'Hide' : 'Show'}
+          </button>
         </div>
         <div className={classes.subContainer}>
           <button className={classes.submit_btn} type="submit">Log In</button>

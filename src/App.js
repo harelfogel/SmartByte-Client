@@ -3,7 +3,6 @@ import {
   BrowserRouter as Router,
   Route,
   Routes,
-  NavLink,
   Navigate,
 } from "react-router-dom";
 import "./App.module.scss";
@@ -16,13 +15,13 @@ import RulesDashboard from "./containers/RulesDashboard/RulesDashboard";
 import Header from "./containers/Header/Header";
 import Cookies from "js-cookie";
 
-
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(
     Cookies.get("isAuthenticated") === "true" || false
   );
-  const [user, setUser] = useState(JSON.parse(Cookies.get("user") || "null"));
-
+  const [user, setUser] = useState(
+    Cookies.get("user") ? JSON.parse(Cookies.get("user")) : null
+  );
 
   const handleSignIn = (token, userData) => {
     setIsAuthenticated(true);
@@ -30,7 +29,6 @@ function App() {
     Cookies.set("isAuthenticated", true, { expires: 1 }); // 1 day expiration
     Cookies.set("user", JSON.stringify(userData), { expires: 1 });
   };
-
   const handleLogout = () => {
     setIsAuthenticated(false);
     setUser(null);
@@ -62,17 +60,17 @@ function App() {
             )
           }
         />
-        <Route path="/signup" element={<SignUp />} />
+        <Route path="/signup" element={<SignUp onSignUpSuccess={handleSignIn} />} />
         <Route
           path="/rooms-dashboard"
           element={
-            isAuthenticated ? <RoomsDashboard /> : <Navigate to="/signin" />
+            isAuthenticated ? <RoomsDashboard /> : <Navigate to="/login" />
           }
         />
         <Route
           path="/location"
           element={
-            isAuthenticated ? <LocationDashboard /> : <Navigate to="/signin" />
+            isAuthenticated ? <LocationDashboard /> : <Navigate to="/login" />
           }
         />
         <Route
