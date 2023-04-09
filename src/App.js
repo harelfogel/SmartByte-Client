@@ -29,6 +29,7 @@ function App() {
     Cookies.set("isAuthenticated", true, { expires: 1 }); // 1 day expiration
     Cookies.set("user", JSON.stringify(userData), { expires: 1 });
   };
+
   const handleLogout = () => {
     setIsAuthenticated(false);
     setUser(null);
