@@ -71,9 +71,6 @@ export const NewDevice = ({
         <Switch onChange={(e) => onDeviceChange(e)} checked={state} />
         {isAcDevice && <Temperature temperature={24} onChangeValue={(value) => onChangeTemperature(value)} />}
         <div>
-            <Button variant="contained" color="primary" onClick={onButtonClick}>
-                Show Snackbar
-            </Button>
             <Snackbar
                 open={open}
                 autoHideDuration={6000}
