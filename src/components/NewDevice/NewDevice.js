@@ -1,8 +1,10 @@
 // import Switch from '@mui/material/Switch';
-import { Button, CircularProgress, Snackbar, MuiAlert } from '@material-ui/core';
+// import { Button, CircularProgress, Snackbar, MuiAlert } from '@material-ui/core';
+import { Button } from '@material-ui/core';
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { Temperature } from '../Device/Controls/CustomControls/Temperature';
+import { SnackBar } from '../Snackbar/SnackBar';
 import Switch from '../UI/Switch/Switch';
 
 
@@ -28,7 +30,9 @@ export const NewDevice = ({
 }) => {
     const [state, setState] = useState(device.state === 'on');
     const [temperature, setTemperature] = useState(24);
-    const [open,setOpen] = useState(false);
+    const [openSeccessSnackBar,setOpenSuccessSnackbar] = useState(false);
+    const [openFailureSnackBar,setOpenFailureSnackbar] = useState(false);
+
     const {name} = device;
 
 
@@ -44,25 +48,19 @@ export const NewDevice = ({
             temperature
         });
         if(response.statusCode === 200){
-            setOpen(true);
+            setOpenSuccessSnackbar(true);
         }
-
-    }
-
-    const onButtonClick = () => {
-        setOpen(!open);
-    }
-
-    const handleClose = (event, reason) => {
-        if (reason === 'clickaway') {
-          return;
+        else{
+            setOpenFailureSnackbar(true);
         }
-    
-        setOpen(false);
-      };
+    }
 
     const onChangeTemperature = (value) => {
         setTemperature(value);
+    }
+
+    const handleCloseSnackBar = () => {
+        setOpenSuccessSnackbar(false);
     }
 
   return (
@@ -70,17 +68,9 @@ export const NewDevice = ({
         <h2>{name}</h2>
         <Switch onChange={(e) => onDeviceChange(e)} checked={state} />
         {isAcDevice && <Temperature temperature={24} onChangeValue={(value) => onChangeTemperature(value)} />}
-        <div>
-            <Snackbar
-                open={open}
-                autoHideDuration={6000}
-                onClose={handleClose}
-                message="AC switched"
-                ContentProps={{
-                    style: { backgroundColor: '#2fa324', color: '#fff' }, // set the background and text color
-                }}
-            />
-        </div>
+        {/* <Button onClick={() => setOpenFailureSnackbar(true)}>click</Button> */}
+        {openSeccessSnackBar && <SnackBar isOpen={true} handleCloseSnackBar={handleCloseSnackBar} color='green' />}
+        {openFailureSnackBar && <SnackBar isOpen={true} handleCloseSnackBar={handleCloseSnackBar} color='red' />}
     </DeviceContainer>
   )
 }
