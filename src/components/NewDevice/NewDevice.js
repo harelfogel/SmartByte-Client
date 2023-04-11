@@ -1,4 +1,5 @@
 // import Switch from '@mui/material/Switch';
+import { Button, CircularProgress, Snackbar, MuiAlert } from '@material-ui/core';
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { Temperature } from '../Device/Controls/CustomControls/Temperature';
@@ -27,20 +28,38 @@ export const NewDevice = ({
 }) => {
     const [state, setState] = useState(device.state === 'on');
     const [temperature, setTemperature] = useState(24);
+    const [open,setOpen] = useState(false);
     const {name} = device;
+
 
     const isAcDevice = device.name === 'ac';
     const isHeaterDevice = device.name === 'heater';
     const isLaundryDevice = device.name === 'laundry';
 
-    const onDeviceChange = (e) => {
+    const onDeviceChange = async (e) => {
         const newState = e.target.checked;
         setState(newState);
-        onToggleDeviceSwitch({
+        const response = await onToggleDeviceSwitch({
             state: newState,
             temperature
         });
+        if(response.statusCode === 200){
+            setOpen(true);
+        }
+
     }
+
+    const onButtonClick = () => {
+        setOpen(!open);
+    }
+
+    const handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+          return;
+        }
+    
+        setOpen(false);
+      };
 
     const onChangeTemperature = (value) => {
         setTemperature(value);
@@ -48,12 +67,23 @@ export const NewDevice = ({
 
   return (
     <DeviceContainer>
-        {/* <DeviceContent> */}
         <h2>{name}</h2>
         <Switch onChange={(e) => onDeviceChange(e)} checked={state} />
-        {/* </DeviceContent> */}
-        {/* <Switch /> */}
         {isAcDevice && <Temperature temperature={24} onChangeValue={(value) => onChangeTemperature(value)} />}
+        <div>
+            <Button variant="contained" color="primary" onClick={onButtonClick}>
+                Show Snackbar
+            </Button>
+            <Snackbar
+                open={open}
+                autoHideDuration={6000}
+                onClose={handleClose}
+                message="AC switched"
+                ContentProps={{
+                    style: { backgroundColor: '#2fa324', color: '#fff' }, // set the background and text color
+                }}
+            />
+        </div>
     </DeviceContainer>
   )
 }
