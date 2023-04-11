@@ -15,6 +15,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import { toggleAcState } from "../../../services/ac.service";
+import { NewDevice } from "../../../components/NewDevice/NewDevice";
 
 const DEVICED_IDS = {
   AC: '9EimtVDZ',
@@ -57,9 +58,9 @@ const RoomDevices = ({
     fetchData();
   }, []);
 
+  console.log({devices})
 
   useEffect(() => {
-    console.log(devices)
   }, [devices])
 
 
@@ -98,9 +99,9 @@ const RoomDevices = ({
       <div className={classes.RoomDevices}>
         {devices.map(device => {
           const { device_id } = device;
-          console.log({ device_id })
+          console.log({ device })
           return <div key={device_id} className={classes.Column}>
-            <Device
+            {/* <Device
               deviceId={device_id}
               device={device}
               onToggleDeviceSwitch={() => handleToggleDeviceSwitch(device_id)}
@@ -108,6 +109,10 @@ const RoomDevices = ({
                 handleControlValueChanged(device_id, controlId, newValue)
               }
               toggleDeviceState={IDS_TOGGLES_MAP[device_id]}
+            /> */}
+            <NewDevice 
+              device={device}
+              onToggleDeviceSwitch={IDS_TOGGLES_MAP[device_id]}
             />
           </div>
         })}
