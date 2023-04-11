@@ -46,7 +46,7 @@ const Device = (props) => {
   if (!device) return null;
 
   let deviceControls;
-
+  console.log("Yovel", device.controls)
   if (device.controls && Object.values(device.controls).length) {
     deviceControls = Object.entries(device.controls).map(([controlId, deviceData]) => (
       <div key={controlId} className={classes.DeviceContainer}>
