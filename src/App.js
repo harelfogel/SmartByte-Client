@@ -15,6 +15,7 @@ import RulesDashboard from "./containers/RulesDashboard/RulesDashboard";
 import Header from "./containers/Header/Header";
 import Cookies from "js-cookie";
 import RoomDevices from "./containers/RoomsDashboard/RoomDevices/RoomDevices";
+import { Notification } from "./components/Notification/Notification";
 
 
 function App() {
@@ -39,8 +40,10 @@ function App() {
   };
 
   return (
+    <>
     <Router>
       <Header user={user} onLogout={handleLogout} />
+    <Notification />
       <Routes>
         <Route
           path="/"
@@ -93,6 +96,7 @@ function App() {
         />
       </Routes>
     </Router>
+    </>
   );
 }
 

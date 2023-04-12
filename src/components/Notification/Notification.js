@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from 'react'
 // import WebSocketClient from './websocket';
 import { connectWebSocket, sendWebSocketMessage } from './websocket';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+// import a from '../../sounds/'
+
+
 const WebSocket = window.WebSocket;
 
 
@@ -8,19 +13,6 @@ export const Notification = () => {
 
     // console.log({WebSocketClient});
     const [notification, setNotification] = useState('');
-    
-    //   useEffect(() => {
-    //     WebSocketClient.connect();
-    
-    //     WebSocketClient.connect().onmessage((message) => {
-    //         console.log(message);
-    //       setNotification(message);
-    //     });
-    
-    //     return () => {
-    //       WebSocketClient.disconnect();
-    //     };
-    //   }, []);
 
 
     useEffect(() => {
@@ -36,27 +28,21 @@ export const Notification = () => {
       function handleMessageReceived(event) {
         const message = event.data;
         setNotification(message);
+        toast.info(event.data); 
+        const notificationSound = new Audio('../../sounds/relentless-572.mp3');
+        notificationSound.play();
       }
 
       useEffect(() => {
         console.log({notification});
       },[notification])
     
-    //   function handleSendMessage() {
-    //     const message = 'Hello, world!';
-    //     socket.send(message);
-    //   }
 
     connectWebSocket();
-    sendWebSocketMessage('Hello, world!');
 
   return (
     <div>
-      {notification && (
-        <div >
-          {notification}
-        </div>
-      )}
+        <ToastContainer />
     </div>
   )
 }
