@@ -41,6 +41,7 @@ const TableStyled = styled.table`
   //   border-collapse: collapse;
   width: 80%;
   margin-bottom: 2rem;
+  margin: auto;
 `;
 
 const ThStyled = styled.th`
@@ -75,6 +76,13 @@ const TitleStyled = styled.p`
 
 `;
 
+const TableContent = styled.div`
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    background-color: green;
+    
+`;
 
 
 
@@ -85,7 +93,7 @@ export const SuggestionsTable = () => {
 
 
   return (
-    <>
+    
     <TableContainer>
     <TitleStyled>Suggestions</TitleStyled>
       <TableStyled>
@@ -119,6 +127,6 @@ export const SuggestionsTable = () => {
       </TableStyled>
     </TableContainer>
 
-    </>
+    
   );
 };

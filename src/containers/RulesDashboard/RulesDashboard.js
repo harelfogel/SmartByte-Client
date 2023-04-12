@@ -1,9 +1,9 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { addRule } from "./../../store/rules/rules.actions";
 import RulesModal from "./../../components/RulesModal/RulesModal";
-import axios from 'axios';
+import axios from "axios";
 import { fetchRules } from "./../../services/rules.service";
 import RulesTable from "./../../components/RulesTable/RulesTable";
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
@@ -13,12 +13,9 @@ import { NavLink } from "react-router-dom";
 import { SnackBar } from "../../components/Snackbar/SnackBar";
 import styled from "styled-components";
 
-
-
 const ErrorMessage = styled.p`
   color: red;
 `;
-
 
 const RulesDashboard = ({ addRule }) => {
   const [rule, setRule] = useState("");
@@ -27,14 +24,9 @@ const RulesDashboard = ({ addRule }) => {
   const [displayIntro, setDisplayIntro] = useState(true);
   const [rules, setRules] = useState([]);
   const [showTable, setShowTable] = useState(false);
-  const [openSeccessSnackBar,setOpenSuccessSnackbar] = useState(false);
-  const [openFailureSnackBar,setOpenFailureSnackbar] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
-
-
-  
-
-
+  const [openSeccessSnackBar, setOpenSuccessSnackbar] = useState(false);
+  const [openFailureSnackBar, setOpenFailureSnackbar] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     const fetchAllRules = async () => {
@@ -51,14 +43,15 @@ const RulesDashboard = ({ addRule }) => {
 
   const onAddRuleClick = () => {
     let url = `${process.env.REACT_APP_SERVER_URL}`;
-    axios.post(`http://localhost:3001/rules`, { rule })
-      .then(response => {
+    axios
+      .post(`http://localhost:3001/rules`, { rule })
+      .then((response) => {
         // setModalMessage("Rule is activated");
         // setShowModal(true);
         setOpenSuccessSnackbar(true);
-        setErrorMessage('');
+        setErrorMessage("");
       })
-      .catch(error => {
+      .catch((error) => {
         // setModalMessage("Error adding rule");
         // setShowModal(true);
         console.log(error.response.data);
@@ -79,7 +72,6 @@ const RulesDashboard = ({ addRule }) => {
     setShowTable(false);
   };
 
-
   const closeModalHandler = () => {
     setShowModal(false);
   };
@@ -87,7 +79,7 @@ const RulesDashboard = ({ addRule }) => {
   const handleCloseSnackBar = () => {
     setOpenSuccessSnackbar(false);
     setOpenFailureSnackbar(false);
-}
+  };
 
   return (
     <div className={classes.RulesDashboard}>
@@ -149,22 +141,22 @@ const RulesDashboard = ({ addRule }) => {
           </div>
         </>
       )}
-      {openSeccessSnackBar && 
-        <SnackBar 
-            message={"Rule is activated"}
-            isOpen={true} 
-            handleCloseSnackBar={handleCloseSnackBar} 
-            color='green' 
+      {openSeccessSnackBar && (
+        <SnackBar
+          message={"Rule is activated"}
+          isOpen={true}
+          handleCloseSnackBar={handleCloseSnackBar}
+          color="green"
         />
-      }
-      {openFailureSnackBar && 
-        <SnackBar 
-            message={"Error adding rule"}
-            isOpen={true} 
-            handleCloseSnackBar={handleCloseSnackBar} 
-            color='red' 
+      )}
+      {openFailureSnackBar && (
+        <SnackBar
+          message={"Error adding rule"}
+          isOpen={true}
+          handleCloseSnackBar={handleCloseSnackBar}
+          color="red"
         />
-      }
+      )}
       <RulesModal
         show={showModal}
         onCloseModal={closeModalHandler}
@@ -172,9 +164,6 @@ const RulesDashboard = ({ addRule }) => {
       />
     </div>
   );
-
-
-
 };
 
 RulesDashboard.propTypes = {
