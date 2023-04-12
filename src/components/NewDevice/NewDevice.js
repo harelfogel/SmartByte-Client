@@ -36,9 +36,9 @@ export const NewDevice = ({
     const {name} = device;
 
 
-    const isAcDevice = device.name === 'ac';
-    const isHeaterDevice = device.name === 'heater';
-    const isLaundryDevice = device.name === 'laundry';
+    const isAcDevice = name === 'ac';
+    const isHeaterDevice = name === 'heater';
+    const isLaundryDevice = name === 'laundry';
 
     const onDeviceChange = async (e) => {
         const newState = e.target.checked;

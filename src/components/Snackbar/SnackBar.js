@@ -1,6 +1,7 @@
 import { Snackbar, IconButton } from '@material-ui/core'
 import React, { useState } from 'react'
 import { Close as CloseIcon, CheckCircle as CheckCircleIcon } from '@material-ui/icons';
+import ErrorIcon from '@material-ui/icons/Error';
 // '#2fa324' green
 
 
@@ -8,8 +9,10 @@ import { Close as CloseIcon, CheckCircle as CheckCircleIcon } from '@material-ui
 
 const SnackBarMessage = ({text, icon}) => {
   return (
-    <div style={{ display: 'flex', alignItems: 'center' }}>
-        <CheckCircleIcon style={{ marginRight: '8px' }} /> {/* icon */}
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width:'100%' }}>
+        {icon === 'error' ? 
+        <ErrorIcon style={{ marginRight: '8px' }} /> 
+        :  <CheckCircleIcon style={{ marginRight: '8px' }} />}
         {text}
     </div>
   )
@@ -36,14 +39,14 @@ export const SnackBar = ({
   return (
     <>
     <Snackbar
-                open={open}
-                autoHideDuration={6000}
-                onClose={handleClose}
-                message={<SnackBarMessage text={message} />}
-                ContentProps={{
-                    style: { backgroundColor: color, color: '#fff' }, // set the background and text color
-                }}
-            />
+      open={open}
+      autoHideDuration={6000}
+      onClose={handleClose}
+      message={<SnackBarMessage text={message} icon={color === 'red' ? 'error' : 'success'} />}
+      ContentProps={{
+          style: { backgroundColor: color, color: '#fff' }, // set the background and text color
+      }}
+  />
     </>
   )
 }
