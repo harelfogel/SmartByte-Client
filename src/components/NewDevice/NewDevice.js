@@ -69,8 +69,22 @@ export const NewDevice = ({
         <Switch onChange={(e) => onDeviceChange(e)} checked={state} />
         {isAcDevice && <Temperature temperature={24} onChangeValue={(value) => onChangeTemperature(value)} />}
         {/* <Button onClick={() => setOpenFailureSnackbar(true)}>click</Button> */}
-        {openSeccessSnackBar && <SnackBar isOpen={true} handleCloseSnackBar={handleCloseSnackBar} color='green' />}
-        {openFailureSnackBar && <SnackBar isOpen={true} handleCloseSnackBar={handleCloseSnackBar} color='red' />}
+        {openSeccessSnackBar && 
+        <SnackBar 
+            message={`${device.name.toUpperCase()} is now ${state? 'ON' : 'OFF'}`}
+            isOpen={true} 
+            handleCloseSnackBar={handleCloseSnackBar} 
+            color='green' 
+        />
+        }
+        {openFailureSnackBar && 
+        <SnackBar 
+            message={`Unable to turn ${state? 'ON' : 'OFF'} ${device.name.toUpperCase()}`}
+            isOpen={true} 
+            handleCloseSnackBar={handleCloseSnackBar} 
+            color='red' 
+        />
+        }
     </DeviceContainer>
   )
 }
