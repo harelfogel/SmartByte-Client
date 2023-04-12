@@ -48,7 +48,7 @@ export const Notification = () => {
     //   }
 
     connectWebSocket();
-    // sendWebSocketMessage('Hello, world!');
+    sendWebSocketMessage('Hello, world!');
 
   return (
     <div>
