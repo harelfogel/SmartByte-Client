@@ -1,4 +1,6 @@
-import React from "react";
+import { Button } from "@material-ui/core";
+import axios from "axios";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { RuleSwitch } from "../UI/Switch/RuleSwitch";
 import Switch from "../UI/Switch/Switch";
@@ -20,12 +22,37 @@ const ActiveCellStyled = styled.td`
   justify-content: center;
 `;
 
+const ActionContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
+
+const ActionTdStyled = styled.td`
+  width: 200px;
+`;
+
 
 // const label = { inputProps: { 'aria-label': 'Switch demo' } };
 
+const SERVER_URL = 'http://localhost:3001/rules';
 
 const RulesTable = ({ rules }) => {
-  console.log({rules})
+  // console.log({SERVER_URL})
+  const deleteRule = (id) => {
+    const newRules = rules.filter(rule => rule.id!== id);
+    setCurrentRules(newRules);
+    console.log(id);
+    const response = axios.delete(`${SERVER_URL}/${id}`)
+    .then(res => {
+        console.log(res);
+      }).catch(err => {
+        console.log(err);
+      })
+
+  };
+
+  const [currentRules, setCurrentRules] = useState(rules);
+  console.log({currentRules})
   return (
     <>
       <table className={classes.RulesTable}>
@@ -41,7 +68,12 @@ const RulesTable = ({ rules }) => {
             <tr key={index}>
               <ActiveCellStyled><Circle color={rule.isActive ? 'green' : 'red'}/></ActiveCellStyled>
               <td>{rule.rule}</td>
-              <td><RuleSwitch isActive={rule.isActive} id={rule.id} /></td>
+              <ActionTdStyled>
+                <ActionContainer>
+                  <RuleSwitch isActive={rule.isActive} id={rule.id} />
+                  <Button onClick={() => deleteRule(rule.id)} variant="outlined">DELETE</Button>
+                </ActionContainer>
+              </ActionTdStyled>
             </tr>
           ))}
         </tbody>
