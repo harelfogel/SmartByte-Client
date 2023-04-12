@@ -80,7 +80,7 @@ const RulesTable = ({ rules }) => {
         </tbody>
       </table>
 
-      <Notification />
+      {/* <Notification /> */}
     </>
   );
 };

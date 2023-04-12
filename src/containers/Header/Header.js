@@ -34,6 +34,9 @@ const Header = ({ toggleSideDrawer, user, onLogout }) => {
             <NavigationItem>
               <NavLink to="/location">Location</NavLink>
             </NavigationItem>
+            <NavigationItem>
+              <NavLink to="/suggestions">Suggestions</NavLink>
+            </NavigationItem>
           </Navigation>
         </div>
         {user && (
