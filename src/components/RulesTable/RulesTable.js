@@ -2,6 +2,7 @@ import { Button } from "@material-ui/core";
 import axios from "axios";
 import React, { useState } from "react";
 import styled from "styled-components";
+import { Notification } from "../Notification/Notification";
 import { RuleSwitch } from "../UI/Switch/RuleSwitch";
 import Switch from "../UI/Switch/Switch";
 import classes from "./RulesTable.module.scss";
@@ -78,6 +79,8 @@ const RulesTable = ({ rules }) => {
           ))}
         </tbody>
       </table>
+
+      <Notification />
     </>
   );
 };
