@@ -16,6 +16,7 @@ import Header from "./containers/Header/Header";
 import Cookies from "js-cookie";
 import RoomDevices from "./containers/RoomsDashboard/RoomDevices/RoomDevices";
 import { Notification } from "./components/Notification/Notification";
+import { SuggestionsTable } from "./components/Suggestions/SuggestionsTable";
 
 
 function App() {
@@ -92,6 +93,12 @@ function App() {
           path="/room/:id"
           element={
             isAuthenticated ? <RoomDevices /> : <Navigate to="/login" />
+          }
+        />
+        <Route
+          path="/suggestions"
+          element={
+            isAuthenticated ? <SuggestionsTable /> : <Navigate to="/login" />
           }
         />
       </Routes>
