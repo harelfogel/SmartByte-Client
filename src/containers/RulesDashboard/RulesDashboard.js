@@ -10,7 +10,14 @@ import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
 import classes from "./RulesDashboard.module.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { NavLink } from "react-router-dom";
+import { SnackBar } from "../../components/Snackbar/SnackBar";
+import styled from "styled-components";
 
+
+
+const ErrorMessage = styled.p`
+  color: red;
+`;
 
 
 const RulesDashboard = ({ addRule }) => {
@@ -20,6 +27,12 @@ const RulesDashboard = ({ addRule }) => {
   const [displayIntro, setDisplayIntro] = useState(true);
   const [rules, setRules] = useState([]);
   const [showTable, setShowTable] = useState(false);
+  const [openSeccessSnackBar,setOpenSuccessSnackbar] = useState(false);
+  const [openFailureSnackBar,setOpenFailureSnackbar] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+
+
+  
 
 
 
@@ -40,12 +53,17 @@ const RulesDashboard = ({ addRule }) => {
     let url = `${process.env.REACT_APP_SERVER_URL}`;
     axios.post(`http://localhost:3001/rules`, { rule })
       .then(response => {
-        setModalMessage("Rule is activated");
-        setShowModal(true);
+        // setModalMessage("Rule is activated");
+        // setShowModal(true);
+        setOpenSuccessSnackbar(true);
+        setErrorMessage('');
       })
       .catch(error => {
-        setModalMessage("Error adding rule");
-        setShowModal(true);
+        // setModalMessage("Error adding rule");
+        // setShowModal(true);
+        console.log(error.response.data);
+        setErrorMessage(error.response.data);
+        setOpenFailureSnackbar(true);
       });
     setRule("");
   };
@@ -65,6 +83,11 @@ const RulesDashboard = ({ addRule }) => {
   const closeModalHandler = () => {
     setShowModal(false);
   };
+
+  const handleCloseSnackBar = () => {
+    setOpenSuccessSnackbar(false);
+    setOpenFailureSnackbar(false);
+}
 
   return (
     <div className={classes.RulesDashboard}>
@@ -122,10 +145,26 @@ const RulesDashboard = ({ addRule }) => {
             >
               Add
             </button>
+            <ErrorMessage>{errorMessage}</ErrorMessage>
           </div>
         </>
       )}
-
+      {openSeccessSnackBar && 
+        <SnackBar 
+            message={"Rule is activated"}
+            isOpen={true} 
+            handleCloseSnackBar={handleCloseSnackBar} 
+            color='green' 
+        />
+      }
+      {openFailureSnackBar && 
+        <SnackBar 
+            message={"Error adding rule"}
+            isOpen={true} 
+            handleCloseSnackBar={handleCloseSnackBar} 
+            color='red' 
+        />
+      }
       <RulesModal
         show={showModal}
         onCloseModal={closeModalHandler}
