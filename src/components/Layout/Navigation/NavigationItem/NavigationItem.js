@@ -1,5 +1,12 @@
-import React from "react";
+import React from 'react';
+import { NavLink } from 'react-router-dom';
 
-export default function NavigationItem(props) {
-  return <li>{props.children}</li>;
-}
+const NavigationItem = ({ children, to, ...props }) => (
+  <li>
+    <NavLink to={to} {...props}>
+      {children}
+    </NavLink>
+  </li>
+);
+
+export default NavigationItem;

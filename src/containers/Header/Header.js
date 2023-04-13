@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { NavLink } from "react-router-dom";
+import { NavLink,useLocation  } from "react-router-dom";
 import { connect } from "react-redux";
 import { toggleSideDrawer } from "./../../store/ui/ui.actions";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -14,6 +14,11 @@ import { getGreeting } from '../../utils/utils';
 const Header = ({ toggleSideDrawer, user, onLogout }) => {
   const firstName = user ? user.fullName.split(' ')[0] : '';
   const greeting = getGreeting();
+  const location = useLocation();
+
+  const isCurrentPage = (path) => {
+    return location.pathname.startsWith(path);
+  };
 
   return (
     <header className={classes.Header}>
@@ -24,21 +29,37 @@ const Header = ({ toggleSideDrawer, user, onLogout }) => {
           </NavLink>
         </div>
         <div className={classes.Navigation}>
-          <Navigation>
-            <NavigationItem>
-              <NavLink to="/rooms-dashboard">Rooms</NavLink>
-            </NavigationItem>
-            <NavigationItem>
-              <NavLink to="/rules">Rules</NavLink>
-            </NavigationItem>
-            <NavigationItem>
-              <NavLink to="/location">Location</NavLink>
-            </NavigationItem>
-            <NavigationItem>
-              <NavLink to="/suggestions">Suggestions</NavLink>
-            </NavigationItem>
-          </Navigation>
-        </div>
+        <Navigation>
+          <NavigationItem
+            to="/rooms-dashboard"
+            activeClassName={classes.ActiveNavLink}
+            className={isCurrentPage('/rooms-dashboard') ? classes.ActiveNavLink  : ''}
+          >
+            Rooms
+          </NavigationItem>
+          <NavigationItem
+            to="/rules"
+            activeClassName={classes.ActiveNavLink}
+            className={isCurrentPage('/rules') ? classes.ActiveNavLink  : ''}
+          >
+            Rules
+          </NavigationItem>
+          <NavigationItem
+            to="/location"
+            activeClassName={classes.ActiveNavLink}
+            className={isCurrentPage('/location') ? classes.ActiveNavLink  : ''}
+          >
+            Location
+          </NavigationItem>
+          <NavigationItem
+            to="/suggestions"
+            activeClassName={classes.ActiveNavLink}
+            className={isCurrentPage('/suggestions') ? classes.ActiveNavLink  : ''}
+          >
+            Suggestions
+          </NavigationItem>
+        </Navigation>
+      </div>
         {user && (
           <div className={classes.UserGreeting}>
             <span>{greeting}, {firstName}</span>
