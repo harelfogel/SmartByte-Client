@@ -23,10 +23,11 @@ const TextStyled = styled.div`
   overflow: hidden;
   text-overflow: ellipsis;
   user-select: none;
+
 `;
 
 const TooltipContent = styled.div`
-  font-size: 16px;
+  font-size: 10px;
   background-color: white;
 `;
 

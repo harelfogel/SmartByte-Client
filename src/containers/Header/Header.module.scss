@@ -37,6 +37,29 @@
     font-weight: bold;
   }
 
+  // Header.module.scss
+
+.ActiveNavLink   {
+  color:  #73a4ed; // Choose the color you want for the active link
+  font-weight: bold;
+
+  // Add the animation
+  animation: activeNavLinkAnimation 0.5s;
+
+  @keyframes activeNavLinkAnimation {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.1);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+}
+
+
 
 
   .MenuBtn {
