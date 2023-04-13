@@ -1,12 +1,10 @@
 import { Button, Tooltip } from "@material-ui/core";
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, forwardRef } from "react";
 import styled from "styled-components";
 import FileCopyIcon from "@material-ui/icons/FileCopy";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCopy } from "@fortawesome/free-regular-svg-icons";
 import { makeStyles } from '@material-ui/core/styles';
-// import Tooltip from '@material-ui/core/Tooltip';
-
 
 const RuleCellStyled = styled.div`
   text-align: left;
@@ -36,9 +34,6 @@ const RuleTooltip = ({ text }) => {
   return <TooltipContent>{text}</TooltipContent>;
 };
 
-
-
-
 const useStyles = makeStyles((theme) => ({
   tooltip: {
     backgroundColor: '#333',
@@ -48,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const RuleCell = ({ children }) => {
+export const RuleCell = forwardRef(({ children }, ref) => {
   const [isTooltipOpen, setIsTooltipOpen] = useState(false);
 
   const divRef = useRef(null);
@@ -62,7 +57,7 @@ export const RuleCell = ({ children }) => {
   return (
     <RuleCellStyled>
       <Tooltip title={children}>
-        <TextStyled ref={divRef}>{children}</TextStyled>
+        <TextStyled ref={ref}>{children}</TextStyled>
       </Tooltip>
       <Tooltip title="Copied rule!" open={isTooltipOpen}>
         <div>
@@ -75,4 +70,4 @@ export const RuleCell = ({ children }) => {
       </Tooltip>
     </RuleCellStyled>
   );
-};
+});

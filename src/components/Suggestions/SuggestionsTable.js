@@ -1,32 +1,10 @@
 import { Tooltip } from "@material-ui/core";
 import React from "react";
+import { useState, useEffect } from 'react';
+import { getSuggestions } from './suggestions.service';
 import styled from "styled-components";
 import { RuleCell } from "./RuleCell";
 import { generateRule } from "./suggestions.service";
-
-export const suggestionsMock = [
-  {
-    id: 1,
-    device: "AC",
-    evidence: {
-      Temperature: 3,
-      distance: 1,
-      humidity: 2,
-    },
-    mode: "cool",
-    state: "on"
-  },
-  {
-    id: 2,
-    device: "Heater",
-    evidence: {
-      Temperature: 4,
-      distance: 2,
-      humidity: 2,
-    },
-    state: "on"
-  }
-];
 
 const TableContainer = styled.div`
   display: flex;
@@ -87,35 +65,40 @@ const TableContent = styled.div`
 
 
 export const SuggestionsTable = () => {
+  const [suggestions, setSuggestions] = useState([]);
 
-    
-
-
+  useEffect(() => {
+    const fetchData = async () => {
+      const fetchedSuggestions = await getSuggestions();
+      setSuggestions(fetchedSuggestions);
+    };
+    fetchData();
+  }, []);
 
   return (
-    
+
     <TableContainer>
-    <TitleStyled>Suggestions</TitleStyled>
+      <TitleStyled>Suggestions</TitleStyled>
       <TableStyled>
         <thead>
           <tr>
             <ThStyled>Device</ThStyled>
             <ThStyled>Suggested Rule</ThStyled>
-            <ThStyled>evidence</ThStyled>
+            <ThStyled>Evidence</ThStyled>
           </tr>
         </thead>
         <tbody>
-          {suggestionsMock.map((suggestion, idx) => {
+          {suggestions.map((suggestion, idx) => {
             // generateRule(suggestion);
             return (
               <tr key={idx}>
                 <TdStyled>{suggestion.device}</TdStyled>
                 <TdStyled>
-                    <Tooltip
-                        title={generateRule(suggestion)}
-                    >
-                        <RuleCell>{generateRule(suggestion)}</RuleCell>
-                    </Tooltip>
+                  <Tooltip
+                    title={generateRule(suggestion)}
+                  >
+                    <RuleCell>{generateRule(suggestion)}</RuleCell>
+                  </Tooltip>
                 </TdStyled>
                 <TdStyled>
                   {Object.entries(suggestion.evidence).map((e) => `${e}, `)}
@@ -127,6 +110,6 @@ export const SuggestionsTable = () => {
       </TableStyled>
     </TableContainer>
 
-    
+
   );
 };
