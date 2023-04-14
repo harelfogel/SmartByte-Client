@@ -14,4 +14,45 @@ export function getGreeting() {
   
     return greeting;
   }
+
+  export const getMonthlyData = (data) => {
+    const monthlyData = {};
+  
+    data.forEach((entry) => {
+      if (entry.timestamp) {
+        const month = entry.timestamp.slice(0, 7);
+        const energySum = entry.ac_energy + entry.heater_energy + entry.lights_energy + entry.laundry_energy;
+  
+        if (!monthlyData[month]) {
+          monthlyData[month] = energySum;
+        } else {
+          monthlyData[month] += energySum;
+        }
+      }
+    });
+  
+    return Object.entries(monthlyData).map(([month, energy]) => ({ x: month, y: energy }));
+  };
+  
+  export const getYearlyData = (data) => {
+    const yearlyData = {};
+  
+    data.forEach((entry) => {
+      if (entry.timestamp) {
+        const year = entry.timestamp.slice(0, 4);
+        const energySum = entry.ac_energy + entry.heater_energy + entry.lights_energy + entry.laundry_energy;
+  
+        if (!yearlyData[year]) {
+          yearlyData[year] = energySum;
+        } else {
+          yearlyData[year] += energySum;
+        }
+      }
+    });
+  
+    return Object.entries(yearlyData).map(([year, energy]) => ({ x: year, y: energy }));
+  };
+
+
+  
   
