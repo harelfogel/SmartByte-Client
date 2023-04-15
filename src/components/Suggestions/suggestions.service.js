@@ -34,3 +34,15 @@ export const getSuggestions = async () => {
       return [];
     }
   };
+
+
+  export const updateSuggestions = async () => {
+    try{
+      const response = await axios.put(`${SERVER_URL}/suggestions`,{
+        is_new: false
+      });
+      
+    }catch(error){
+      console.log('Error updating suggestions:', error);
+    }
+  }

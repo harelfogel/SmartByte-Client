@@ -1,7 +1,7 @@
 import { Tooltip } from "@material-ui/core";
 import React from "react";
-import { useState, useEffect } from 'react';
-import { getSuggestions } from './suggestions.service';
+import { useState, useEffect } from "react";
+import { getSuggestions, updateSuggestions } from "./suggestions.service";
 import styled from "styled-components";
 import { RuleCell } from "./RuleCell";
 import { generateRule } from "./suggestions.service";
@@ -38,6 +38,32 @@ const TdStyled = styled.td`
   text-overflow: ellipsis;
   border-bottom: 1px solid #ccc;
   color: gray;
+  flex-direction: row;
+  // display: inline-block;
+`;
+
+// const DeviceCellContent = styled.td`
+//   //   border: 1px solid #ccc;
+//   min-width: 100px;
+//   padding: 0.5rem 1.5rem;
+//   text-align: left;
+//   white-space: nowrap;
+//   overflow: hidden;
+//   text-overflow: ellipsis;
+//   border-bottom: 1px solid #ccc;
+//   color: gray;
+//   flex-direction: row;
+//   display: flex;
+//   flex-wrap: space-around;
+//   width: 200px;
+//   position: relative;
+// `;
+
+const DeviceCellContent = styled.div`
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+  justify-content: space-between;
 `;
 
 // const RuleCell = styled.div`
@@ -50,16 +76,42 @@ const TdStyled = styled.td`
 // `;
 
 const TitleStyled = styled.p`
-    font-size: 1.5rem;
-
+  font-size: 1.5rem;
 `;
 
 const TableContent = styled.div`
-    width: 100%;
-    justify-content: center;
-    align-items: center;
-    background-color: green;
-    
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  background-color: green;
+`;
+
+export const NewTag = styled.div`
+  background-color: #ac98ff;
+  width: 4rem;
+  height: 1.9rem;
+  border-radius: 4px;
+  justify-content: center;
+  align-items: center;
+  // position: absolute;
+  rigth: 50px;
+  :hover {
+    cursor: pointer;
+  }
+  position: relative;
+`;
+
+const NewTagText = styled.p`
+  color: white;
+  size: 1.5rem;
+  weight: bold;
+  // justify-content: center;
+  // align-items: center;
+  margin: auto;
+  width: 100%;
+  position: absolute;
+  left: 0.7rem;
+  top: 0.2rem;
 `;
 
 
@@ -75,8 +127,11 @@ export const SuggestionsTable = () => {
     fetchData();
   }, []);
 
-  return (
+  useEffect(() => {
+    updateSuggestions();
+  },[suggestions])
 
+  return (
     <TableContainer>
       <TitleStyled>Suggestions</TitleStyled>
       <TableStyled>
@@ -85,18 +140,27 @@ export const SuggestionsTable = () => {
             <ThStyled>Device</ThStyled>
             <ThStyled>Suggested Rule</ThStyled>
             <ThStyled>Evidence</ThStyled>
+            {/* <ThStyled></ThStyled> */}
           </tr>
         </thead>
         <tbody>
           {suggestions.map((suggestion, idx) => {
             // generateRule(suggestion);
+            const { is_new: isNew } = suggestion;
             return (
               <tr key={idx}>
-                <TdStyled>{suggestion.device}</TdStyled>
                 <TdStyled>
-                  <Tooltip
-                    title={generateRule(suggestion)}
-                  >
+                  <DeviceCellContent>
+                    {suggestion.device}
+                    {isNew && (
+                      <NewTag>
+                        <NewTagText>NEW!</NewTagText>
+                      </NewTag>
+                    )}
+                  </DeviceCellContent>
+                </TdStyled>
+                <TdStyled>
+                  <Tooltip title={generateRule(suggestion)}>
                     <RuleCell>{generateRule(suggestion)}</RuleCell>
                   </Tooltip>
                 </TdStyled>
@@ -109,7 +173,5 @@ export const SuggestionsTable = () => {
         </tbody>
       </TableStyled>
     </TableContainer>
-
-
   );
 };

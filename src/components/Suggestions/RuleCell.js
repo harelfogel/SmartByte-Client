@@ -43,13 +43,13 @@ const useStyles = makeStyles((theme) => ({
     padding: '8px',
   },
 }));
-
 export const RuleCell = forwardRef(({ children }, ref) => {
   const [isTooltipOpen, setIsTooltipOpen] = useState(false);
 
   const divRef = useRef(null);
 
   const handleCopy = () => {
+    console.log({children});
     const divText = divRef.current.innerText;
     navigator.clipboard.writeText(divText);
     setIsTooltipOpen(true);
@@ -58,7 +58,7 @@ export const RuleCell = forwardRef(({ children }, ref) => {
   return (
     <RuleCellStyled>
       <Tooltip title={children}>
-        <TextStyled ref={ref}>{children}</TextStyled>
+        <TextStyled ref={divRef}>{children}</TextStyled>
       </Tooltip>
       <Tooltip title="Copied rule!" open={isTooltipOpen}>
         <div>
