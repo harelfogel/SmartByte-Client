@@ -1,17 +1,32 @@
 import React, { useState, useEffect } from 'react';
 import { Line } from 'react-chartjs-2';
 import axios from 'axios';
-import { Chart, LineController, LineElement, PointElement, LinearScale, CategoryScale } from 'chart.js';
+import { Chart, LineController, LineElement, BarController, BarElement, PointElement, LinearScale, CategoryScale } from 'chart.js';
+import { generateMonthLabels, generateYears } from '../../utils/utils';
+import styles from './Insights.module.scss';
+import { Bar } from 'react-chartjs-2';
 
 
 
-Chart.register(LineController, LineElement, PointElement, LinearScale, CategoryScale);
+
+Chart.register(LineController, LineElement, BarController, BarElement, PointElement, LinearScale, CategoryScale);
 
 const Insights = () => {
   const [devices, setDevices] = useState([]);
   const [selectedDevice, setSelectedDevice] = useState('');
   const [timeRange, setTimeRange] = useState('monthly');
   const [graphData, setGraphData] = useState({ labels: [], data: [] });
+  const [selectedYear, setSelectedYear] = useState(2023);
+  const [monthLabels, setMonthLabels] = useState(generateMonthLabels(selectedYear));
+
+  const currentYear = new Date().getFullYear();
+  const availableYears = generateYears(2020, currentYear);
+
+  useEffect(() => {
+    if (timeRange === 'monthly') {
+      fetchGraphData(selectedDevice, timeRange, selectedYear);
+    }
+  }, [selectedYear]);
 
   useEffect(() => {
     let isMounted = true;
@@ -21,58 +36,117 @@ const Insights = () => {
         const response = await axios.get('http://localhost:5000/devices');
         if (isMounted) {
           setDevices(response.data);
-          setSelectedDevice(response.data[0].device);
+          if (selectedDevice === null) {
+            setSelectedDevice(response.data[0].device);
+          }
         }
       } catch (error) {
         if (isMounted) {
           console.log(error);
         }
       }
-      await fetchGraphData(selectedDevice, timeRange);
     };
 
     fetchData();
 
     const fetchAndUpdateGraphData = async () => {
-      await fetchGraphData(selectedDevice, timeRange);
+      if (timeRange === 'monthly') {
+        await fetchGraphData(selectedDevice, timeRange, selectedYear);
+      } else {
+        await fetchGraphData(selectedDevice, timeRange);
+      }
     };
 
-    fetchAndUpdateGraphData();
-
-  
-
-    // Cleanup function
     return () => {
       isMounted = false;
     };
-  }, [selectedDevice,timeRange]);
+  }, [selectedDevice, timeRange, selectedYear]);
 
-  const fetchGraphData = async (device, timeRange) => {
+  useEffect(() => {
+    const fetchAndUpdateGraphData = async () => {
+      if (timeRange === 'monthly') {
+        await fetchGraphData(selectedDevice, timeRange, selectedYear);
+      } else {
+        await fetchGraphData(selectedDevice, timeRange);
+      }
+    };
+
+    if (selectedDevice !== '') {
+      fetchAndUpdateGraphData();
+    }
+  }, [selectedDevice, timeRange]);
+
+
+
+  const fetchGraphData = async (device, timeRange, year = null) => {
     try {
+
+      let avgEnergy = 0;
       const response = await axios.get('http://localhost:5000/graph-data', {
-        params: { device, time_range: timeRange },
+        params: { device, time_range: timeRange, year },
       });
 
-      setGraphData(response.data);
+      // Initialize an empty dataset for all months
+      const monthLabels = generateMonthLabels(year);
+      const emptyData = {
+        labels: monthLabels,
+        data: new Array(12).fill(0),
+      };
+
+      if (timeRange === 'monthly' && year !== null) {
+        const monthData = new Array(12).fill(0);
+        const monthCounts = new Array(12).fill(0);
+
+        response.data.labels.forEach((label, index) => {
+          const date = new Date(label);
+          const monthIndex = date.getMonth();
+          const labelYear = date.getFullYear();
+
+          if (labelYear === year) {
+            monthData[monthIndex] += response.data.data[index];
+            monthCounts[monthIndex]++;
+          }
+        });
+
+        // Calculate average for each month
+        for (let i = 0; i < 12; i++) {
+          if (monthCounts[i] > 0) {
+            emptyData.data[i] = monthData[i] / monthCounts[i];
+          }
+        }
+        avgEnergy = monthData.reduce((acc, cur) => acc + cur, 0) / 12;
+
+      } else {
+        emptyData.labels = response.data.labels;
+        emptyData.data = response.data.data;
+      }
+
+      setGraphData({ ...emptyData, avgEnergy });
     } catch (error) {
-      // Handle errors, e.g., update the error state or show an error message
+      console.log(error);
     }
   };
+
+
+
+
+
+
 
   const handleSelectionChange = (e, type) => {
     if (type === 'device') {
       setSelectedDevice(e.target.value);
-      fetchGraphData(e.target.value, timeRange);
-    } else {
+    } else if (type === 'timeRange') {
       setTimeRange(e.target.value);
-      fetchGraphData(selectedDevice, e.target.value);
+    } else if (type === 'year') {
+      setSelectedYear(parseInt(e.target.value));
     }
   };
-  
+
   return (
-    <div>
+    <div className={styles.insightsContainer}>
       <h1>Energy Consumption Insights</h1>
-      <div>
+      <div className={styles.selectorsContainer}>
         <label>Device:</label>
         <select
           value={selectedDevice}
@@ -93,35 +167,135 @@ const Insights = () => {
           <option value="monthly">Monthly</option>
           <option value="yearly">Yearly</option>
         </select>
+        {timeRange === "monthly" && (
+          <div>
+            <label>Year:</label>
+            <select
+              value={selectedYear}
+              onChange={(e) => handleSelectionChange(e, 'year')}
+            >
+              {availableYears.map((year) => (
+                <option key={year} value={year}>
+                  {year}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
       </div>
-      <Line
-        data={{
-          labels: graphData.labels,
-          datasets: [
-            {
-              label: 'Energy Consumption',
-              data: graphData.data,
-              fill: false,
-              backgroundColor: 'rgba(75, 192, 192, 0.2)',
-              borderColor: 'rgba(75, 192, 192, 1)',
-            },
-          ],
-        }}
-        options={{
-          scales: {
-            x: {
-              type: 'category',
-            },
-            y: {
-              type: 'linear',
-            },
-          },
-        }}
-      />
-      
+      <div className={styles.graphContainer}>
+        {timeRange === "monthly" ? (
+          <Bar
+            data={{
+              labels: graphData.labels,
+              datasets: [
+                {
+                  label: "Energy Consumption",
+                  data: graphData.data,
+                  backgroundColor: "rgba(75, 192, 192, 0.2)",
+                  borderColor: "rgba(75, 192, 192, 1)",
+                },
+                {
+                  label: "Average Energy Consumption",
+                  data: Array(12).fill(graphData.avgEnergy),
+                  type: "line",
+                  fill: false,
+                  backgroundColor: "rgba(255, 0, 0, 1)",
+                  borderColor: "rgba(255, 0, 0, 1)",
+                  borderWidth: 2,
+                  pointRadius: 0,
+                },
+              ],
+            }}
+            options={{
+              scales: {
+                x: {
+                  type: "category",
+                  display: true,
+                  grid: { display: false },
+                  ticks: {
+                    padding: 5,
+                    callback: function (value, index, values) {
+                      if (timeRange === "monthly") {
+                        return monthLabels[index];
+                      }
+                      return value;
+                    },
+                    autoSkip: true,
+                    maxTicksLimit: 12,
+                    maxRotation: 0,
+                    minRotation: 0,
+                  },
+                },
+                y: {
+                  type: "linear",
+                  beginAtZero: true,
+                  title: {
+                    display: true,
+                    text: "Energy Consumption (kW)",
+                  },
+                },
+              },
+              plugins: {
+                legend: {
+                  display: true,
+                  position: "top",
+                  labels: {
+                    boxWidth: 20,
+                    padding: 10,
+                  },
+                },
+              },
+            }}
+          />
+        ) : (
+          <Line
+            data={{
+              labels: graphData.labels,
+              datasets: [
+                {
+                  label: "Energy Consumption",
+                  data: graphData.data,
+                  fill: false,
+                  backgroundColor: "rgba(75, 192, 192, 0.2)",
+                  borderColor: "rgba(75, 192, 192, 1)",
+                },
+              ],
+            }}
+            options={{
+              scales: {
+                x: {
+                  type: "category",
+                  display: true,
+                  grid: { display: false },
+                  ticks: {
+                    padding: 5,
+                    callback: function (value, index, values) {
+                      if (timeRange === "monthly") {
+                        return graphData.labels[index];
+                      }
+                      return value;
+                    },
+                    autoSkip: true,
+                    maxTicksLimit: 12,
+                    maxRotation: 0,
+                    minRotation: 0,
+                  },
+                },
+                y: {
+                  type: "linear",
+                  beginAtZero: true,
+                },
+              },
+            }}
+          />
+        )}
 
+      </div>
     </div>
   );
+
+
 };
 
 export default Insights;

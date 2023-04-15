@@ -54,5 +54,26 @@ export function getGreeting() {
   };
 
 
+  export const generateYears = (startYear, endYear) => {
+    const years = [];
+    for (let i = startYear; i <= endYear; i++) {
+      years.push(i);
+    }
+    return years;
+  };
+
+  // utils.js
+export const generateMonthLabels = (year) => {
+  const monthLabels = [];
+  for (let i = 0; i < 12; i++) {
+    const date = new Date(year, i, 1);
+    monthLabels.push(date.toLocaleString('en-US', { month: 'short' }));
+  }
+  return monthLabels;
+};
+
+  
+
+
   
   
