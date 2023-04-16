@@ -4,9 +4,13 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { Notification } from "../Notification/Notification";
 import { RuleSwitch } from "../UI/Switch/RuleSwitch";
-import Switch from "../UI/Switch/Switch";
 import classes from "./RulesTable.module.scss";
 // import Switch from '@mui/material/Switch';
+import { toast } from 'react-toastify';
+import 'font-awesome/css/font-awesome.min.css';
+
+
+
 
 
 const Circle = styled.div`
@@ -29,7 +33,7 @@ const ActionContainer = styled.div`
 `;
 
 const ActionTdStyled = styled.td`
-  width: 200px;
+  width: 130px;
 `;
 
 
@@ -38,22 +42,25 @@ const ActionTdStyled = styled.td`
 const SERVER_URL = 'http://localhost:3001/rules';
 
 const RulesTable = ({ rules }) => {
-  // console.log({SERVER_URL})
-  const deleteRule = (id) => {
-    const newRules = rules.filter(rule => rule.id!== id);
-    setCurrentRules(newRules);
-    console.log(id);
-    const response = axios.delete(`${SERVER_URL}/${id}`)
-    .then(res => {
-        console.log(res);
-      }).catch(err => {
-        console.log(err);
-      })
-
-  };
 
   const [currentRules, setCurrentRules] = useState(rules);
-  console.log({currentRules})
+  const [alertVisible, setAlertVisible] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+  // console.log({SERVER_URL})
+
+  const deleteRule = async (id) => {
+    try {
+      const response = await axios.delete(`${SERVER_URL}/${id}`);
+      if (response.status === 200) {
+        const newRules = rules.filter((rule) => rule.id !== id);
+        setCurrentRules(newRules);
+        toast.success("Rule has been deleted.");
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return (
     <>
       <table className={classes.RulesTable}>
@@ -65,14 +72,20 @@ const RulesTable = ({ rules }) => {
           </tr>
         </thead>
         <tbody>
-          {rules.map((rule, index) => (
+          {currentRules.map((rule, index) => (
             <tr key={index}>
-              <ActiveCellStyled><Circle color={rule.isActive ? 'green' : 'red'}/></ActiveCellStyled>
+              <ActiveCellStyled>
+                <Circle color={rule.isActive ? "green" : "red"} />
+              </ActiveCellStyled>
               <td>{rule.rule}</td>
               <ActionTdStyled>
                 <ActionContainer>
                   <RuleSwitch isActive={rule.isActive} id={rule.id} />
-                  <Button onClick={() => deleteRule(rule.id)} variant="outlined">DELETE</Button>
+                  <i
+                    className="fa fa-trash"
+                    onClick={() => deleteRule(rule.id)}
+                    style={{ cursor: 'pointer', color: 'red', fontSize: '30px', marginRight: '8px' }}
+                  ></i>
                 </ActionContainer>
               </ActionTdStyled>
             </tr>
@@ -80,9 +93,10 @@ const RulesTable = ({ rules }) => {
         </tbody>
       </table>
 
-      {/* <Notification /> */}
+      {alertVisible && <Notification message={alertMessage} />}
     </>
   );
+
 };
 
 export default RulesTable;
