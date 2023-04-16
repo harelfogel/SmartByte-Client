@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   BrowserRouter as Router,
   Route,
@@ -20,6 +20,7 @@ import { SuggestionsTable } from "./components/Suggestions/SuggestionsTable";
 import Insights from './containers/Insights/Insights';
 
 
+import { getSuggestions } from "./components/Suggestions/suggestions.service";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(
@@ -28,6 +29,16 @@ function App() {
   const [user, setUser] = useState(
     Cookies.get("user") ? JSON.parse(Cookies.get("user")) : null
   );
+  const [newSuggestionsCount, setNewSuggestionsCount] = useState(0);
+  useEffect(async () => {
+    const suggestions = await getSuggestions();
+    const newSuggestions = suggestions.filter(({ is_new }) => is_new);
+    setNewSuggestionsCount(newSuggestions.length);
+  }, []);
+
+  useEffect(() => {
+    console.log({ newSuggestionsCount });
+  }, [newSuggestionsCount]);
 
   const handleSignIn = (token, userData) => {
     setIsAuthenticated(true);
@@ -45,8 +56,15 @@ function App() {
   return (
     <>
       <Router>
-        <Header user={user} onLogout={handleLogout} />
-        <Notification />
+        <Header
+          user={user}
+          onLogout={handleLogout}
+          newSuggestionsCount={newSuggestionsCount}
+        />
+        <Notification
+          setNewSuggestionsCount={setNewSuggestionsCount}
+          newSuggestionsCount={newSuggestionsCount}
+        />
         <Routes>
           <Route
             path="/"
@@ -68,16 +86,22 @@ function App() {
               )
             }
           />
-          <Route path="/signup" element={<SignUp onSignUpSuccess={handleSignIn} />} />
+          <Route
+            path="/signup"
+            element={<SignUp onSignUpSuccess={handleSignIn} />}
+          />
           <Route
             path="/rooms-dashboard"
-            element={isAuthenticated ? <RoomsDashboard /> : <Navigate to="/login" />}
+            element={
+              isAuthenticated ? <RoomsDashboard /> : <Navigate to="/login" />
+            }
           >
             <Route
               path="room/:id"
-              element={isAuthenticated ? <RoomDevices /> : <Navigate to="/login" />}
+              element={
+                isAuthenticated ? <RoomDevices /> : <Navigate to="/login" />
+              }
             />
-
           </Route>
           <Route
             path="/location"
