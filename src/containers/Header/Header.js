@@ -10,8 +10,9 @@ import Navigation from "./../../components/Layout/Navigation/Navigation";
 import NavigationItem from "./../../components/Layout/Navigation/NavigationItem/NavigationItem";
 import classes from "./Header.module.scss";
 import { getGreeting } from '../../utils/utils';
+import { NewSuggestionsCount } from "../../components/Suggestions/NewSuggestionsCount";
 
-const Header = ({ toggleSideDrawer, user, onLogout }) => {
+const Header = ({ toggleSideDrawer, user, onLogout, newSuggestionsCount }) => {
   const firstName = user ? user.fullName.split(' ')[0] : '';
   const greeting = getGreeting();
   const location = useLocation();
@@ -56,7 +57,7 @@ const Header = ({ toggleSideDrawer, user, onLogout }) => {
               activeClassName={classes.ActiveNavLink}
               className={isCurrentPage('/suggestions') ? classes.ActiveNavLink : ''}
             >
-              Suggestions
+              Suggestions <NewSuggestionsCount value={newSuggestionsCount}/>
             </NavigationItem>
             <NavigationItem
               to="/insights"
