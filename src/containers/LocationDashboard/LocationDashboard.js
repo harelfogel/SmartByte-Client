@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import styles from './LocationDashboard.module.scss';
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
+import 'leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.webpack.css'; // Add this line
+import L from 'leaflet';
+import 'leaflet-defaulticon-compatibility';
 
 // const SERVER_URL = 'https://smartbytealpha.onrender.com';
 const SERVER_URL = 'http://localhost:3001'
@@ -34,7 +39,7 @@ const LocationDashboard = () => {
                     setDistance(response.data.distance);
                 }
 
-            }catch(err){
+            } catch (err) {
                 console.log(err)
             }
         };
@@ -44,11 +49,36 @@ const LocationDashboard = () => {
         <div className={styles.wrapper}>
             <h1 className={styles.headline}>Location</h1>
             <div className={styles.container}>
-                <p className={styles['location-info']}>latitude: {location.lat}</p>
-                <p className={styles['location-info']}>longitude: {location.lng}</p>
-                <p className={styles['location-info']}>accuracy: {location.accuracy}</p>
-                <p className={styles['location-info']}>distance: {distance}</p>
+                <div className={styles['info-container']}>
+                    <p className={styles["location-info"]}>Latitude: {location.lat}</p>
+                    <p className={styles["location-info"]}>Longitude: {location.lng}</p>
+                    <p className={styles["location-info"]}>Accuracy: {location.accuracy}</p>
+                    <p className={styles["location-info"]}>Distance: {distance}</p>
+                </div>
             </div>
+            {location.lat && location.lng && (
+                <div className={styles.map}>
+                    <MapContainer
+                        center={[location.lat, location.lng]}
+                        zoom={13}
+                        style={{ height: "100%", width: "100%" }}
+                    >
+                        <TileLayer
+                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                            attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                        />
+                        <Marker position={[location.lat, location.lng]}>
+                            <Popup>
+                                Current Location
+                                <br />
+                                Latitude: {location.lat}
+                                <br />
+                                Longitude: {location.lng}
+                            </Popup>
+                        </Marker>
+                    </MapContainer>
+                </div>
+            )}
         </div>
     );
 };
