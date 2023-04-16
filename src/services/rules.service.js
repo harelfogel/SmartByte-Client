@@ -9,3 +9,24 @@ export const fetchRules = async () => {
     return [];
   }
 };
+
+
+// export const onAddRuleClick = (rule) => {
+//   let url = `${process.env.REACT_APP_SERVER_URL}`;
+//   axios
+//     .post(`http://localhost:3001/rules`, { rule })
+//     .then((response) => {
+//       // setModalMessage("Rule is activated");
+//       // setShowModal(true);
+//       setOpenSuccessSnackbar(true);
+//       setErrorMessage("");
+//     })
+//     .catch((error) => {
+//       // setModalMessage("Error adding rule");
+//       // setShowModal(true);
+//       console.log(error.response.data);
+//       setErrorMessage(error.response.data);
+//       setOpenFailureSnackbar(true);
+//     });
+//   setRule("");
+// };

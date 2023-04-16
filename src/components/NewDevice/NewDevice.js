@@ -8,6 +8,7 @@ import { SnackBar } from '../Snackbar/SnackBar';
 import Switch from '../UI/Switch/Switch';
 
 
+
 const DeviceContainer = styled.div`
     width: 90%;
     height: auto;
@@ -21,7 +22,23 @@ const DeviceContainer = styled.div`
     padding: 0.1rem 2rem 0;
 `;
 
+const StyledSwitch = styled(Switch)`
+  && {
+    color: blue;
 
+    &:hover {
+      background-color: green;
+    }
+
+    &.Mui-checked {
+      color: blue;
+    }
+
+    &.Mui-checked:hover {
+      background-color: yellow;
+    }
+  }
+`;
 
 
 export const NewDevice = ({
@@ -66,6 +83,7 @@ export const NewDevice = ({
   return (
     <DeviceContainer>
         <h2>{name}</h2>
+        {/* <StyledSwitch checked={true} /> */}
         <Switch onChange={(e) => onDeviceChange(e)} checked={state} />
         {isAcDevice && <Temperature temperature={24} onChangeValue={(value) => onChangeTemperature(value)} />}
         {/* <Button onClick={() => setOpenFailureSnackbar(true)}>click</Button> */}

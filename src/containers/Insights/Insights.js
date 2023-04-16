@@ -82,7 +82,7 @@ const Insights = () => {
     try {
 
       let avgEnergy = 0;
-      const response = await axios.get('http://localhost:5000/graph-data', {
+      const response = await axios.get('http://127.0.0.1:5000/graph-data', {
         params: { device, time_range: timeRange, year },
       });
 
