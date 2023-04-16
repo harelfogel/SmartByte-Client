@@ -1,7 +1,7 @@
-import { Tooltip } from "@material-ui/core";
+import { Button, Tooltip } from "@material-ui/core";
 import React from "react";
 import { useState, useEffect } from "react";
-import { getSuggestions, updateSuggestions } from "./suggestions.service";
+import { addSuggestedRule, getSuggestions, onDeleteSuggestion, updateSuggestions } from "./suggestions.service";
 import styled from "styled-components";
 import { RuleCell } from "./RuleCell";
 import { generateRule } from "./suggestions.service";
@@ -33,6 +33,7 @@ export const SuggestionsTable = () => {
     }
   }, [suggestions]);
 
+  
   return (
     <TableContainer>
       <TitleStyled>Suggestions</TitleStyled>
@@ -46,7 +47,7 @@ export const SuggestionsTable = () => {
         </thead>
         <tbody>
           {suggestions.map((suggestion, idx) => {
-            // generateRule(suggestion);
+            const rule = generateRule(suggestion);
             const { is_new: isNew } = suggestion;
             return (
               <tr key={idx}>
@@ -61,12 +62,14 @@ export const SuggestionsTable = () => {
                   </DeviceCellContent>
                 </TdStyled>
                 <TdStyled>
-                  <Tooltip title={generateRule(suggestion)}>
-                    <RuleCell>{generateRule(suggestion)}</RuleCell>
+                  <Tooltip title={rule}>
+                    <RuleCell>{rule}</RuleCell>
                   </Tooltip>
                 </TdStyled>
                 <TdStyled>
-                  {Object.entries(suggestion.evidence).map((e) => `${e}, `)}
+                  {/* {Object.entries(suggestion.evidence).map((e) => `${e}, `)} */}
+                  <Button onClick={() => addSuggestedRule(rule)}>Add</Button>
+                  <Button onClick={() => onDeleteSuggestion(suggestion.id, suggestions, setSuggestions)} >Delete</Button>
                 </TdStyled>
               </tr>
             );

@@ -46,3 +46,24 @@ export const getSuggestions = async () => {
       console.log('Error updating suggestions:', error);
     }
   }
+
+  export const addSuggestedRule = async (rule) => {
+    try {
+      console.log('Adding rule');
+      const response = await axios.post(`${SERVER_URL}/rules`, {rule});
+
+    }catch(error){
+      console.log('Error Adding rule: ', error);
+    }
+  }
+
+  export const onDeleteSuggestion = async (id, suggestions, setSuggestions) => {
+    try{
+      console.log('Deleting suggestion');
+      await axios.delete(`${SERVER_URL}/suggestions/${id}`);
+      const filteredSuggestions = suggestions.filter(suggestion => suggestion.id !== id);
+      setSuggestions(filteredSuggestions);
+    }catch(error){
+      console.error('Error deleting suggestion: ' + error.message);
+    }
+  }
