@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { addSuggestedRule, getSuggestions, onDeleteSuggestion, updateSuggestions } from "./suggestions.service";
 import styled from "styled-components";
 import { RuleCell } from "./RuleCell";
-import { generateRule } from "./suggestions.service";
+//import { generateRule } from "./suggestions.service";
 import {
   DeviceCellContent,
   NewTag,
@@ -33,7 +33,7 @@ export const SuggestionsTable = () => {
     }
   }, [suggestions]);
 
-  
+
   return (
     <TableContainer>
       <TitleStyled>Suggestions</TitleStyled>
@@ -47,7 +47,7 @@ export const SuggestionsTable = () => {
         </thead>
         <tbody>
           {suggestions.map((suggestion, idx) => {
-            const rule = generateRule(suggestion);
+            const rule = suggestion.rule;
             const { is_new: isNew } = suggestion;
             return (
               <tr key={idx}>

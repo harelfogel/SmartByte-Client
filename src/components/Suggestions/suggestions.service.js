@@ -8,7 +8,6 @@ const temperatureMap = {
     3: 27,
     4: 35
 }
-
 export const generateRule = (suggestion) => {
     const { device, evidence, state } = suggestion;
     const isAcDevice = device.toLowerCase() === 'ac';
