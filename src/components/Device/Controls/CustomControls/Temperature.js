@@ -1,13 +1,14 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
-
+import { ModeControl } from './ModeControl';
+import axios from 'axios';
 
 
 const TemperatureContainer = styled.div`
     display: flex;
-    padding: 10px;
+    padding: 2rem;
+    transform: translateX(-3rem);
 `;
-
 const StyledButton = styled.div`
     width: 50px;
     height: 50px;
@@ -38,12 +39,27 @@ const TemperaturScreen = styled.div`
 
 // `;
 
-
+const SERVER_URL='http:localhost:3001';
 
 
 export const Temperature = ({temperature, onChangeValue}) => {
 
     const [value, setValue] = useState(temperature);
+    const [mode, setMode] = useState('cool');
+
+    const updateMode = async (newMode) => {
+        try {
+          const response = await axios.post(`${SERVER_URL}/sensibo/mode`, { mode: newMode });
+          console.log('Mode updated successfully:', response.data);
+        } catch (error) {
+          console.error('Error updating mode:', error);
+        }
+      };
+
+      const onModeChange = async (newMode) => {
+        setMode(newMode);
+        await updateMode(newMode);
+      };
 
     const onIncrease = () => {
         setValue(value + 1);
@@ -55,20 +71,19 @@ export const Temperature = ({temperature, onChangeValue}) => {
         onChangeValue(value - 1);
     }
 
+return (
+  <TemperatureContainer>
+    <StyledButton onClick={onDecrease}>
+      <p>-</p>
+    </StyledButton>
+    <TemperaturScreen>
+      <p>°{value}</p>
+    </TemperaturScreen>
+    <StyledButton onClick={onIncrease}>
+      <p>+</p>
+    </StyledButton>
+    <ModeControl mode={mode} onModeChange={onModeChange} />
+  </TemperatureContainer>
+);
 
-
-  return (
-    
-    <TemperatureContainer>
-        <StyledButton onClick={onDecrease}>
-            <p>-</p>
-        </StyledButton>
-        <TemperaturScreen>
-            <p>{value}</p>
-        </TemperaturScreen>
-        <StyledButton onClick={onIncrease}>
-            <p>+</p>
-        </StyledButton>
-    </TemperatureContainer>
-  )
 }
