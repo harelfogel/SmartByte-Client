@@ -5,6 +5,8 @@ import { addSuggestedRule, getSuggestions, onDeleteSuggestion, updateSuggestions
 import styled from "styled-components";
 import { RuleCell } from "./RuleCell";
 //import { generateRule } from "./suggestions.service";
+import 'font-awesome/css/font-awesome.min.css';
+
 import {
   DeviceCellContent,
   NewTag,
@@ -68,8 +70,18 @@ export const SuggestionsTable = () => {
                 </TdStyled>
                 <TdStyled>
                   {/* {Object.entries(suggestion.evidence).map((e) => `${e}, `)} */}
-                  <Button onClick={() => addSuggestedRule(rule)}>Add</Button>
-                  <Button onClick={() => onDeleteSuggestion(suggestion.id, suggestions, setSuggestions)} >Delete</Button>
+                  <button
+                    className="custom-button add-button"
+                    onClick={() => addSuggestedRule(rule)}
+                  >
+                    <i className="fa fa-plus" aria-hidden="true"></i> Add
+                  </button>
+                  <button
+                    className="custom-button delete-button"
+                    onClick={() => onDeleteSuggestion(suggestion.id, suggestions, setSuggestions)}
+                  >
+                    <i className="fa fa-trash" aria-hidden="true"></i> Delete
+                  </button>
                 </TdStyled>
               </tr>
             );

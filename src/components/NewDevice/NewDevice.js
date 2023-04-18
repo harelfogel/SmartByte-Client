@@ -6,6 +6,7 @@ import styled from 'styled-components'
 import { Temperature } from '../Device/Controls/CustomControls/Temperature';
 import { SnackBar } from '../Snackbar/SnackBar';
 import Switch from '../UI/Switch/Switch';
+import ModeControl from "../Device/Controls/Mode/ModeControl";
 
 
 
@@ -57,6 +58,27 @@ export const NewDevice = ({
     const isHeaterDevice = name === 'heater';
     const isLaundryDevice = name === 'laundry';
 
+    const onUpdateModeValueHandler = (controlId, updatedMode) => {
+      // Update the AC mode by sending a request to your Node.js server.
+      // Replace this with the actual API call to your server.
+      console.log(`Updated mode for device ${controlId}: ${updatedMode}`);
+    };
+
+
+    const renderModeControl = () => {
+      if (isAcDevice) {
+        return (
+          <ModeControl
+            controlId={device.id}
+            name={device.name}
+            value={device.mode}
+            onUpdateValue={onUpdateModeValueHandler}
+            options={device.modes}
+          />
+        );
+      }
+    };
+
     const onDeviceChange = async (e) => {
         const newState = e.target.checked;
         setState(newState);
@@ -80,29 +102,28 @@ export const NewDevice = ({
         setOpenSuccessSnackbar(false);
     }
 
-  return (
-    <DeviceContainer>
+    return (
+      <DeviceContainer>
         <h2>{name}</h2>
-        {/* <StyledSwitch checked={true} /> */}
         <Switch onChange={(e) => onDeviceChange(e)} checked={state} />
         {isAcDevice && <Temperature temperature={24} onChangeValue={(value) => onChangeTemperature(value)} />}
-        {/* <Button onClick={() => setOpenFailureSnackbar(true)}>click</Button> */}
-        {openSeccessSnackBar && 
-        <SnackBar 
-            message={`${device.name.toUpperCase()} is now ${state? 'ON' : 'OFF'}`}
-            isOpen={true} 
-            handleCloseSnackBar={handleCloseSnackBar} 
-            color='green' 
-        />
-        }
-        {openFailureSnackBar && 
-        <SnackBar 
-            message={`Unable to turn ${state? 'ON' : 'OFF'} ${device.name.toUpperCase()}`}
-            isOpen={true} 
-            handleCloseSnackBar={handleCloseSnackBar} 
-            color='red' 
-        />
-        }
-    </DeviceContainer>
-  )
+        {renderModeControl()}
+        {openSeccessSnackBar && (
+          <SnackBar
+            message={`${device.name.toUpperCase()} is now ${state ? "ON" : "OFF"}`}
+            isOpen={true}
+            handleCloseSnackBar={handleCloseSnackBar}
+            color="green"
+          />
+        )}
+        {openFailureSnackBar && (
+          <SnackBar
+            message={`Unable to turn ${state ? "ON" : "OFF"} ${device.name.toUpperCase()}`}
+            isOpen={true}
+            handleCloseSnackBar={handleCloseSnackBar}
+            color="red"
+          />
+        )}
+      </DeviceContainer>
+    );    
 }
