@@ -34,7 +34,6 @@ export const SnackBar = ({
         setOpen(false);
         handleCloseSnackBar();
       };
-      console.log("SNACKBAR")
 
   return (
     <>

@@ -1,7 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFan, faFire, faSnowflake } from '@fortawesome/free-solid-svg-icons';
+import { faFan, faFire, faSnowflake, faTint, faMagic } from '@fortawesome/free-solid-svg-icons';
+import { Tooltip } from "@material-ui/core";
+import { makeStyles } from '@material-ui/core/styles';
 
 const ModeButton = styled.button`
   margin: 0 5px;
@@ -22,23 +24,36 @@ const ModeContainer = styled.div`
   margin: 10px;
 `;
 
+const useStyles = makeStyles((theme) => ({
+  tooltip: {
+    backgroundColor: '#333',
+    color: '#fff',
+    fontSize: '14px',
+    padding: '8px',
+  },
+}));
+
 export const ModeControl = ({ mode, onModeChange }) => {
+  const classes = useStyles();
   const modes = [
-    { id: 'cool', icon: faSnowflake, color: 'blue' },
-    { id: 'heat', icon: faFire, color: 'red' },
-    { id: 'fan', icon: faFan, color: 'black' },
+    { id: 'cool', icon: faSnowflake, color: 'blue', tooltip: 'Cool' },
+    { id: 'heat', icon: faFire, color: 'red', tooltip: 'Heat' },
+    { id: 'fan', icon: faFan, color: 'black', tooltip: 'Fan' },
+    { id: 'dry', icon: faTint, color: 'purple', tooltip: 'Dry' },
+    { id: 'automatic', icon: faMagic, color: 'green', tooltip: 'Automatic' },
   ];
 
   return (
     <ModeContainer>
-      {modes.map(({ id, icon, color }) => (
-        <ModeButton
-          key={id}
-          color={mode === id ? color : 'grey'}
-          onClick={() => onModeChange(id)}
-        >
-          <FontAwesomeIcon icon={icon} size="2x" />
-        </ModeButton>
+      {modes.map(({ id, icon, color, tooltip }) => (
+        <Tooltip title={tooltip} classes={{ tooltip: classes.tooltip }} key={id}>
+          <ModeButton
+            color={mode === id ? color : 'grey'}
+            onClick={() => onModeChange(id)}
+          >
+            <FontAwesomeIcon icon={icon} size="3x" />
+          </ModeButton>
+        </Tooltip>
       ))}
     </ModeContainer>
   );
