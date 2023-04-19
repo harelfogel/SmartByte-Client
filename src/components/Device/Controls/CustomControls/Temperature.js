@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState,useEffect } from 'react'
 import styled from 'styled-components'
 import { ModeControl } from './ModeControl';
 import axios from 'axios';
@@ -39,51 +39,72 @@ const TemperaturScreen = styled.div`
 
 // `;
 
-const SERVER_URL='http:localhost:3001';
+const SERVER_URL='http://localhost:3001';
 
 
 export const Temperature = ({temperature, onChangeValue}) => {
+  const [value, setValue] = useState(temperature);
+  const [mode, setMode] = useState('cool');
+  const [loading, setLoading] = useState(true);
 
-    const [value, setValue] = useState(temperature);
-    const [mode, setMode] = useState('cool');
+  const fetchCurrentMode = async () => {
+      try {
+          const response = await axios.get(`${SERVER_URL}/sensibo`);
+          console.log({response})
+          const currentMode = response.data.state.mode;
+          setMode(currentMode);
+          setLoading(false);
+      } catch (error) {
+          console.error('Error fetching current mode:', error);
+          setLoading(false);
+      }
+  };
 
-    const updateMode = async (newMode) => {
-        try {
-          const response = await axios.post(`${SERVER_URL}/sensibo/mode`, { mode: newMode });
+  useEffect(() => {
+      fetchCurrentMode();
+  }, []);
+
+  const updateMode = async (newMode) => {
+      try {
+          const deviceId = '9EimtVDZ'; 
+          const response = await axios.post(`${SERVER_URL}/sensibo/mode`, { deviceId, mode: newMode });
           console.log('Mode updated successfully:', response.data);
-        } catch (error) {
+      } catch (error) {
           console.error('Error updating mode:', error);
-        }
-      };
+      }
+  };
 
-      const onModeChange = async (newMode) => {
-        setMode(newMode);
-        await updateMode(newMode);
-      };
+  const onModeChange = async (newMode) => {
+      setMode(newMode);
+      await updateMode(newMode);
+  };
 
-    const onIncrease = () => {
-        setValue(value + 1);
-        onChangeValue(value + 1);
+  const onIncrease = () => {
+      setValue(value + 1);
+      onChangeValue(value + 1);
+  };
 
-    }
-    const onDecrease = () => {
-        setValue(value - 1);
-        onChangeValue(value - 1);
-    }
+  const onDecrease = () => {
+      setValue(value - 1);
+      onChangeValue(value - 1);
+  };
 
-return (
-  <TemperatureContainer>
-    <StyledButton onClick={onDecrease}>
-      <p>-</p>
-    </StyledButton>
-    <TemperaturScreen>
-      <p>°{value}</p>
-    </TemperaturScreen>
-    <StyledButton onClick={onIncrease}>
-      <p>+</p>
-    </StyledButton>
-    <ModeControl mode={mode} onModeChange={onModeChange} />
-  </TemperatureContainer>
-);
-
+  return (
+      <TemperatureContainer>
+          <StyledButton onClick={onDecrease}>
+              <p>-</p>
+          </StyledButton>
+          <TemperaturScreen>
+              <p>°{value}</p>
+          </TemperaturScreen>
+          <StyledButton onClick={onIncrease}>
+              <p>+</p>
+          </StyledButton>
+          {loading ? (
+              <p>Loading mode...</p>
+          ) : (
+              <ModeControl mode={mode} onModeChange={onModeChange} />
+          )}
+      </TemperatureContainer>
+  );
 }

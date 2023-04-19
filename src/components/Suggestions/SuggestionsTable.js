@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { addSuggestedRule, getSuggestions, onDeleteSuggestion, updateSuggestions } from "./suggestions.service";
 import styled from "styled-components";
 import { RuleCell } from "./RuleCell";
+
 //import { generateRule } from "./suggestions.service";
 import 'font-awesome/css/font-awesome.min.css';
 
