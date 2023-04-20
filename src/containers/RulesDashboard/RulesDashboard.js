@@ -12,6 +12,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { NavLink } from "react-router-dom";
 import { SnackBar } from "../../components/Snackbar/SnackBar";
 import styled from "styled-components";
+import { faSearch } from "@fortawesome/free-solid-svg-icons";
+
 
 const ErrorMessage = styled.p`
   color: red;
@@ -27,10 +29,19 @@ const RulesDashboard = ({ addRule }) => {
   const [openSeccessSnackBar, setOpenSuccessSnackbar] = useState(false);
   const [openFailureSnackBar, setOpenFailureSnackbar] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [search, setSearch] = useState("");
+  const [filteredRules, setFilteredRules] = useState([]);
+  const [selectedRule, setSelectedRule] = useState(null);
+  const [showFilteredRules, setShowFilteredRules] = useState(false);
+
+
+
+
 
   useEffect(() => {
     const fetchAllRules = async () => {
       const fetchedRules = await fetchRules();
+      console.log({ fetchedRules });
       setRules(fetchedRules);
     };
 
@@ -61,6 +72,22 @@ const RulesDashboard = ({ addRule }) => {
     setRule("");
   };
 
+  const onSearchInputChange = (event) => {
+    setSearch(event.target.value);
+    if (event.target.value) {
+      setShowFilteredRules(true);
+      const filtered = rules.filter((rule) =>
+        rule.rule.toLowerCase().includes(event.target.value.toLowerCase())
+      );
+      setFilteredRules(filtered);
+    } else {
+      setShowFilteredRules(false);
+      setFilteredRules([]);
+    }
+  };
+
+  
+
   const onShowRulesClick = async () => {
     const fetchedRules = await fetchRules();
     setRules(fetchedRules);
@@ -76,10 +103,43 @@ const RulesDashboard = ({ addRule }) => {
     setShowModal(false);
   };
 
+  const handleRuleClick = (ruleId) => {
+    setSelectedRule(ruleId);
+    setTimeout(() => setSelectedRule(null), 5000);
+  };
+
   const handleCloseSnackBar = () => {
     setOpenSuccessSnackbar(false);
     setOpenFailureSnackbar(false);
   };
+
+  const FilteredRules = ({ rules, onRuleClick, selectedRule }) => {
+    const onRuleClickWrapper = (ruleId) => {
+      onRuleClick(ruleId);
+      setSearch("");
+      setFilteredRules([]); // Clear the filtered rules
+      setShowFilteredRules(false); // Hide the filtered rules
+    };
+
+    return (
+      <div className={classes.FilteredRules}>
+        {rules.map((rule) => (
+          <div
+            key={rule.id}
+            className={`${classes.FilteredRule} ${
+              rule.id === selectedRule ? classes.selected : ""
+            }`}
+            onClick={() => onRuleClickWrapper(rule.id)}
+          >
+            {rule.rule}
+          </div>
+        ))}
+      </div>
+    );
+  };
+
+  
+  
 
   return (
     <div className={classes.RulesDashboard}>
@@ -111,7 +171,26 @@ const RulesDashboard = ({ addRule }) => {
           </button>
         </div>
       ) : showTable ? (
-        <RulesTable rules={rules} />
+        <>
+          <div className={classes.SearchContainer}>
+            <input
+              type="text"
+              value={search}
+              onChange={onSearchInputChange}
+              placeholder="Search for a rule..."
+              className={classes.SearchInput}
+            />
+            <FontAwesomeIcon icon={faSearch} className={classes.SearchIcon} />
+            {filteredRules.length > 0 && (
+            <FilteredRules rules={filteredRules} onRuleClick={handleRuleClick} selectedRule={selectedRule} />
+          )}
+          </div>
+          <RulesTable
+          rules={rules.filter((rule) => rule.rule.toLowerCase().includes(search.toLowerCase()))}
+          onRuleClick={handleRuleClick}
+          selectedRule={selectedRule}
+        />
+        </>
       ) : (
         <>
           <h3 className={classes.RulesDashboardHeader}>Add Rule</h3>

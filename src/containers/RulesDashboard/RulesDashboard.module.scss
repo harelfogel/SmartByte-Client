@@ -53,10 +53,13 @@
   border: none;
   cursor: pointer;
   display: flex;
-  align-items: center;
+  position: absolute; 
+  left: 2rem; 
+  top: 6rem; 
+  justify-content: end;
   font-size: 0.8rem;
   color: #000;
-  margin-bottom: 1rem;
+  margin-bottom: 2rem;
   padding: 0;
 
   span {
@@ -64,3 +67,51 @@
     font-weight: bold;
   }
 }
+
+.SearchContainer {
+  position: relative;
+  width: 20%;
+  margin-bottom: 1rem;
+}
+
+.SearchInput {
+  border: 1px solid #ccc;
+  border-radius: 0.4rem;
+  padding: 0.5rem 3.5rem 0.5rem 0.5rem;
+  width: 100%;
+  text-align: left; // Add this line to align the text to the left
+}
+
+.SearchIcon {
+  position: absolute;
+  left: 22rem;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+
+.FilteredRules {
+  position: absolute;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 0.4rem;
+  padding: 0.5rem;
+  width: 100%;
+  top: 100%;
+  left: 0;
+  z-index: 100;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.FilteredRule {
+  padding: 0.5rem;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #f1f1f1;
+  }
+}
+
+
+

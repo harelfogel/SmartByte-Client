@@ -41,7 +41,7 @@ const ActionTdStyled = styled.td`
 
 const SERVER_URL = 'http://localhost:3001/rules';
 
-const RulesTable = ({ rules }) => {
+const RulesTable = ({ rules, onRuleClick, selectedRule }) => {
 
   const [currentRules, setCurrentRules] = useState(rules);
   const [alertVisible, setAlertVisible] = useState(false);
@@ -73,7 +73,9 @@ const RulesTable = ({ rules }) => {
         </thead>
         <tbody>
           {currentRules.map((rule, index) => (
-            <tr key={index}>
+            <tr key={index} className={rule.id === selectedRule ? classes.selected : ""}
+              onClick={() => onRuleClick(rule.id)}
+            >
               <ActiveCellStyled>
                 <Circle color={rule.isActive ? "green" : "red"} />
               </ActiveCellStyled>
