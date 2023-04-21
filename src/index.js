@@ -12,6 +12,7 @@ import * as serviceWorker from "./serviceWorker";
 import fontawesomeIcons from "./utils/fontawesome.icons";
 import App from "./App";
 import "./styles/style.scss";
+import { BrowserRouter } from "react-router-dom";
 
 /**
  * Supported Fontawesome Icons for Offline usage
@@ -36,15 +37,14 @@ const rootReduce = combineReducers({
 const store = createStore(rootReduce, composeEnhancers(applyMiddleware(thunk)));
 
 ReactDOM.render(
-  <Provider store={store}>
-    <App />
-  </Provider>,
-  document.getElementById('root')
+  <BrowserRouter>
+    <Provider store={store}>
+      <App />
+    </Provider>
+  </BrowserRouter>,
+  document.getElementById("root")
 );
 
 serviceWorker.unregister();
-
-
-
 
 export default App;

@@ -4,6 +4,7 @@ import {
   Route,
   Routes,
   Navigate,
+  useLocation,
 } from "react-router-dom";
 import "./App.module.scss";
 import RoomsDashboard from "./containers/RoomsDashboard/RoomsDashboard";
@@ -17,8 +18,7 @@ import Cookies from "js-cookie";
 import RoomDevices from "./containers/RoomsDashboard/RoomDevices/RoomDevices";
 import { Notification } from "./components/Notification/Notification";
 import { SuggestionsTable } from "./components/Suggestions/SuggestionsTable";
-import Insights from './containers/Insights/Insights';
-
+import Insights from "./containers/Insights/Insights";
 
 import { getSuggestions } from "./components/Suggestions/suggestions.service";
 
@@ -30,10 +30,13 @@ function App() {
     Cookies.get("user") ? JSON.parse(Cookies.get("user")) : null
   );
   const [newSuggestionsCount, setNewSuggestionsCount] = useState(0);
-  useEffect(async () => {
-    const suggestions = await getSuggestions();
-    const newSuggestions = suggestions.filter(({ is_new }) => is_new);
-    setNewSuggestionsCount(newSuggestions.length);
+  useEffect(() => {
+    (async () => {
+      const suggestions = await getSuggestions();
+      const newSuggestions = suggestions.filter(({ is_new }) => is_new);
+      console.log({suggestions,newSuggestions})
+      setNewSuggestionsCount(newSuggestions.length);
+    })()
   }, []);
 
   useEffect(() => {
@@ -55,84 +58,89 @@ function App() {
 
   return (
     <>
-      <Router>
-        <Header
-          user={user}
-          onLogout={handleLogout}
-          newSuggestionsCount={newSuggestionsCount}
+      {/* <Router> */}
+      <Header
+        user={user}
+        onLogout={handleLogout}
+        newSuggestionsCount={newSuggestionsCount}
+      />
+      <Notification
+        setNewSuggestionsCount={setNewSuggestionsCount}
+        newSuggestionsCount={newSuggestionsCount}
+      />
+      <Routes>
+        <Route
+          path="/"
+          element={
+            isAuthenticated ? (
+              <Navigate to="/rooms-dashboard" replace />
+            ) : (
+              <WelcomeDashboard />
+            )
+          }
         />
-        <Notification
-          setNewSuggestionsCount={setNewSuggestionsCount}
-          newSuggestionsCount={newSuggestionsCount}
+        <Route
+          path="/login"
+          element={
+            isAuthenticated ? (
+              <Navigate to="/rooms-dashboard" replace />
+            ) : (
+              <SignIn onSignInSuccess={handleSignIn} />
+            )
+          }
         />
-        <Routes>
+        <Route
+          path="/signup"
+          element={<SignUp onSignUpSuccess={handleSignIn} />}
+        />
+        <Route
+          path="/rooms-dashboard"
+          element={
+            isAuthenticated ? <RoomsDashboard /> : <Navigate to="/login" />
+          }
+        >
           <Route
-            path="/"
-            element={
-              isAuthenticated ? (
-                <Navigate to="/rooms-dashboard" replace />
-              ) : (
-                <WelcomeDashboard />
-              )
-            }
-          />
-          <Route
-            path="/login"
-            element={
-              isAuthenticated ? (
-                <Navigate to="/rooms-dashboard" replace />
-              ) : (
-                <SignIn onSignInSuccess={handleSignIn} />
-              )
-            }
-          />
-          <Route
-            path="/signup"
-            element={<SignUp onSignUpSuccess={handleSignIn} />}
-          />
-          <Route
-            path="/rooms-dashboard"
-            element={
-              isAuthenticated ? <RoomsDashboard /> : <Navigate to="/login" />
-            }
-          >
-            <Route
-              path="room/:id"
-              element={
-                isAuthenticated ? <RoomDevices /> : <Navigate to="/login" />
-              }
-            />
-          </Route>
-          <Route
-            path="/location"
-            element={
-              isAuthenticated ? <LocationDashboard /> : <Navigate to="/login" />
-            }
-          />
-          <Route
-            path="/rules"
-            element={
-              isAuthenticated ? <RulesDashboard /> : <Navigate to="/login" />
-            }
-          />
-          <Route
-            path="/room/:id"
+            path="room/:id"
             element={
               isAuthenticated ? <RoomDevices /> : <Navigate to="/login" />
             }
           />
-          <Route
-            path="/suggestions"
-            element={
-              isAuthenticated ? <SuggestionsTable /> : <Navigate to="/login" />
-            }
-          />
-          <Route
-            path="/insights"
-            element={isAuthenticated ? <Insights /> : <Navigate to="/login" />}
-          />
-        </Routes>
-      </Router>
+        </Route>
+        <Route
+          path="/location"
+          element={
+            isAuthenticated ? <LocationDashboard /> : <Navigate to="/login" />
+          }
+        />
+        <Route
+          path="/rules"
+          element={
+            isAuthenticated ? <RulesDashboard /> : <Navigate to="/login" />
+          }
+        />
+        <Route
+          path="/room/:id"
+          element={isAuthenticated ? <RoomDevices /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="/suggestions"
+          element={
+            isAuthenticated ? (
+              <SuggestionsTable
+                setNewSuggestionsCount={setNewSuggestionsCount}
+                newSuggestionsCount={newSuggestionsCount}
+              />
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
+        />
+        <Route
+          path="/insights"
+          element={isAuthenticated ? <Insights /> : <Navigate to="/login" />}
+        />
+      </Routes>
+      {/* </Router> */}
     </>
   );
 }

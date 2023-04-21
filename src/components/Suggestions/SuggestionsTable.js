@@ -19,7 +19,9 @@ import {
   TitleStyled,
 } from "./suggestions.styles";
 
-export const SuggestionsTable = () => {
+
+
+export const SuggestionsTable = ({newSuggestionsCount,setNewSuggestionsCount }) => {
   const [suggestions, setSuggestions] = useState([]);
 
   useEffect(() => {
@@ -31,6 +33,7 @@ export const SuggestionsTable = () => {
   }, []);
 
   useEffect(() => {
+    setNewSuggestionsCount(0);
     if (suggestions) {
       updateSuggestions();
     }
@@ -70,7 +73,6 @@ export const SuggestionsTable = () => {
                   </Tooltip>
                 </TdStyled>
                 <TdStyled>
-                  {/* {Object.entries(suggestion.evidence).map((e) => `${e}, `)} */}
                   <button
                     className="custom-button add-button"
                     onClick={() => addSuggestedRule(rule)}
