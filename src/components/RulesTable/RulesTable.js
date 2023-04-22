@@ -11,53 +11,14 @@ import "font-awesome/css/font-awesome.min.css";
 import { updateRule } from "../../services/rules.service";
 import { SnackBar } from "../Snackbar/SnackBar";
 import EditIcon from "@material-ui/icons/Edit";
+import {
+  TableStyled,
+  ThStyled,
+  TitleStyled,
+  TableContainer
+} from "../Suggestions/suggestions.styles";
+import { ActionContainer, ActionTdStyled, ActiveCellStyled, Circle, RuleCell, RuleInput, RuleText, TrStyled } from "./rules.styles";
 
-const Circle = styled.div`
-  width: 20px;
-  height: 20px;
-  background-color: ${(props) => props.color};
-  border-radius: 50%;
-  margin: 0 auto;
-`;
-
-const ActiveCellStyled = styled.td`
-  width: 3px;
-  align-items: center;
-  justify-content: center;
-`;
-
-const ActionContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
-`;
-
-const ActionTdStyled = styled.td`
-  width: 130px;
-`;
-
-const RuleCell = styled.td`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-`;
-
-const RuleInput = styled.input`
-  display: ${(props) => (props.editing ? "block" : "none")};
-  width: 80%;
-  height: 30px;
-  border-radius: 30px;
-  border-style: solid;
-  // border-width: 0.9px
-  padding-left: 30px;
-  // border-color: gray;
-  // position: absolute;
-  // top: 0;
-  // left: 0;
-`;
-
-const RuleText = styled.div`
-  display: ${(props) => (props.editing ? "none" : "block")};
-`;
 
 // const label = { inputProps: { 'aria-label': 'Switch demo' } };
 
@@ -78,9 +39,6 @@ const RulesTable = ({ rules, onRuleClick, selectedRule }) => {
     setOpenFailureSnackbar(false);
   };
 
-  useEffect(() => {
-    console.log({ currentRules });
-  }, [currentRules]);
 
   const deleteRule = async (id) => {
     try {
@@ -96,21 +54,22 @@ const RulesTable = ({ rules, onRuleClick, selectedRule }) => {
   };
 
   return (
-    <>
-      <table className={classes.RulesTable}>
+    <TableContainer>
+      <TitleStyled>Rules</TitleStyled>
+      <TableStyled className={classes.RulesTable}>
         <thead>
-          <tr>
-            <th>Active</th>
-            <th>Rule</th>
-            <th>Action</th>
-          </tr>
+          <TrStyled>
+            <ThStyled>Active</ThStyled>
+            <ThStyled>Rule</ThStyled>
+            <ThStyled>Action</ThStyled>
+          </TrStyled>
         </thead>
         <tbody>
           {currentRules.map((rule, index) => (
-            <tr
+            <TrStyled
               key={index}
               className={rule.id === selectedRule ? classes.selected : ""}
-              onClick={() => onRuleClick(rule.id)}
+              // onClick={() => onRuleClick(rule.id)}
             >
               <ActiveCellStyled>
                 <Circle color={rule.isActive ? "green" : "red"} />
@@ -146,7 +105,7 @@ const RulesTable = ({ rules, onRuleClick, selectedRule }) => {
               </RuleCell>
               <ActionTdStyled>
                 <ActionContainer>
-                  <RuleSwitch isActive={rule.isActive} id={rule.id} />
+                  <RuleSwitch isActive={rule.isActive} id={rule.id} currentRules={currentRules} setCurrentRules={setCurrentRules} />
                   <i
                     className="fa fa-trash"
                     onClick={() => deleteRule(rule.id)}
@@ -159,10 +118,10 @@ const RulesTable = ({ rules, onRuleClick, selectedRule }) => {
                   ></i>
                 </ActionContainer>
               </ActionTdStyled>
-            </tr>
+            </TrStyled>
           ))}
         </tbody>
-      </table>
+      </TableStyled>
 
       {openSeccessSnackBar && (
         <SnackBar
@@ -182,7 +141,7 @@ const RulesTable = ({ rules, onRuleClick, selectedRule }) => {
       )}
 
       {alertVisible && <Notification message={alertMessage} />}
-    </>
+    </TableContainer>
   );
 };
 
