@@ -15,6 +15,7 @@ import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import { toggleAcState } from "../../../services/ac.service";
 import { NewDevice } from "../../../components/NewDevice/NewDevice";
+const SERVER_URL = 'http://localhost:3001';
 
 const DEVICED_IDS = {
   AC: '9EimtVDZ',
@@ -22,19 +23,36 @@ const DEVICED_IDS = {
   HEATER: '061751378caab5219d31'
 }
 
-const SERVER_URL = 'http://localhost:3001';
+const laundryToggle = async (newState, deviceId) => {
+  try {
+    const response = await axios.post(`${SERVER_URL}/smartthings/toggle`, { state: newState, deviceId: deviceId });
+    return response.data;
+  } catch (error) {
+    console.error(error);
+  }
+};
 
-const laundryToggle = async () => {
-  console.log('laundry toggled')
+
+const toggleHeater = async (value) => {
+  try {
+    const response = await axios.post(`${SERVER_URL}/heater`, { value });
+    return response;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+const heaterToggle = async (newHeaterState) => {
+  console.log('heater toggled');
+  return await toggleHeater(newHeaterState);
 }
-const heaterToggle = async () => {
-  console.log('heater toggled')
-}
+
 const IDS_TOGGLES_MAP = {
   [DEVICED_IDS.AC]: toggleAcState,
-  [DEVICED_IDS.LAUNDRY]: laundryToggle,
-  [DEVICED_IDS.HEATER]: heaterToggle
-}
+  [DEVICED_IDS.LAUNDRY]: (newState, deviceId) => laundryToggle(newState, deviceId),
+  [DEVICED_IDS.HEATER]: (newState) => heaterToggle(newState),
+};
+
 const RoomDevices = ({
   fetchRoomDevices,
 }) => {

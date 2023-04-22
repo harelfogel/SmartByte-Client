@@ -24,7 +24,7 @@ import { ActionContainer, ActionTdStyled, ActiveCellStyled, Circle, RuleCell, Ru
 
 const SERVER_URL = "http://localhost:3001/rules";
 
-const RulesTable = ({ rules, onRuleClick, selectedRule }) => {
+const RulesTable = ({ rules, onRuleClick, selectedRule,searchText  }) => {
   const [currentRules, setCurrentRules] = useState(rules);
   const [alertVisible, setAlertVisible] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
@@ -37,6 +37,10 @@ const RulesTable = ({ rules, onRuleClick, selectedRule }) => {
   const handleCloseSnackBar = () => {
     setOpenSuccessSnackbar(false);
     setOpenFailureSnackbar(false);
+  };
+
+  const isSearched = (rule) => {
+    return rule.rule.toLowerCase().includes(searchText.toLowerCase());
   };
 
 
@@ -67,9 +71,11 @@ const RulesTable = ({ rules, onRuleClick, selectedRule }) => {
         <tbody>
           {currentRules.map((rule, index) => (
             <TrStyled
-              key={index}
-              className={rule.id === selectedRule ? classes.selected : ""}
-              // onClick={() => onRuleClick(rule.id)}
+              key={rule.id}
+              onClick={() => onRuleClick(rule.id)}
+              isSelected={rule.id === selectedRule}
+              isSearched={isSearched(rule)}
+              classes={classes}
             >
               <ActiveCellStyled>
                 <Circle color={rule.isActive ? "green" : "red"} />
@@ -97,7 +103,6 @@ const RulesTable = ({ rules, onRuleClick, selectedRule }) => {
                     }
                   }}
                 />
-                {/* <Button onClick={() => setEditedRule(rule.id)}>update</Button> */}
                 <EditIcon
                   style={{ cursor: "pointer" }}
                   onClick={() => setEditedRule(rule.id)}
@@ -122,7 +127,7 @@ const RulesTable = ({ rules, onRuleClick, selectedRule }) => {
           ))}
         </tbody>
       </TableStyled>
-
+  
       {openSeccessSnackBar && (
         <SnackBar
           message={`Rule updated successfully`}
@@ -139,10 +144,10 @@ const RulesTable = ({ rules, onRuleClick, selectedRule }) => {
           color="red"
         />
       )}
-
+  
       {alertVisible && <Notification message={alertMessage} />}
     </TableContainer>
-  );
+  );  
 };
 
 export default RulesTable;

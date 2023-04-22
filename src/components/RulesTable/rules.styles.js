@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled,{css} from "styled-components";
 
 export const Circle = styled.div`
   width: 20px;
@@ -39,6 +39,14 @@ export const RuleCell = styled.td`
 export const TrStyled = styled.tr`
   border-bottom: 1px solid #ccc;
   height: 30px;
+  ${({ isSelected, isSearched, classes }) => {
+    return isSelected ? css`
+      background-color: ${classes.selected};
+      color: lightgrey;
+    ` : isSearched ? css`
+      background-color: ${classes.searched};
+    ` : '';
+  }}
 `;
 
 export const RuleInput = styled.input`
