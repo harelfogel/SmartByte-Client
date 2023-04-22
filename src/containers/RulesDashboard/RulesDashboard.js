@@ -189,6 +189,7 @@ const RulesDashboard = ({ addRule }) => {
           rules={rules.filter((rule) => rule.rule.toLowerCase().includes(search.toLowerCase()))}
           onRuleClick={handleRuleClick}
           selectedRule={selectedRule}
+          searchText={search}
         />
         </>
       ) : (

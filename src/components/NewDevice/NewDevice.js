@@ -80,19 +80,17 @@ export const NewDevice = ({
     };
 
     const onDeviceChange = async (e) => {
-        const newState = e.target.checked;
-        setState(newState);
-        const response = await onToggleDeviceSwitch({
-            state: newState,
-            temperature
-        });
-        if(response.statusCode === 200){
-            setOpenSuccessSnackbar(true);
-        }
-        else{
-            setOpenFailureSnackbar(true);
-        }
-    }
+      const newState = e.target.checked;
+      setState(newState);
+      const response = await onToggleDeviceSwitch(newState);
+      console.log(response);
+      if (response.statusCode === 200) {
+        setOpenSuccessSnackbar(true);
+      } else {
+        setOpenFailureSnackbar(true);
+      }
+    };
+    
 
     const onChangeTemperature = (value) => {
         setTemperature(value);
