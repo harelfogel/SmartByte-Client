@@ -1,12 +1,17 @@
 import { Button, Tooltip } from "@material-ui/core";
 import React from "react";
 import { useState, useEffect } from "react";
-import { addSuggestedRule, getSuggestions, onDeleteSuggestion, updateSuggestions } from "./suggestions.service";
+import {
+  addSuggestedRule,
+  getSuggestions,
+  onDeleteSuggestion,
+  updateSuggestions,
+} from "./suggestions.service";
 import styled from "styled-components";
 import { RuleCell } from "./RuleCell";
 
 //import { generateRule } from "./suggestions.service";
-import 'font-awesome/css/font-awesome.min.css';
+import "font-awesome/css/font-awesome.min.css";
 
 import {
   DeviceCellContent,
@@ -19,9 +24,9 @@ import {
   TitleStyled,
 } from "./suggestions.styles";
 
-
-
-export const SuggestionsTable = ({newSuggestionsCount,setNewSuggestionsCount }) => {
+export const SuggestionsTable = ({
+  setNewSuggestionsCount
+}) => {
   const [suggestions, setSuggestions] = useState([]);
 
   useEffect(() => {
@@ -38,7 +43,6 @@ export const SuggestionsTable = ({newSuggestionsCount,setNewSuggestionsCount }) 
       updateSuggestions();
     }
   }, [suggestions]);
-
 
   return (
     <TableContainer>
@@ -81,7 +85,13 @@ export const SuggestionsTable = ({newSuggestionsCount,setNewSuggestionsCount }) 
                   </button>
                   <button
                     className="custom-button delete-button"
-                    onClick={() => onDeleteSuggestion(suggestion.id, suggestions, setSuggestions)}
+                    onClick={() =>
+                      onDeleteSuggestion(
+                        suggestion.id,
+                        suggestions,
+                        setSuggestions
+                      )
+                    }
                   >
                     <i className="fa fa-trash" aria-hidden="true"></i> Delete
                   </button>

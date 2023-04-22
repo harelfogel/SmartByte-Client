@@ -105,7 +105,7 @@ const RulesDashboard = ({ addRule }) => {
 
   const handleRuleClick = (ruleId) => {
     setSelectedRule(ruleId);
-    setTimeout(() => setSelectedRule(null), 5000);
+    setTimeout(() => setSelectedRule(null), 2000);
   };
 
   const handleCloseSnackBar = () => {
