@@ -2,6 +2,7 @@ import React, { useState,useEffect } from 'react'
 import styled from 'styled-components'
 import { ModeControl } from './ModeControl';
 import axios from 'axios';
+import { SERVER_URL } from '../../../../consts';
 
 
 const TemperatureContainer = styled.div`
@@ -38,8 +39,6 @@ const TemperaturScreen = styled.div`
 // background-color: aqua;
 
 // `;
-
-const SERVER_URL='http://localhost:3001';
 
 
 export const Temperature = ({temperature, onChangeValue}) => {

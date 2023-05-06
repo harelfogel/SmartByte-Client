@@ -1,7 +1,7 @@
 import axios from 'axios';
+import { SERVER_URL } from '../consts';
 
-// const SERVER_URL = 'https://smartbytealpha.onrender.com';
-const SERVER_URL = 'http://localhost:3001';
+
 
 export const toggleAcState = async (props) => {
   console.log('----------toggleAcState----------')

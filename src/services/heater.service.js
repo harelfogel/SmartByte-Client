@@ -1,6 +1,6 @@
 import axios from 'axios';
+import { SERVER_URL } from '../consts';
 
-const SERVER_URL = 'http://localhost:3001';
 
 export const toggleHeaterState = async (state) => {
   console.log('----------toggleHeaterState----------')

@@ -1,6 +1,8 @@
 import axios from 'axios';
+import { SERVER_URL } from '../../consts';
 
-const SERVER_URL = 'http://localhost:3001';
+
+
 
 const temperatureMap = {
     1: 15,

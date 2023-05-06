@@ -1,8 +1,8 @@
 import axios from "axios";
 import React from "react";
+import { SERVER_URL } from "../../../consts";
 import classes from "./Switch.module.scss";
 
-const SERVER_URL = "http://localhost:3001";
 
 export const RuleSwitch = (props) => {
   const { currentRules, setCurrentRules } = props;
