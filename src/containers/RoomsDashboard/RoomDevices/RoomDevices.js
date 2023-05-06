@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import {
   fetchRoomDevices,
   toggleDeviceSwitch,
-  updateDeviceControlValue
+  updateDeviceControlValue,
 } from "./../../../store/devices/devices.actions";
 import { NavLink } from "react-router-dom";
 import { useParams } from "react-router";
@@ -16,31 +16,29 @@ import axios from "axios";
 import { toggleAcState } from "../../../services/ac.service";
 import { NewDevice } from "../../../components/NewDevice/NewDevice";
 import { SERVER_URL } from "../../../consts";
-
-
-
-
+import _ from "lodash";
 export const RoomDevicesWrapper = () => {
-  const {id} = useParams();
+  const { id } = useParams();
   return <RoomDevices id={id} />;
-}
-
+};
 
 const DEVICED_IDS = {
-  AC: '9EimtVDZ',
-  LAUNDRY: '21081111RG',
-  HEATER: '061751378caab5219d31'
-}
+  AC: "9EimtVDZ",
+  LAUNDRY: "21081111RG",
+  HEATER: "061751378caab5219d31",
+};
 
-const laundryToggle = async ({state, id}) => {
+const laundryToggle = async ({ state, id }) => {
   try {
-    const response = await axios.post(`${SERVER_URL}/smartthings/toggle`, { state, deviceId: id });
+    const response = await axios.post(`${SERVER_URL}/smartthings/toggle`, {
+      state,
+      deviceId: id,
+    });
     return response.data;
   } catch (error) {
     console.error(error);
   }
 };
-
 
 const toggleHeater = async (value) => {
   try {
@@ -52,34 +50,30 @@ const toggleHeater = async (value) => {
 };
 
 const heaterToggle = async (newHeaterState) => {
-  console.log('heater toggled');
+  console.log("heater toggled");
   return await toggleHeater(newHeaterState);
-}
+};
 
 const IDS_TOGGLES_MAP = {
   [DEVICED_IDS.AC]: toggleAcState,
-  [DEVICED_IDS.LAUNDRY]:laundryToggle,
+  [DEVICED_IDS.LAUNDRY]: laundryToggle,
   [DEVICED_IDS.HEATER]: heaterToggle,
 };
 
-const RoomDevices = ({
-  fetchRoomDevices
-}) => {
-
+const RoomDevices = ({ fetchRoomDevices }) => {
   const [devices, setDevices] = React.useState([]);
   useEffect(() => {
     const fetchData = async () => {
       try {
         const devicesFromDB = await axios.get(`${SERVER_URL}/devices`);
         setDevices(devicesFromDB.data);
-      } catch (error) { }
+      } catch (error) {}
     };
 
     fetchData();
   }, []);
 
-  useEffect(() => {
-  }, [devices]);
+  useEffect(() => {}, [devices]);
 
   const { id } = useParams();
 
@@ -98,14 +92,20 @@ const RoomDevices = ({
         <span>Back to Rooms</span>
       </NavLink>
       <div className={classes.RoomDevices}>
-        {devices.map(device => {
+        {devices.map((device) => {
+          const rooms = _.get(device, "rooms", []);
+          console.log("Yovel", id, rooms);
           const { device_id } = device;
-          return <div key={device_id} className={classes.Column}>
-            <NewDevice
-              device={device}
-              onToggleDeviceSwitch={IDS_TOGGLES_MAP[device_id]}
-            />
-          </div>
+          return (
+            <div key={device_id} className={classes.Column}>
+              {rooms.includes(id) && (
+                <NewDevice
+                  device={device}
+                  onToggleDeviceSwitch={IDS_TOGGLES_MAP[device_id]}
+                />
+              )}
+            </div>
+          );
         })}
       </div>
     </>
@@ -116,15 +116,12 @@ RoomDevices.propTypes = {
   fetchRoomDevices: PropTypes.func,
 };
 
-const mapStateToProps = state => ({
-  devices: state.devices.devices
+const mapStateToProps = (state) => ({
+  devices: state.devices.devices,
 });
 
 const mapDispatchToProps = {
   fetchRoomDevices,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(RoomDevices);
+export default connect(mapStateToProps, mapDispatchToProps)(RoomDevices);
