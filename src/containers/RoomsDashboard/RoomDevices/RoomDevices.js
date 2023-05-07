@@ -29,10 +29,10 @@ const NavLinkStyled = styled(NavLink)`
 `;
 
 const DEVICED_IDS = {
-  AC: "9EimtVDZ",
-  LAUNDRY: "21081111RG",
-  HEATER: "061751378caab5219d31",
-};
+  AC: '9EimtVDZ',
+  LAUNDRY: '0e4be594-13bb-fe76-f092-c8dbdede80b2',
+  HEATER: '061751378caab5219d31'
+}
 
 const laundryToggle = async ({ state, id }) => {
   try {
@@ -58,12 +58,34 @@ const toggleHeater = async (value) => {
 const IDS_TOGGLES_MAP = {
   [DEVICED_IDS.AC]: toggleAcState,
   [DEVICED_IDS.LAUNDRY]: laundryToggle,
-  [DEVICED_IDS.HEATER]: toggleHeater,
+  [DEVICED_IDS.HEATER]:  toggleHeater, 
 };
 
-const RoomDevices = ({ fetchRoomDevices }) => {
+
+const RoomDevices = ({
+  fetchRoomDevices,
+}) => {
+
   const [devices, setDevices] = React.useState([]);
+  const [laundryDetails, setLaundryDetails] = React.useState({});
   const [room, setRoom] = useState({});
+
+  const fetchLaundryDetails = async () => {
+    try {
+      const response = await axios.get(`${SERVER_URL}/laundry/details/`);
+      setLaundryDetails(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    const laundryDevice = devices.find((device) => device.name === "laundry");
+    if (laundryDevice) {
+      fetchLaundryDetails();
+    }
+  }, [devices]);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -111,6 +133,7 @@ const RoomDevices = ({ fetchRoomDevices }) => {
                 <NewDevice
                   device={device}
                   onToggleDeviceSwitch={IDS_TOGGLES_MAP[device_id]}
+                  laundryDetails={device.name === "laundry" ? laundryDetails : null}
                 />
               )}
             </div>

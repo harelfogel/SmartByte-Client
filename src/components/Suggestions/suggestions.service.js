@@ -10,21 +10,31 @@ const temperatureMap = {
     3: 27,
     4: 35
 }
+
+const getStrongestEvidence = (evidence) => {
+  const strongestEvidence = Object.entries(evidence).reduce((prev, current) =>
+    prev[1] > current[1] ? prev : current
+  );
+  return strongestEvidence;
+};
+
+
+
 export const generateRule = (suggestion) => {
-    const { device, evidence, state } = suggestion;
-    const isAcDevice = device.toLowerCase() === 'ac';
-    const conditions = Object.entries(evidence).map(condition => {
-        const [key, value] = condition;
-        return `${key} < ${temperatureMap[value]}`;
-    }).join(' AND ');
+  const { device, evidence, state } = suggestion;
+  const isAcDevice = device.toLowerCase() === 'ac';
 
-    const action = `("${device} ${state}")`;
+  // Get strongest evidence
+  const strongestEvidence = getStrongestEvidence(evidence);
+  const conditions = `${strongestEvidence[0]} < ${temperatureMap[strongestEvidence[1]]}`;
 
-    const generatedRule = `IF ${conditions} THEN TURN${action}`;
-    console.log({ generatedRule })
-    return generatedRule;
+  const action = `("${device} ${state}")`;
 
-}  
+  const generatedRule = `IF ${conditions} THEN TURN${action}`;
+  console.log({ generatedRule });
+  return generatedRule;
+};
+  
 
 export const getSuggestions = async () => {
     try {
@@ -48,15 +58,17 @@ export const getSuggestions = async () => {
     }
   }
 
-  export const addSuggestedRule = async (rule) => {
+  export const addSuggestedRule = async (suggestion) => {
     try {
       console.log('Adding rule');
-      const response = await axios.post(`${SERVER_URL}/rules`, {rule});
-
-    }catch(error){
+      const rule = generateRule(suggestion);
+      const response = await axios.post(`${SERVER_URL}/rules`, { rule });
+  
+    } catch (error) {
       console.log('Error Adding rule: ', error);
     }
-  }
+  };
+  
 
   export const onDeleteSuggestion = async (id, suggestions, setSuggestions) => {
     try{
