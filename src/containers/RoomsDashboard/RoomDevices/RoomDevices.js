@@ -19,7 +19,7 @@ const SERVER_URL = 'http://localhost:3001';
 
 const DEVICED_IDS = {
   AC: '9EimtVDZ',
-  LAUNDRY: '21081111RG',
+  LAUNDRY: '0e4be594-13bb-fe76-f092-c8dbdede80b2',
   HEATER: '061751378caab5219d31'
 }
 
@@ -49,15 +49,33 @@ const heaterToggle = async (newHeaterState) => {
 
 const IDS_TOGGLES_MAP = {
   [DEVICED_IDS.AC]: toggleAcState,
-  [DEVICED_IDS.LAUNDRY]: (newState, deviceId) => laundryToggle(newState, deviceId),
-  [DEVICED_IDS.HEATER]: (newState) => heaterToggle(newState),
+  [DEVICED_IDS.LAUNDRY]: laundryToggle,
+  [DEVICED_IDS.HEATER]: (newState) => heaterToggle(newState), 
 };
+
 
 const RoomDevices = ({
   fetchRoomDevices,
 }) => {
 
   const [devices, setDevices] = React.useState([]);
+  const [laundryDetails, setLaundryDetails] = React.useState({});
+
+  const fetchLaundryDetails = async () => {
+    try {
+      const response = await axios.get(`${SERVER_URL}/laundry/details/`);
+      setLaundryDetails(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    const laundryDevice = devices.find((device) => device.name === "laundry");
+    if (laundryDevice) {
+      fetchLaundryDetails();
+    }
+  }, [devices]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -96,6 +114,7 @@ const RoomDevices = ({
             <NewDevice
               device={device}
               onToggleDeviceSwitch={IDS_TOGGLES_MAP[device_id]}
+              laundryDetails={device.name === "laundry" ? laundryDetails : null}
             />
           </div>
         })}
