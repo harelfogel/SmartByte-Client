@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import {
@@ -17,10 +17,16 @@ import { toggleAcState } from "../../../services/ac.service";
 import { NewDevice } from "../../../components/NewDevice/NewDevice";
 import { SERVER_URL } from "../../../consts";
 import _ from "lodash";
-export const RoomDevicesWrapper = () => {
-  const { id } = useParams();
-  return <RoomDevices id={id} />;
-};
+import styled from "styled-components";
+
+const RoomContainer = styled.div`
+  padding: 30px;
+`;
+
+const NavLinkStyled = styled(NavLink)`
+  color: green;
+  // padding: 10rem;
+`;
 
 const DEVICED_IDS = {
   AC: "9EimtVDZ",
@@ -49,52 +55,55 @@ const toggleHeater = async (value) => {
   }
 };
 
-const heaterToggle = async (newHeaterState) => {
-  console.log("heater toggled");
-  return await toggleHeater(newHeaterState);
-};
-
 const IDS_TOGGLES_MAP = {
   [DEVICED_IDS.AC]: toggleAcState,
   [DEVICED_IDS.LAUNDRY]: laundryToggle,
-  [DEVICED_IDS.HEATER]: heaterToggle,
+  [DEVICED_IDS.HEATER]: toggleHeater,
 };
 
 const RoomDevices = ({ fetchRoomDevices }) => {
   const [devices, setDevices] = React.useState([]);
+  const [room, setRoom] = useState({});
   useEffect(() => {
     const fetchData = async () => {
       try {
         const devicesFromDB = await axios.get(`${SERVER_URL}/devices`);
         setDevices(devicesFromDB.data);
-      } catch (error) {}
+      } catch (error) {
+      console.error(error);
+      }
     };
 
     fetchData();
   }, []);
 
-  useEffect(() => {}, [devices]);
-
   const { id } = useParams();
 
-  useEffect(() => {
-    if (!!fetchRoomDevices) {
-      fetchRoomDevices(id);
+  const fetchRoomData = async () => {
+    try {
+      const response = await axios.get(`${SERVER_URL}/rooms/${id}`);
+      setRoom(response.data)
+    } catch (e) {
+      console.error(e);
     }
-  }, [fetchRoomDevices, id]);
+  };
+
+  useEffect(() => {
+    fetchRoomData();
+  },[])
 
   if (!devices) return null;
 
   return (
-    <>
-      <NavLink to="/" className={classes.BackLink}>
+    <RoomContainer>
+      <NavLinkStyled to="/" className={classes.BackLink}>
         <FontAwesomeIcon icon={faChevronLeft} />
         <span>Back to Rooms</span>
-      </NavLink>
+      </NavLinkStyled>
+      <h1>{_.get(room, 'name')}</h1>
       <div className={classes.RoomDevices}>
         {devices.map((device) => {
           const rooms = _.get(device, "rooms", []);
-          console.log("Yovel", id, rooms);
           const { device_id } = device;
           return (
             <div key={device_id} className={classes.Column}>
@@ -108,7 +117,7 @@ const RoomDevices = ({ fetchRoomDevices }) => {
           );
         })}
       </div>
-    </>
+    </RoomContainer>
   );
 };
 

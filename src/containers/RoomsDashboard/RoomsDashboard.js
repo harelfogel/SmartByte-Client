@@ -27,6 +27,7 @@ const RoomsDashboard = () => {
     <div className={classes.Row}>
       {roomsTest.map((roomData) => {
         const { id, name, icon, devices } = roomData;
+        console.log("Yovel", name, devices)
         return (
           <div
             data-test={`room-card-${id}`}
