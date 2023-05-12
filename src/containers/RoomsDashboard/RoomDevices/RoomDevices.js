@@ -20,9 +20,11 @@ import _ from "lodash";
 import styled from "styled-components";
 
 
-const devicesSection = styled.div`
+const DevicesSection = styled.div`
   display: flex;
   wrap: no-wrap;
+  // padding: 10px;
+  gap: 2rem;
 `;
 
 const RoomContainer = styled.div`
@@ -130,7 +132,7 @@ const RoomDevices = ({
       </NavLinkStyled>
       <h1>{_.get(room, 'name')}</h1>
       {/* <div className={classes.RoomDevices}> */}
-      <devicesSection>
+      <DevicesSection>
         {devices.map((device) => {
           const rooms = _.get(device, "rooms", []);
           const { device_id } = device;
@@ -146,7 +148,7 @@ const RoomDevices = ({
             </div>
           );
         })}
-        </devicesSection>
+        </DevicesSection>
       {/* </div> */}
     </RoomContainer>
   );
