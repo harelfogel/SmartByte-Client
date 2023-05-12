@@ -5,6 +5,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classes from "./Room.module.scss";
 
 function Room(props) {
+
+
   return (
     <div className={classes.Room}>
       <div>

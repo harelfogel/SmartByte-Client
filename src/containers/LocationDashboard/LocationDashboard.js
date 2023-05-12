@@ -6,10 +6,9 @@ import 'leaflet/dist/leaflet.css';
 import 'leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.webpack.css'; // Add this line
 import L from 'leaflet';
 import 'leaflet-defaulticon-compatibility';
+import { SERVER_URL } from '../../consts';
 
-// const SERVER_URL = 'https://smartbytealpha.onrender.com';
-const SERVER_URL = 'http://localhost:3001'
-// console.log(process.env.REACT_APP_SERVER_URL);
+
 
 const LocationDashboard = () => {
     const [location, setLocation] = useState({ lat: null, lng: null, accuracy: null });
