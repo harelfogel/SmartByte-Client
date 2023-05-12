@@ -19,6 +19,12 @@ import { SERVER_URL } from "../../../consts";
 import _ from "lodash";
 import styled from "styled-components";
 
+
+const devicesSection = styled.div`
+  display: flex;
+  wrap: no-wrap;
+`;
+
 const RoomContainer = styled.div`
   padding: 30px;
 `;
@@ -123,7 +129,8 @@ const RoomDevices = ({
         <span>Back to Rooms</span>
       </NavLinkStyled>
       <h1>{_.get(room, 'name')}</h1>
-      <div className={classes.RoomDevices}>
+      {/* <div className={classes.RoomDevices}> */}
+      <devicesSection>
         {devices.map((device) => {
           const rooms = _.get(device, "rooms", []);
           const { device_id } = device;
@@ -139,7 +146,8 @@ const RoomDevices = ({
             </div>
           );
         })}
-      </div>
+        </devicesSection>
+      {/* </div> */}
     </RoomContainer>
   );
 };

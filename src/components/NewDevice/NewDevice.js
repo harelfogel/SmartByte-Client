@@ -15,7 +15,7 @@ import { SERVER_URL } from "../../consts";
 
 
 const DeviceContainer = styled.div`
-  width: 90%;
+  // width: 90%;
   height: auto;
   // background-color: green;
   // border: 1px solid;
