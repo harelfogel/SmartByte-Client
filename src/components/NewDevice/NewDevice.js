@@ -86,7 +86,6 @@ export const NewDevice = ({ device, onToggleDeviceSwitch }) => {
   const onDeviceChange = async (e) => {
     const newState = e.target.checked;
     setState(newState);
-    console.log("Yovel", { newState });
     const response = await onToggleDeviceSwitch({
       state: newState,
       id: device.id,
