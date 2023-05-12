@@ -8,30 +8,78 @@ import { SnackBar } from "../Snackbar/SnackBar";
 import Switch from "../UI/Switch/Switch";
 import ModeControl from "../Device/Controls/Mode/ModeControl";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faWater, faThermometerHalf, faSpinner,faCircleNotch } from "@fortawesome/free-solid-svg-icons";
-import { MenuItem, Select } from '@material-ui/core';
-import axios from 'axios';
+import {
+  faWater,
+  faThermometerHalf,
+  faSpinner,
+  faCircleNotch,
+} from "@fortawesome/free-solid-svg-icons";
+import { MenuItem, Select } from "@material-ui/core";
+import axios from "axios";
 import { SERVER_URL } from "../../consts";
+import { AcControls } from "../Device/Controls/CustomControls/AcControls";
 
+const DeviceCard = styled.div`
+  width: 18rem;
+  height: ${({ height }) => height};
+  border: 1px solid;
+  // margin: 1rem;
+  padding: 1rem;
+  border-radius: 10px;
+  border-color: #e4e6eb;
+  min-height: 8rem;
+  // background-color: ${({ color }) => color}
+  transition: height 0.4s;
+
+  &.expanded {
+    height: 300px;
+  }
+`;
+
+const ControlContainer = styled.div`
+  transition: opacity 0.4s ease-in-out;
+  opacity: ${({ isVisible }) => (isVisible ? 1 : 0)};
+`;
+
+const TestBox = styled.div`
+  width: 100px;
+  height: 100px;
+  background: red;
+  transition: width 2s;
+
+  &:hover {
+    width: 300px;
+  }
+`;
+
+// const DeviceCard = styled.div`
+//   width: 100%;
+//   background-color: white;
+//   border: 1px solid;
+//   padding: 1rem;
+//   border-radius: 10px;
+//   border-color: #e4e6eb;
+//   min-height: 8rem;
+//   overflow: hidden;
+//   transition: height 0.3s ease-in-out;
+
+//   &.expanded {
+//     height: auto;
+//   }
+// `;
 
 const DeviceContainer = styled.div`
-  // width: 90%;
-  height: auto;
-  // background-color: green;
-  // border: 1px solid;
-  min-height: 10rem;
-  box-shadow: 0px 0px 34px rgba(59, 89, 152, 0.2);
-  // margin: 2rem;
-  // padding-left: 1rem;
-  // padding-right: 1rem;
-  padding: 0.1rem 2rem 0;
+  display: flex;
+  width: 18rem;
+  height: 50rem;
+  gap: 1rem;
+  flex-direction: column;
+`;
+
+const AcControlsSection = styled.div`
   display: flex;
   flex-direction: column;
-  width: 90%;
-  height: auto;
-  min-height: 10rem;
-  box-shadow: 0px 0px 34px rgba(59, 89, 152, 0.2);
-  padding: 0.1rem 2rem 0;
+  // flex-wrap: wrap;
 `;
 
 const TopRow = styled.div`
@@ -69,19 +117,21 @@ export const NewDevice = ({ device, onToggleDeviceSwitch }) => {
   const [openSeccessSnackBar, setOpenSuccessSnackbar] = useState(false);
   const [openFailureSnackBar, setOpenFailureSnackbar] = useState(false);
   const [currentLaundryDetails, setCurrentLaundryDetails] = useState(null);
-  
+  const [openControlsCard, setOpenControlsCard] = useState(false);
+
   const { name } = device;
 
   const isAcDevice = name === "ac";
   const isHeaterDevice = name === "heater";
   const isLaundryDevice = name === "laundry";
 
+  const isWithControls = isAcDevice || isLaundryDevice;
+
   const onUpdateModeValueHandler = (controlId, updatedMode) => {
     // Update the AC mode by sending a request to your Node.js server.
     // Replace this with the actual API call to your server.
     console.log(`Updated mode for device ${controlId}: ${updatedMode}`);
   };
-
 
   const onDeviceChange = async (e) => {
     const newState = e.target.checked;
@@ -104,40 +154,38 @@ export const NewDevice = ({ device, onToggleDeviceSwitch }) => {
       try {
         const response = await axios.get(`${SERVER_URL}/laundry/details`);
         const data = await response.data;
-        data.spin = data.spin === 0 ? "No spin" : `${data.spin} rpm`; 
+        data.spin = data.spin === 0 ? "No spin" : `${data.spin} rpm`;
         setCurrentLaundryDetails(data);
       } catch (error) {
         console.error("Failed to fetch laundry details:", error);
       }
     };
-  
+
     if (isLaundryDevice) {
       fetchLaundryDetails();
     }
   }, [isLaundryDevice]);
-  
-  
 
   const updateLaundryDetails = (key, value) => {
     const updatedDetails = { ...currentLaundryDetails, [key]: value };
     setCurrentLaundryDetails({ ...currentLaundryDetails, [key]: value });
     updateLaundryDetailsServer(updatedDetails);
-
   };
 
   const updateLaundryDetailsServer = async (updatedDetails) => {
     try {
-      const response = await axios.post(`${SERVER_URL}/laundry/update`, updatedDetails);
+      const response = await axios.post(
+        `${SERVER_URL}/laundry/update`,
+        updatedDetails
+      );
       console.log("Updated laundry details on the server: ", response.data);
     } catch (error) {
       console.error("Failed to update laundry details on the server:", error);
     }
   };
-  
-  
-  
+
   const renderLaundryControls = () => {
-    if (isLaundryDevice  && currentLaundryDetails) {
+    if (isLaundryDevice && currentLaundryDetails) {
       const temperatureOptions = [20, 30, 40, 60, 90];
       const rinseOptions = [1, 2, 3, 4, 5];
       const spinOptions = [
@@ -149,14 +197,25 @@ export const NewDevice = ({ device, onToggleDeviceSwitch }) => {
         "1200 rpm",
         "1400 rpm",
       ];
-      
-      
-  
+
       return (
-        <div style={{ display: 'flex', alignItems: 'flex-start' , marginTop:'-2rem' }}>
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', marginRight: '1rem' }}>
-            <p style={{ fontWeight: 'bold', marginBottom: '1.5rem' }}>Rinse:</p>
-            <div style={{ display: 'flex', alignItems: 'center' }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "flex-start",
+            marginTop: "-2rem",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "flex-start",
+              marginRight: "1rem",
+            }}
+          >
+            <p style={{ fontWeight: "bold", marginBottom: "1.5rem" }}>Rinse:</p>
+            <div style={{ display: "flex", alignItems: "center" }}>
               <FontAwesomeIcon icon={faWater} size="2x" />
               <Select
                 value={currentLaundryDetails.rinse}
@@ -170,9 +229,18 @@ export const NewDevice = ({ device, onToggleDeviceSwitch }) => {
               </Select>
             </div>
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', margin: '1 1rem' }}>
-            <p style={{ fontWeight: 'bold', marginBottom: '1.5rem' }}>Temperature:</p>
-            <div style={{ display: 'flex', alignItems: 'flex-start' }}>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "flex-start",
+              margin: "1 1rem",
+            }}
+          >
+            <p style={{ fontWeight: "bold", marginBottom: "1.5rem" }}>
+              Temperature:
+            </p>
+            <div style={{ display: "flex", alignItems: "flex-start" }}>
               <FontAwesomeIcon icon={faThermometerHalf} size="2x" />
               <Select
                 value={currentLaundryDetails.temperature}
@@ -188,9 +256,16 @@ export const NewDevice = ({ device, onToggleDeviceSwitch }) => {
               </Select>
             </div>
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginLeft: '1rem' }}>
-            <p style={{ fontWeight: 'bold', marginBottom: '1.5rem' }}>Spin:</p>
-            <div style={{ display: 'flex', alignItems: 'center' }}>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              marginLeft: "1rem",
+            }}
+          >
+            <p style={{ fontWeight: "bold", marginBottom: "1.5rem" }}>Spin:</p>
+            <div style={{ display: "flex", alignItems: "center" }}>
               <FontAwesomeIcon icon={faCircleNotch} size="2x" />
               <Select
                 value={currentLaundryDetails.spin}
@@ -209,45 +284,33 @@ export const NewDevice = ({ device, onToggleDeviceSwitch }) => {
     }
   };
 
-
-  const renderModeControl = () => {
-    if (isAcDevice) {
-      return (
-        <ModeControl
-          controlId={device.id}
-          name={device.name}
-          value={device.mode}
-          onUpdateValue={onUpdateModeValueHandler}
-          options={device.modes}
-        />
-      );
-    }
-  };
-
-
-
   const onChangeTemperature = (value) => {
     setTemperature(value);
-  }
+  };
 
   const handleCloseSnackBar = () => {
     setOpenSuccessSnackbar(false);
-  }
+  };
 
   return (
-    <DeviceContainer>
+    // <DeviceContainer>
+    <DeviceCard
+      height={openControlsCard ? "auto" : "8rem"}
+      className={openControlsCard ? "expanded" : ""}
+    >
       <TopRow>
         <h2>{name}</h2>
         <Switch onChange={(e) => onDeviceChange(e)} checked={state} />
       </TopRow>
       <Controls>
-        {isAcDevice && <Temperature temperature={24} onChangeValue={(value) => onChangeTemperature(value)} />}
-        {renderModeControl()}
+        {/* {renderModeControl()} */}
         {renderLaundryControls()}
       </Controls>
       {openSeccessSnackBar && (
         <SnackBar
-          message={`${device.name.toUpperCase()} is now ${state ? "ON" : "OFF"}`}
+          message={`${device.name.toUpperCase()} is now ${
+            state ? "ON" : "OFF"
+          }`}
           isOpen={true}
           handleCloseSnackBar={handleCloseSnackBar}
           color="green"
@@ -263,6 +326,26 @@ export const NewDevice = ({ device, onToggleDeviceSwitch }) => {
           color="red"
         />
       )}
-    </DeviceContainer>
+      {isWithControls && (
+        <Button
+          onClick={() => {
+            setOpenControlsCard(!openControlsCard);
+          }}
+        >
+          click
+        </Button>
+      )}
+      <ControlContainer isVisible={openControlsCard}>
+        {openControlsCard && (
+          <AcControls
+            temperature={temperature}
+            onChangeValue={(value) => onChangeTemperature(value)}
+            acState={state}
+          />
+        )}
+      </ControlContainer>
+    </DeviceCard>
+    // <TestBox />
+    // </DeviceContainer>
   );
 };
