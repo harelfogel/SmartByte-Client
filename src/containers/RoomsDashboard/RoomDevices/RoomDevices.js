@@ -22,7 +22,7 @@ import styled from "styled-components";
 
 const DevicesSection = styled.div`
   display: flex;
-  wrap: no-wrap;
+  flex-wrap: wrap;
   // padding: 10px;
   gap: 2rem;
 `;
