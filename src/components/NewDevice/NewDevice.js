@@ -2,7 +2,7 @@
 // import { Button, CircularProgress, Snackbar, MuiAlert } from '@material-ui/core';
 import { Button } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
-import styled from "styled-components";
+import styled, {css} from "styled-components";
 import { Temperature } from "../Device/Controls/CustomControls/Temperature";
 import { SnackBar } from "../Snackbar/SnackBar";
 import Switch from "../UI/Switch/Switch";
@@ -116,19 +116,37 @@ const ShowControlsContainer = styled.div`
   cursor: pointer;
 `;
 
+
+const ShowControlsIcon = styled(FontAwesomeIcon)`
+  transition: transform 0.5s ease;
+
+  ${({rotate}) => rotate && css`transform: rotate(180deg)`}
+`;
+
+const ShowControlsText = styled.span`
+  margin-left: 10px;
+`;
+
 const ShowControls = ({ setOpenControlsCard, openControlsCard }) => {
+
+  const [rotate, setRotate] = useState(false);
+
   return (
     <ShowControlsContainer
       onClick={() => {
         setOpenControlsCard(!openControlsCard);
+        setRotate(!rotate);
       }}
     >
-      {openControlsCard ? (
-        <FontAwesomeIcon icon={faChevronUp} size="1x" />
-      ) : (
-        <FontAwesomeIcon icon={faChevronDown} size="1x" />
-      )}
-      &nbsp;{`${openControlsCard ? "Hide" : "Show"} Controls`}
+      <ShowControlsIcon 
+      icon={faChevronDown} 
+      size="1x"
+      rotate={rotate ? 'rotate' : ''}
+      />
+
+     <ShowControlsText>
+      {`${openControlsCard ? "Hide" : "Show"} Controls`}
+      </ShowControlsText>
     </ShowControlsContainer>
   );
 };
@@ -138,7 +156,6 @@ export const NewDevice = ({ device, onToggleDeviceSwitch }) => {
   const [temperature, setTemperature] = useState(24);
   const [openSeccessSnackBar, setOpenSuccessSnackbar] = useState(false);
   const [openFailureSnackBar, setOpenFailureSnackbar] = useState(false);
-  const [currentLaundryDetails, setCurrentLaundryDetails] = useState(null);
   const [openControlsCard, setOpenControlsCard] = useState(false);
 
   const { name } = device;
