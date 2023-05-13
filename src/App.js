@@ -19,13 +19,15 @@ import RoomDevices from "./containers/RoomsDashboard/RoomDevices/RoomDevices";
 import { Notification } from "./components/Notification/Notification";
 import { SuggestionsTable } from "./components/Suggestions/SuggestionsTable";
 import Insights from "./containers/Insights/Insights";
-
+import  axios from 'axios';
 import { getSuggestions } from "./components/Suggestions/suggestions.service";
+import UserContext from "./contexts/UserContext";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(
     Cookies.get("isAuthenticated") === "true" || false
   );
+
   const [user, setUser] = useState(
     Cookies.get("user") ? JSON.parse(Cookies.get("user")) : null
   );
@@ -34,11 +36,26 @@ function App() {
     (async () => {
       const suggestions = await getSuggestions();
       const newSuggestions = suggestions.filter(({ is_new }) => is_new);
-      console.log({suggestions,newSuggestions})
       setNewSuggestionsCount(newSuggestions.length);
     })()
   }, []);
 
+
+  // Fetch the user role when the user logs in
+  useEffect(() => {
+    if (user && !user.role) {
+      const fetchUserRole = async () => {
+        try {
+          const response = await axios.post('/login', { email: user.email, password: user.password });
+          setUser({ ...user, role: response.data.user.role });
+        } catch (error) {
+          console.error('Error fetching user role:', error);
+        }
+      };
+
+      fetchUserRole();
+    }
+  }, [user]);
   useEffect(() => {
     console.log({ newSuggestionsCount });
   }, [newSuggestionsCount]);
@@ -58,7 +75,7 @@ function App() {
 
   return (
     <>
-      {/* <Router> */}
+       <UserContext.Provider value={{ user, setUser }}>
       <Header
         user={user}
         onLogout={handleLogout}
@@ -140,6 +157,7 @@ function App() {
           element={isAuthenticated ? <Insights /> : <Navigate to="/login" />}
         />
       </Routes>
+      </UserContext.Provider>
       {/* </Router> */}
     </>
   );

@@ -1,4 +1,5 @@
 import axios from "axios";
+const SERVER_URL_1=`http://localhost:3001`; 
 
 export const fetchRules = async () => {
   try {
@@ -21,6 +22,15 @@ export const updateRule = async (id, updatedData) => {
     return false;
   }
 }
+
+export const notifyAdmin = async (subject, text) => {
+  try {
+    await axios.post(`${SERVER_URL_1}/notifyadmin`, { subject, text });
+  } catch (error) {
+    console.error("Failed to send email notification to admin:", error);
+  }
+};
+
 
 
 // export const onAddRuleClick = (rule) => {

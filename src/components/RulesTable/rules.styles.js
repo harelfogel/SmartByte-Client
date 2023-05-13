@@ -47,6 +47,8 @@ export const TrStyled = styled.tr`
       background-color: ${classes.searched};
     ` : '';
   }}
+  color: ${({ isStrict }) => (isStrict ? "red" : "inherit")};
+
 `;
 
 export const RuleInput = styled.input`

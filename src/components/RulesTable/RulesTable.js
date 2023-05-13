@@ -8,7 +8,7 @@ import classes from "./RulesTable.module.scss";
 // import Switch from '@mui/material/Switch';
 import { toast } from "react-toastify";
 import "font-awesome/css/font-awesome.min.css";
-import { updateRule } from "../../services/rules.service";
+import {updateRule } from "../../services/rules.service";
 import { SnackBar } from "../Snackbar/SnackBar";
 import EditIcon from "@material-ui/icons/Edit";
 import {
@@ -23,8 +23,9 @@ import { ActionContainer, ActionTdStyled, ActiveCellStyled, Circle, RuleCell, Ru
 // const label = { inputProps: { 'aria-label': 'Switch demo' } };
 
 const SERVER_URL = "http://localhost:3001/rules";
+const SERVER_URL_1 = "http://localhost:3001";
 
-const RulesTable = ({ rules, onRuleClick, selectedRule,searchText  }) => {
+const RulesTable = ({ rules, onRuleClick, selectedRule, searchText, userRole }) => {
   const [currentRules, setCurrentRules] = useState(rules);
   const [alertVisible, setAlertVisible] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
@@ -43,6 +44,15 @@ const RulesTable = ({ rules, onRuleClick, selectedRule,searchText  }) => {
     return rule.rule.toLowerCase().includes(searchText.toLowerCase());
   };
 
+
+  const notifyAdmin = async (subject, text) => {
+    try {
+      await axios.post(`${SERVER_URL_1}/notifyadmin`, { subject, text });
+    } catch (error) {
+      console.error("Failed to send email notification to admin:", error);
+    }
+  };
+  
 
   const deleteRule = async (id) => {
     try {
@@ -76,6 +86,8 @@ const RulesTable = ({ rules, onRuleClick, selectedRule,searchText  }) => {
               isSelected={rule.id === selectedRule}
               isSearched={isSearched(rule)}
               classes={classes}
+              isStrict={rule.isStrict} 
+
             >
               <ActiveCellStyled>
                 <Circle color={rule.isActive ? "green" : "red"} />
@@ -84,50 +96,62 @@ const RulesTable = ({ rules, onRuleClick, selectedRule,searchText  }) => {
                 <RuleText editing={editedRule === rule.id}>
                   {rule.rule}
                 </RuleText>
-                <RuleInput
-                  editing={editedRule === rule.id}
-                  defaultValue={editedRule === rule.id ? rule.rule : ""}
-                  onBlur={async (e) => {
-                    setEditedRule(null);
-                    const inputValue = e.target.value;
-                    if (await updateRule(rule.id, { rule: inputValue })) {
-                      const newRules = currentRules.map((r) => {
-                        return r.id === rule.id
-                          ? { ...r, rule: inputValue }
-                          : r;
-                      });
-                      setCurrentRules(newRules);
-                      setOpenSuccessSnackbar(true);
-                    } else {
-                      setOpenFailureSnackbar(true);
-                    }
-                  }}
-                />
-                <EditIcon
-                  style={{ cursor: "pointer" }}
-                  onClick={() => setEditedRule(rule.id)}
-                />
+                {userRole !== "User" && (
+                  <>
+                    <RuleInput
+                      editing={editedRule === rule.id}
+                      defaultValue={editedRule === rule.id ? rule.rule : ""}
+                      onBlur={async (e) => {
+                        console.log('im in the onZBLur function');
+                        setEditedRule(null);
+                        const inputValue = e.target.value;
+                        if (await updateRule(rule.id, { rule: inputValue })) {
+                          const newRules = currentRules.map((r) => {
+                            return r.id === rule.id
+                              ? { ...r, rule: inputValue }
+                              : r;
+                          });
+                          setCurrentRules(newRules);
+                          setOpenSuccessSnackbar(true);
+                        } else {
+                          setOpenFailureSnackbar(true);
+                        }
+
+                        if(userRole === "User"){
+                          console.log('before calling fuctnion in notfy admin');
+                          await notifyAdmin("User created a rule", `The rule "${rule.rule}"has been modified by the user.`)
+                        }
+                      }}
+                    />
+                    <EditIcon
+                      style={{ cursor: "pointer" }}
+                      onClick={() => setEditedRule(rule.id)}
+                    />
+                  </>
+                )}
               </RuleCell>
               <ActionTdStyled>
                 <ActionContainer>
                   <RuleSwitch isActive={rule.isActive} id={rule.id} currentRules={currentRules} setCurrentRules={setCurrentRules} />
-                  <i
-                    className="fa fa-trash"
-                    onClick={() => deleteRule(rule.id)}
-                    style={{
-                      cursor: "pointer",
-                      color: "red",
-                      fontSize: "30px",
-                      marginRight: "8px",
-                    }}
-                  ></i>
+                  {userRole !== "User" && (
+                    <i
+                      className="fa fa-trash"
+                      onClick={() => deleteRule(rule.id)}
+                      style={{
+                        cursor: "pointer",
+                        color: "red",
+                        fontSize: "30px",
+                        marginRight: "8px",
+                      }}
+                    ></i>
+                  )}
                 </ActionContainer>
               </ActionTdStyled>
             </TrStyled>
           ))}
         </tbody>
       </TableStyled>
-  
+
       {openSeccessSnackBar && (
         <SnackBar
           message={`Rule updated successfully`}
@@ -144,10 +168,10 @@ const RulesTable = ({ rules, onRuleClick, selectedRule,searchText  }) => {
           color="red"
         />
       )}
-  
+
       {alertVisible && <Notification message={alertMessage} />}
     </TableContainer>
-  );  
+  );
 };
 
 export default RulesTable;
