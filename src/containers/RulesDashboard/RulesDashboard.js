@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { addRule } from "./../../store/rules/rules.actions";
 import RulesModal from "./../../components/RulesModal/RulesModal";
 import axios from "axios";
-import { fetchRules } from "./../../services/rules.service";
+import { fetchRules, notifyAdmin } from "./../../services/rules.service";
 import RulesTable from "./../../components/RulesTable/RulesTable";
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
 import classes from "./RulesDashboard.module.scss";
@@ -13,14 +13,22 @@ import { NavLink } from "react-router-dom";
 import { SnackBar } from "../../components/Snackbar/SnackBar";
 import styled from "styled-components";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import UserContext from "../../contexts/UserContext";
+import { Switch } from "@material-ui/core";
 
-
+// Update the AddRulesSectionStyled component
+const AddRulesSectionStyled = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+`;
 const ErrorMessage = styled.p`
   color: red;
 `;
 
 const RulesDashboard = ({ addRule }) => {
   const [rule, setRule] = useState("");
+  const [isStrict, setIsStrict] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
   const [displayIntro, setDisplayIntro] = useState(true);
@@ -33,9 +41,8 @@ const RulesDashboard = ({ addRule }) => {
   const [filteredRules, setFilteredRules] = useState([]);
   const [selectedRule, setSelectedRule] = useState(null);
   const [showFilteredRules, setShowFilteredRules] = useState(false);
-
-
-
+  const { user } = useContext(UserContext);
+  const userRole = user?.role || "User"; // Default role to "User" if user object is not available
 
 
   useEffect(() => {
@@ -55,12 +62,17 @@ const RulesDashboard = ({ addRule }) => {
   const onAddRuleClick = () => {
     let url = `${process.env.REACT_APP_SERVER_URL}`;
     axios
-      .post(`http://localhost:3001/rules`, { rule })
+      .post(`http://localhost:3001/rules`, { rule,isStrict })
       .then((response) => {
         // setModalMessage("Rule is activated");
         // setShowModal(true);
         setOpenSuccessSnackbar(true);
         setErrorMessage("");
+  
+        // If userRole is 'User', notify the admin
+        if(userRole === "User"){
+          notifyAdmin("User created a rule", `A new rule "${rule}" has been created by the user.`);
+        }
       })
       .catch((error) => {
         // setModalMessage("Error adding rule");
@@ -70,6 +82,7 @@ const RulesDashboard = ({ addRule }) => {
         setOpenFailureSnackbar(true);
       });
     setRule("");
+    setIsStrict(false); // Reset the isStrict state
   };
 
   const onSearchInputChange = (event) => {
@@ -86,7 +99,7 @@ const RulesDashboard = ({ addRule }) => {
     }
   };
 
-  
+
 
   const onShowRulesClick = async () => {
     const fetchedRules = await fetchRules();
@@ -126,9 +139,8 @@ const RulesDashboard = ({ addRule }) => {
         {rules.map((rule) => (
           <div
             key={rule.id}
-            className={`${classes.FilteredRule} ${
-              rule.id === selectedRule ? classes.selected : ""
-            }`}
+            className={`${classes.FilteredRule} ${rule.id === selectedRule ? classes.selected : ""
+              }`}
             onClick={() => onRuleClickWrapper(rule.id)}
           >
             {rule.rule}
@@ -138,8 +150,6 @@ const RulesDashboard = ({ addRule }) => {
     );
   };
 
-  
-  
 
   return (
     <div className={classes.RulesDashboard}>
@@ -182,15 +192,16 @@ const RulesDashboard = ({ addRule }) => {
             />
             <FontAwesomeIcon icon={faSearch} className={classes.SearchIcon} />
             {filteredRules.length > 0 && (
-            <FilteredRules rules={filteredRules} onRuleClick={handleRuleClick} selectedRule={selectedRule} />
-          )}
+              <FilteredRules rules={filteredRules} onRuleClick={handleRuleClick} selectedRule={selectedRule} />
+            )}
           </div>
           <RulesTable
-          rules={rules.filter((rule) => rule.rule.toLowerCase().includes(search.toLowerCase()))}
-          onRuleClick={handleRuleClick}
-          selectedRule={selectedRule}
-          searchText={search}
-        />
+            rules={rules.filter((rule) => rule.rule.toLowerCase().includes(search.toLowerCase()))}
+            onRuleClick={handleRuleClick}
+            selectedRule={selectedRule}
+            searchText={search}
+            userRole={userRole}
+          />
         </>
       ) : (
         <>
@@ -210,6 +221,17 @@ const RulesDashboard = ({ addRule }) => {
               placeholder="Type your rule here..."
               className={classes.RulesDashboardInput}
             />
+            {userRole !== "User" && (
+              <>
+                <span style={{ marginRight: "8px" }}>Strict:</span>
+                <Switch
+                  checked={isStrict}
+                  onChange={() => setIsStrict(!isStrict)}
+                  color="primary"
+                  inputProps={{ "aria-label": "primary checkbox" }}
+                />
+              </>
+            )}
             <button
               onClick={onAddRuleClick}
               disabled={!rule}
