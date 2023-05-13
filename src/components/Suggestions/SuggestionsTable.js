@@ -1,4 +1,5 @@
 import { Button, Tooltip } from "@material-ui/core";
+import Pagination from '@material-ui/lab/Pagination';
 import React from "react";
 import { useState, useEffect } from "react";
 import {
@@ -19,15 +20,18 @@ import {
   NewTag,
   NewTagText,
   TableContainer,
+  PaginationContainer,
   TableStyled,
   TdStyled,
   ThStyled,
   TitleStyled,
 } from "./suggestions.styles";
 
+
+const itemsPerPage = 7;  // Define how many items you want per page
 export const SuggestionsTable = ({ setNewSuggestionsCount }) => {
   const [suggestions, setSuggestions] = useState([]);
-
+  const [currentPage, setCurrentPage] = useState(1);
   useEffect(() => {
     const fetchData = async () => {
       const fetchedSuggestions = await getSuggestions();
@@ -43,6 +47,14 @@ export const SuggestionsTable = ({ setNewSuggestionsCount }) => {
     }
   }, [suggestions]);
 
+  // Function to handle page change
+  const handlePageChange = (event, value) => {
+    setCurrentPage(value);
+  };
+
+  // Calculate the suggestions for the current page
+  const suggestionsOnPage = suggestions.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
   return (
     <TableContainer>
       <TitleStyled>Suggestions</TitleStyled>
@@ -55,7 +67,7 @@ export const SuggestionsTable = ({ setNewSuggestionsCount }) => {
           </tr>
         </thead>
         <tbody>
-          {suggestions.map((suggestion, idx) => {
+          {suggestionsOnPage.map((suggestion, idx) => {
             const rule = suggestion.rule;
             const { is_new: isNew } = suggestion;
             return (
@@ -107,6 +119,14 @@ export const SuggestionsTable = ({ setNewSuggestionsCount }) => {
           })}
         </tbody>
       </TableStyled>
+      <PaginationContainer>
+        <Pagination
+          count={Math.ceil(suggestions.length / itemsPerPage)}
+          page={currentPage}
+          onChange={handlePageChange}
+        />
+      </PaginationContainer>
+
     </TableContainer>
   );
 };
