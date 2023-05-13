@@ -11,76 +11,50 @@ import {
 import { MenuItem, Select } from "@material-ui/core";
 import axios from "axios";
 import { SERVER_URL } from "../../../../consts";
-import _ from 'lodash';
-import { LaundryControlsContainer } from "./controls.style";
+import _ from "lodash";
+import {
+  LaundryControlsContainer,
+  LaundrySpinContainer,
+  LaundryTemperatureContainer,
+  RinseContainer,
+} from "./controls.style";
 import styled from "styled-components";
 
-
-
-const RinseContainer = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    margin-right: 1rem;
-`;
-
-const LaundryTemperatureContainer = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    margin: 1 1rem;
-`;
-
-const LaundrySpinContainer = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-left: 1rem;
-`;
-
-
 export const LaundryControls = () => {
+  const [currentLaundryDetails, setCurrentLaundryDetails] = useState(null);
 
-    const [currentLaundryDetails, setCurrentLaundryDetails] = useState(null);
+  useEffect(() => {
+    const fetchLaundryDetails = async () => {
+      try {
+        const response = await axios.get(`${SERVER_URL}/laundry/details`);
+        const data = await response.data;
+        data.spin = data.spin === 0 ? "No spin" : `${data.spin} rpm`;
+        setCurrentLaundryDetails(data);
+      } catch (error) {
+        console.error("Failed to fetch laundry details:", error);
+      }
+    };
 
+    fetchLaundryDetails();
+  }, []);
 
-    useEffect(() => {
-        const fetchLaundryDetails = async () => {
-            try {
-            const response = await axios.get(`${SERVER_URL}/laundry/details`);
-            const data = await response.data;
-            data.spin = data.spin === 0 ? "No spin" : `${data.spin} rpm`;
-            setCurrentLaundryDetails(data);
-          } catch (error) {
-            console.error("Failed to fetch laundry details:", error);
-          }
-        };
-    
-          fetchLaundryDetails();
-      }, []);
+  const updateLaundryDetails = (key, value) => {
+    const updatedDetails = { ...currentLaundryDetails, [key]: value };
+    setCurrentLaundryDetails({ ...currentLaundryDetails, [key]: value });
+    updateLaundryDetailsServer(updatedDetails);
+  };
 
-
-
-      const updateLaundryDetails = (key, value) => {
-        const updatedDetails = { ...currentLaundryDetails, [key]: value };
-        setCurrentLaundryDetails({ ...currentLaundryDetails, [key]: value });
-        updateLaundryDetailsServer(updatedDetails);
-      };
-    
-
-      const updateLaundryDetailsServer = async (updatedDetails) => {
-        try {
-          const response = await axios.post(
-            `${SERVER_URL}/laundry/update`,
-            updatedDetails
-          );
-          console.log("Updated laundry details on the server: ", response.data);
-        } catch (error) {
-          console.error("Failed to update laundry details on the server:", error);
-        }
-      };
-
-
+  const updateLaundryDetailsServer = async (updatedDetails) => {
+    try {
+      const response = await axios.post(
+        `${SERVER_URL}/laundry/update`,
+        updatedDetails
+      );
+      console.log("Updated laundry details on the server: ", response.data);
+    } catch (error) {
+      console.error("Failed to update laundry details on the server:", error);
+    }
+  };
 
   const temperatureOptions = [20, 30, 40, 60, 90];
   const rinseOptions = [1, 2, 3, 4, 5];
@@ -97,11 +71,11 @@ export const LaundryControls = () => {
   return (
     <LaundryControlsContainer>
       <RinseContainer>
-        <p style={{  marginBottom: "1.5rem" }}>Rinse:</p>
+        <p style={{ marginBottom: "1.5rem" }}>Rinse:</p>
         <div style={{ display: "flex", alignItems: "center" }}>
           <FontAwesomeIcon icon={faWater} size="1x" />
           <Select
-            value={_.get(currentLaundryDetails,'rinse', '2')}
+            value={_.get(currentLaundryDetails, "rinse", "2")}
             onChange={(e) => updateLaundryDetails("rinse", e.target.value)}
           >
             {rinseOptions.map((rinse) => (
@@ -113,13 +87,11 @@ export const LaundryControls = () => {
         </div>
       </RinseContainer>
       <LaundryTemperatureContainer>
-        <p style={{  marginBottom: "1.5rem" }}>
-          Temperature:
-        </p>
+        <p style={{ marginBottom: "1.5rem" }}>Temperature:</p>
         <div style={{ display: "flex", alignItems: "center" }}>
           <FontAwesomeIcon icon={faThermometerHalf} size="1x" />
           <Select
-            value={_.get(currentLaundryDetails,'temperature', '60')}
+            value={_.get(currentLaundryDetails, "temperature", "60")}
             onChange={(e) =>
               updateLaundryDetails("temperature", e.target.value)
             }
@@ -132,12 +104,12 @@ export const LaundryControls = () => {
           </Select>
         </div>
       </LaundryTemperatureContainer>
-      <LaundrySpinContainer >
+      <LaundrySpinContainer>
         <p style={{ marginBottom: "1.5rem" }}>Spin:</p>
         <div style={{ display: "flex", alignItems: "center" }}>
           <FontAwesomeIcon icon={faCircleNotch} size="1x" />
           <Select
-            value={_.get(currentLaundryDetails,'spin', '800 rpm')}
+            value={_.get(currentLaundryDetails, "spin", "800 rpm")}
             onChange={(e) => updateLaundryDetails("spin", e.target.value)}
           >
             {spinOptions.map((spin) => (
