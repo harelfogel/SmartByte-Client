@@ -23,7 +23,6 @@ import { SERVER_URL } from "../../consts";
 
 // const label = { inputProps: { 'aria-label': 'Switch demo' } };
 
-const SERVER_URL = "http://localhost:3001/rules";
 const SERVER_URL_1 = "http://localhost:3001";
 
 const RulesTable = ({ rules, onRuleClick, selectedRule, searchText, userRole }) => {
