@@ -33,7 +33,7 @@ export const TdStyled = styled.td`
 
   .custom-button {
     font-family: inherit;
-    font-size: inherit;
+    // font-size: inherit;
     border: 1px solid #000;
     border-radius: 4px;
     padding: 4px 8px;
@@ -109,4 +109,27 @@ export const NewTagText = styled.p`
   position: absolute;
   left: 0.7rem;
   top: 0.2rem;
+`;
+
+
+
+export const ButtonStyled = styled.div`
+  background-color: #f6f7ff;
+  color: "#3B5998";
+  font-size: 14px;
+  align-items: center;
+  text-align: center;
+  border: 1px solid #d8deea !important;
+  min-width: 65px;
+  min-height: 30px;
+  padding: 0 0.7rem;
+  border-radius: 4px;
+  transition: 0.3s;
+  :hover {
+    cursor: pointer;
+    background-color: #d8deea;
+    border-color: black;
+    opacity: 1;
+  }
+  color: #3b5998;
 `;

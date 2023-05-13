@@ -58,14 +58,18 @@ export const getSuggestions = async () => {
     }
   }
 
-  export const addSuggestedRule = async (suggestion) => {
+  export const addSuggestedRule = async (rule, suggestionId, suggestions, setSuggestions) => {
     try {
-      console.log('Adding rule');
-      const rule = generateRule(suggestion);
       const response = await axios.post(`${SERVER_URL}/rules`, { rule });
-  
+      if(response.status === 200){
+        onDeleteSuggestion(
+          suggestionId, 
+          suggestions,
+          setSuggestions
+        )
+      }
     } catch (error) {
-      console.log('Error Adding rule: ', error);
+      console.log('Error Adding rule: ', error.message);
     }
   };
   

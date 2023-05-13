@@ -14,6 +14,7 @@ import { RuleCell } from "./RuleCell";
 import "font-awesome/css/font-awesome.min.css";
 
 import {
+  ButtonStyled,
   DeviceCellContent,
   NewTag,
   NewTagText,
@@ -24,9 +25,7 @@ import {
   TitleStyled,
 } from "./suggestions.styles";
 
-export const SuggestionsTable = ({
-  setNewSuggestionsCount
-}) => {
+export const SuggestionsTable = ({ setNewSuggestionsCount }) => {
   const [suggestions, setSuggestions] = useState([]);
 
   useEffect(() => {
@@ -52,7 +51,7 @@ export const SuggestionsTable = ({
           <tr>
             <ThStyled>Device</ThStyled>
             <ThStyled>Suggested Rule</ThStyled>
-            <ThStyled>Evidence</ThStyled>
+            <ThStyled>Actions</ThStyled>
           </tr>
         </thead>
         <tbody>
@@ -77,14 +76,21 @@ export const SuggestionsTable = ({
                   </Tooltip>
                 </TdStyled>
                 <TdStyled>
-                  <button
-                    className="custom-button add-button"
-                    onClick={() => addSuggestedRule(rule)}
+                  <ButtonStyled
+                    className="custom-button"
+                    onClick={() => {
+                      addSuggestedRule(
+                        rule,
+                        suggestion.id,
+                        suggestions,
+                        setSuggestions
+                      );
+                    }}
                   >
                     <i className="fa fa-plus" aria-hidden="true"></i> Add
-                  </button>
-                  <button
-                    className="custom-button delete-button"
+                  </ButtonStyled>
+                  <ButtonStyled
+                    className="custom-button"
                     onClick={() =>
                       onDeleteSuggestion(
                         suggestion.id,
@@ -94,7 +100,7 @@ export const SuggestionsTable = ({
                     }
                   >
                     <i className="fa fa-trash" aria-hidden="true"></i> Delete
-                  </button>
+                  </ButtonStyled>
                 </TdStyled>
               </tr>
             );

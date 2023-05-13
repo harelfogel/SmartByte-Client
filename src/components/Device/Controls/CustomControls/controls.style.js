@@ -45,9 +45,6 @@ margin-top: 3rem;
 width: 30rem;
 `;
 
-
-
-
 export const RinseContainer = styled.div`
     display: flex;
     flex-direction: column;
@@ -65,6 +62,10 @@ export const LaundryTemperatureContainer = styled.div`
 export const LaundrySpinContainer = styled.div`
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: start-flex;
     margin-left: 1rem;
+`;
+
+export const SelectContainer = styled.div`
+    margin-left: 10px;
 `;
