@@ -15,7 +15,7 @@ import LocationDashboard from "./containers/LocationDashboard/LocationDashboard"
 import RulesDashboard from "./containers/RulesDashboard/RulesDashboard";
 import Header from "./containers/Header/Header";
 import Cookies from "js-cookie";
-import RoomDevices from "./containers/RoomsDashboard/RoomDevices/RoomDevices";
+import RoomDevices, { RoomDevicesWrapper } from "./containers/RoomsDashboard/RoomDevices/RoomDevices";
 import { Notification } from "./components/Notification/Notification";
 import { SuggestionsTable } from "./components/Suggestions/SuggestionsTable";
 import Insights from "./containers/Insights/Insights";

@@ -1,110 +1,123 @@
-import React, { useState,useEffect } from 'react'
-import styled from 'styled-components'
-import { ModeControl } from './ModeControl';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import styled from "styled-components";
 
 
-const TemperatureContainer = styled.div`
-    display: flex;
-    padding: 2rem;
-    transform: translateX(-3rem);
+// const TemperatureContainer = styled.div`
+//   display: flex;
+// //   padding: 1rem;
+// //   transform: translateX(-3rem);
+// border: 1px solid;
+// width: 10rem
+// `;
+
+const AcControlsSection = styled.div`
+  display: flex;
+  flex-direction: column;
 `;
+
 const StyledButton = styled.div`
-    width: 50px;
-    height: 50px;
-    // background-color: ${props => props.color};
-    // background-color: aqua;
-    margin: 10px;
-    text-align: center;
-    align-items: center;
-    // font-size: 22px;
-    box-shadow: 0px 0px 34px rgba(59, 89, 152, 0.2);
-    cursor: pointer;
+  width: 50px;
+  height: 50px;
+  // background-color: ${(props) => props.color};
+  // background-color: aqua;
+  margin: 10px;
+  text-align: center;
+  align-items: center;
+  // font-size: 22px;
+  box-shadow: 0px 0px 34px rgba(59, 89, 152, 0.2);
+  cursor: pointer;
 `;
 
 const TemperaturScreen = styled.div`
-    width: 50px;
-    height: 50px;
-    text-align: center;
-    align-items: center;
-
+  width: 30px;
+  height: 30px;
+  text-align: center;
+  align-items: center;
+  display: flex;
+  margin: 0.5rem;
 `;
 
-// const DeviceContent = styled.div`
-// // padding: 0.1rem 2rem 0;
-// width: 20px;
-// height: 20px;
-// // background-color: ${props => props.color};
-// background-color: aqua;
 
-// `;
+const TestButtong = styled.div`
+width: 35px;
+height: 19px;
+margin-right: 10px;
+margin-left: 10px;
+margin: 0.5rem;
+text-align: center;
+-webkit-box-align: center;
+align-items: center;
+box-shadow: rgba(59, 89, 152, 0.2) 0px 0px 34px;
+cursor: pointer;
+border: 1px solid;
+border-radius: 7px;
+align-items: center;
+text-align: center;
+display: block;
+}
+`;
 
-const SERVER_URL='http://localhost:3001';
 
 
-export const Temperature = ({temperature, onChangeValue}) => {
+
+
+
+
+
+const TemperatureContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+`;
+
+const TemperatureButton = styled.button`
+  background-color: white;
+//   border: none;
+  padding: 0.5rem 1rem;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+  border: 1px solid;
+  border-color: #f2f2f2;
+
+  &:hover {
+    background-color: #e6e6e6;
+  }
+`;
+
+const TemperatureValue = styled.span`
+  font-size: 18px;
+  font-weight: bold;
+`;
+
+export const Temperature = ({ temperature, onChangeValue, acState }) => {
   const [value, setValue] = useState(temperature);
-  const [mode, setMode] = useState('cool');
-  const [loading, setLoading] = useState(true);
-
-  const fetchCurrentMode = async () => {
-      try {
-          const response = await axios.get(`${SERVER_URL}/sensibo`);
-          console.log({response})
-          const currentMode = response.data.state.mode;
-          setMode(currentMode);
-          setLoading(false);
-      } catch (error) {
-          console.error('Error fetching current mode:', error);
-          setLoading(false);
-      }
-  };
-
-  useEffect(() => {
-      fetchCurrentMode();
-  }, []);
-
-  const updateMode = async (newMode) => {
-      try {
-          const deviceId = '9EimtVDZ'; 
-          const response = await axios.post(`${SERVER_URL}/sensibo/mode`, { deviceId, mode: newMode });
-          console.log('Mode updated successfully:', response.data);
-      } catch (error) {
-          console.error('Error updating mode:', error);
-      }
-  };
-
-  const onModeChange = async (newMode) => {
-      setMode(newMode);
-      await updateMode(newMode);
-  };
 
   const onIncrease = () => {
-      setValue(value + 1);
-      onChangeValue(value + 1);
+    setValue(value + 1);
+    onChangeValue(value + 1);
   };
 
   const onDecrease = () => {
-      setValue(value - 1);
-      onChangeValue(value - 1);
+    setValue(value - 1);
+    onChangeValue(value - 1);
   };
 
   return (
+    <AcControlsSection>
       <TemperatureContainer>
-          <StyledButton onClick={onDecrease}>
-              <p>-</p>
-          </StyledButton>
-          <TemperaturScreen>
-              <p>°{value}</p>
-          </TemperaturScreen>
-          <StyledButton onClick={onIncrease}>
-              <p>+</p>
-          </StyledButton>
-          {loading ? (
-              <p>Loading mode...</p>
-          ) : (
-              <ModeControl mode={mode} onModeChange={onModeChange} />
-          )}
+        <TemperatureButton onClick={onDecrease}>
+          -
+        </TemperatureButton>
+        <TemperatureValue>
+          <p>°{value}</p>
+        </TemperatureValue>
+        <TemperatureButton onClick={onIncrease}>
+          +
+        </TemperatureButton>
       </TemperatureContainer>
+    </AcControlsSection>
   );
-}
+};

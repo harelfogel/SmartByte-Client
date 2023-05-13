@@ -15,7 +15,6 @@ export const fetchRules = async () => {
 export const updateRule = async (id, updatedData) => {
   try{
     const response = await axios.post(`http://localhost:3001/rules/${id}`, updatedData);
-    // console.log("Yovel response",{response});
     return true;
   }catch(err){
     console.log("Error updating rule:", err.message);

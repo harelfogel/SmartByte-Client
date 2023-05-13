@@ -18,6 +18,7 @@ import {
   TableContainer
 } from "../Suggestions/suggestions.styles";
 import { ActionContainer, ActionTdStyled, ActiveCellStyled, Circle, RuleCell, RuleInput, RuleText, TrStyled } from "./rules.styles";
+import { SERVER_URL } from "../../consts";
 
 
 // const label = { inputProps: { 'aria-label': 'Switch demo' } };
@@ -56,7 +57,7 @@ const RulesTable = ({ rules, onRuleClick, selectedRule, searchText, userRole }) 
 
   const deleteRule = async (id) => {
     try {
-      const response = await axios.delete(`${SERVER_URL}/${id}`);
+      const response = await axios.delete(`${SERVER_URL}/rules/${id}`);
       if (response.status === 200) {
         const newRules = rules.filter((rule) => rule.id !== id);
         setCurrentRules(newRules);
