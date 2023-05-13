@@ -5,7 +5,7 @@ export const TableContainer = styled.div`
   width: 80%;
   margin: auto;
   justify-content: center;
-  padding-top: 4rem;
+  padding-top: 1rem;
   flex-direction: column;
 `;
 
@@ -77,6 +77,7 @@ export const DeviceCellContent = styled.div`
 
 export const TitleStyled = styled.p`
   font-size: 1.5rem;
+  padding-top:2rem;
 `;
 
 export const TableContent = styled.div`
@@ -132,4 +133,10 @@ export const ButtonStyled = styled.div`
     opacity: 1;
   }
   color: #3b5998;
+`;
+
+export const PaginationContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  padding: 10px;
 `;
