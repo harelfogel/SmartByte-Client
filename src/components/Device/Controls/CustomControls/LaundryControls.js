@@ -12,15 +12,31 @@ import { MenuItem, Select } from "@material-ui/core";
 import axios from "axios";
 import { SERVER_URL } from "../../../../consts";
 import _ from 'lodash';
+import { LaundryControlsContainer } from "./controls.style";
 import styled from "styled-components";
 
-const LaundryControlsContainer = styled.div`
+
+
+const RinseContainer = styled.div`
     display: flex;
-    justify-content: space-around;
-    margin-top: 3rem;
-    width: 30rem;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-right: 1rem;
 `;
 
+const LaundryTemperatureContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin: 1 1rem;
+`;
+
+const LaundrySpinContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-left: 1rem;
+`;
 
 
 export const LaundryControls = () => {
@@ -80,17 +96,10 @@ export const LaundryControls = () => {
 
   return (
     <LaundryControlsContainer>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "flex-start",
-          marginRight: "1rem",
-        }}
-      >
-        <p style={{ fontWeight: "bold", marginBottom: "1.5rem" }}>Rinse:</p>
+      <RinseContainer>
+        <p style={{  marginBottom: "1.5rem" }}>Rinse:</p>
         <div style={{ display: "flex", alignItems: "center" }}>
-          <FontAwesomeIcon icon={faWater} size="2x" />
+          <FontAwesomeIcon icon={faWater} size="1x" />
           <Select
             value={_.get(currentLaundryDetails,'rinse', '2')}
             onChange={(e) => updateLaundryDetails("rinse", e.target.value)}
@@ -102,20 +111,13 @@ export const LaundryControls = () => {
             ))}
           </Select>
         </div>
-      </div>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "flex-start",
-          margin: "1 1rem",
-        }}
-      >
-        <p style={{ fontWeight: "bold", marginBottom: "1.5rem" }}>
+      </RinseContainer>
+      <LaundryTemperatureContainer>
+        <p style={{  marginBottom: "1.5rem" }}>
           Temperature:
         </p>
-        <div style={{ display: "flex", alignItems: "flex-start" }}>
-          <FontAwesomeIcon icon={faThermometerHalf} size="2x" />
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <FontAwesomeIcon icon={faThermometerHalf} size="1x" />
           <Select
             value={_.get(currentLaundryDetails,'temperature', '60')}
             onChange={(e) =>
@@ -129,18 +131,11 @@ export const LaundryControls = () => {
             ))}
           </Select>
         </div>
-      </div>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          marginLeft: "1rem",
-        }}
-      >
-        <p style={{ fontWeight: "bold", marginBottom: "1.5rem" }}>Spin:</p>
+      </LaundryTemperatureContainer>
+      <LaundrySpinContainer >
+        <p style={{ marginBottom: "1.5rem" }}>Spin:</p>
         <div style={{ display: "flex", alignItems: "center" }}>
-          <FontAwesomeIcon icon={faCircleNotch} size="2x" />
+          <FontAwesomeIcon icon={faCircleNotch} size="1x" />
           <Select
             value={_.get(currentLaundryDetails,'spin', '800 rpm')}
             onChange={(e) => updateLaundryDetails("spin", e.target.value)}
@@ -152,7 +147,7 @@ export const LaundryControls = () => {
             ))}
           </Select>
         </div>
-      </div>
+      </LaundrySpinContainer>
     </LaundryControlsContainer>
   );
 };
