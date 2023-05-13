@@ -17,6 +17,7 @@ import {
   LaundrySpinContainer,
   LaundryTemperatureContainer,
   RinseContainer,
+  SelectContainer,
 } from "./controls.style";
 import styled from "styled-components";
 
@@ -74,50 +75,56 @@ export const LaundryControls = () => {
         <p style={{ marginBottom: "1.5rem" }}>Rinse:</p>
         <div style={{ display: "flex", alignItems: "center" }}>
           <FontAwesomeIcon icon={faWater} size="1x" />
-          <Select
-            value={_.get(currentLaundryDetails, "rinse", "2")}
-            onChange={(e) => updateLaundryDetails("rinse", e.target.value)}
-          >
-            {rinseOptions.map((rinse) => (
-              <MenuItem value={rinse} key={rinse}>
-                {rinse} time{rinse > 1 ? "s" : ""}
-              </MenuItem>
-            ))}
-          </Select>
+          <SelectContainer>
+            <Select
+              value={_.get(currentLaundryDetails, "rinse", "2")}
+              onChange={(e) => updateLaundryDetails("rinse", e.target.value)}
+            >
+              {rinseOptions.map((rinse) => (
+                <MenuItem value={rinse} key={rinse}>
+                  {rinse} time{rinse > 1 ? "s" : ""}
+                </MenuItem>
+              ))}
+            </Select>
+          </SelectContainer>
         </div>
       </RinseContainer>
       <LaundryTemperatureContainer>
         <p style={{ marginBottom: "1.5rem" }}>Temperature:</p>
         <div style={{ display: "flex", alignItems: "center" }}>
           <FontAwesomeIcon icon={faThermometerHalf} size="1x" />
-          <Select
-            value={_.get(currentLaundryDetails, "temperature", "60")}
-            onChange={(e) =>
-              updateLaundryDetails("temperature", e.target.value)
-            }
-          >
-            {temperatureOptions.map((temp) => (
-              <MenuItem value={temp} key={temp}>
-                {temp}°C
-              </MenuItem>
-            ))}
-          </Select>
+          <SelectContainer>
+            <Select
+              value={_.get(currentLaundryDetails, "temperature", "60")}
+              onChange={(e) =>
+                updateLaundryDetails("temperature", e.target.value)
+              }
+            >
+              {temperatureOptions.map((temp) => (
+                <MenuItem value={temp} key={temp}>
+                  {temp}°C
+                </MenuItem>
+              ))}
+            </Select>
+          </SelectContainer>
         </div>
       </LaundryTemperatureContainer>
       <LaundrySpinContainer>
         <p style={{ marginBottom: "1.5rem" }}>Spin:</p>
         <div style={{ display: "flex", alignItems: "center" }}>
           <FontAwesomeIcon icon={faCircleNotch} size="1x" />
-          <Select
-            value={_.get(currentLaundryDetails, "spin", "800 rpm")}
-            onChange={(e) => updateLaundryDetails("spin", e.target.value)}
-          >
-            {spinOptions.map((spin) => (
-              <MenuItem value={spin} key={spin}>
-                {spin}
-              </MenuItem>
-            ))}
-          </Select>
+          <SelectContainer>
+            <Select
+              value={_.get(currentLaundryDetails, "spin", "800 rpm")}
+              onChange={(e) => updateLaundryDetails("spin", e.target.value)}
+            >
+              {spinOptions.map((spin) => (
+                <MenuItem value={spin} key={spin}>
+                  {spin}
+                </MenuItem>
+              ))}
+            </Select>
+          </SelectContainer>
         </div>
       </LaundrySpinContainer>
     </LaundryControlsContainer>
