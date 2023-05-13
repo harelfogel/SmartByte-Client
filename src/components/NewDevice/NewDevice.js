@@ -127,6 +127,10 @@ const ShowControlsText = styled.span`
   margin-left: 10px;
 `;
 
+const H2 = styled.p`
+  font-size: 1.3rem;
+`;
+
 const ShowControls = ({ setOpenControlsCard, openControlsCard }) => {
 
   const [rotate, setRotate] = useState(false);
@@ -203,7 +207,7 @@ export const NewDevice = ({ device, onToggleDeviceSwitch }) => {
       isLaundryDevice={isLaundryDevice}
     >
       <TopRow>
-        <h2>{name}</h2>
+        <H2>{name}</H2>
         <Switch onChange={(e) => onDeviceChange(e)} checked={state} />
       </TopRow>
       {openSeccessSnackBar && (

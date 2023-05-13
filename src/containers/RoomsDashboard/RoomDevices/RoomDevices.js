@@ -42,6 +42,10 @@ const DEVICED_IDS = {
   HEATER: '061751378caab5219d31'
 }
 
+const H1 = styled.p`
+  font-size: 2rem;
+`;
+
 const laundryToggle = async ({ state, id }) => {
   try {
     const response = await axios.post(`${SERVER_URL}/smartthings/toggle`, {
@@ -130,7 +134,7 @@ const RoomDevices = ({
         <FontAwesomeIcon icon={faChevronLeft} />
         <span>Back to Rooms</span>
       </NavLinkStyled>
-      <h1>{_.get(room, 'name')}</h1>
+      <H1>{_.get(room, 'name')}</H1>
       {/* <div className={classes.RoomDevices}> */}
       <DevicesSection>
         {devices.map((device) => {
