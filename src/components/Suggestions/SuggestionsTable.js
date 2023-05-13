@@ -25,8 +25,6 @@ import {
   TitleStyled,
 } from "./suggestions.styles";
 
-
-
 export const SuggestionsTable = ({ setNewSuggestionsCount }) => {
   const [suggestions, setSuggestions] = useState([]);
 
@@ -78,14 +76,21 @@ export const SuggestionsTable = ({ setNewSuggestionsCount }) => {
                   </Tooltip>
                 </TdStyled>
                 <TdStyled>
-                  {/* <button
-                    className="custom-button add-button"
-                    onClick={() => addSuggestedRule(rule)}
+                  <ButtonStyled
+                    className="custom-button"
+                    onClick={() => {
+                      addSuggestedRule(
+                        rule,
+                        suggestion.id,
+                        suggestions,
+                        setSuggestions
+                      );
+                    }}
                   >
                     <i className="fa fa-plus" aria-hidden="true"></i> Add
-                  </button>
-                  <button
-                    className="custom-button delete-button"
+                  </ButtonStyled>
+                  <ButtonStyled
+                    className="custom-button"
                     onClick={() =>
                       onDeleteSuggestion(
                         suggestion.id,
@@ -94,12 +99,6 @@ export const SuggestionsTable = ({ setNewSuggestionsCount }) => {
                       )
                     }
                   >
-                    <i className="fa fa-trash" aria-hidden="true"></i> Delete
-                  </button> */}
-                  <ButtonStyled className="custom-button">
-                    <i className="fa fa-plus" aria-hidden="true"></i> Add
-                  </ButtonStyled>
-                  <ButtonStyled className="custom-button">
                     <i className="fa fa-trash" aria-hidden="true"></i> Delete
                   </ButtonStyled>
                 </TdStyled>
