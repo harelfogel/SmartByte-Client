@@ -15,6 +15,7 @@ import styled from "styled-components";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import UserContext from "../../contexts/UserContext";
 import { Switch } from "@material-ui/core";
+import { SERVER_URL } from "../../consts";
 
 // Update the AddRulesSectionStyled component
 const AddRulesSectionStyled = styled.div`
@@ -44,13 +45,49 @@ const RulesDashboard = ({ addRule }) => {
   const { user } = useContext(UserContext);
   const userRole = user?.role || "User"; // Default role to "User" if user object is not available
 
+  const inverseSeasonMap = {
+    '1': 'winter',
+    '2': 'spring',
+    '3': 'summer',
+    '4': 'autumn'
+  };
+  const inverseHourMap = {
+    '1': 'morning',
+    '2': 'afternoon',
+    '3': 'evening'
+  };
+
+  const transformRuleInput = (inputValue) => {
+    let transformedInput = inputValue;
+    transformedInput = transformedInput.replace(/season\s*(\!=|==)\s*\d/, (match) => {
+      const [_, comparator, season] = match.split(" ");
+      return `season ${comparator} ${inverseSeasonMap[season] || season}`;
+    });
+    transformedInput = transformedInput.replace(/hour\s*(\!=|==)\s*\d/, (match) => {
+      const [_, comparator, hour] = match.split(" ");
+      return `hour ${comparator} ${inverseHourMap[hour] || hour}`;
+    });
+
+    console.log({ transformedInput })
+
+    return transformedInput;
+  }
+
+
 
   useEffect(() => {
     const fetchAllRules = async () => {
-      const fetchedRules = await fetchRules();
+      let fetchedRules = await fetchRules();
+      // Transform fetched rules
+      fetchedRules = fetchedRules.map(rule => {
+        rule.rule = transformRuleInput(rule.rule);
+        return rule;
+      });
       console.log({ fetchedRules });
+
       setRules(fetchedRules);
     };
+
 
     fetchAllRules();
   }, []);
@@ -62,15 +99,15 @@ const RulesDashboard = ({ addRule }) => {
   const onAddRuleClick = () => {
     let url = `${process.env.REACT_APP_SERVER_URL}`;
     axios
-      .post(`http://localhost:3001/rules`, { rule,isStrict })
+      .post(`${SERVER_URL}/rules`, { rule, isStrict })
       .then((response) => {
         // setModalMessage("Rule is activated");
         // setShowModal(true);
         setOpenSuccessSnackbar(true);
         setErrorMessage("");
-  
+
         // If userRole is 'User', notify the admin
-        if(userRole === "User"){
+        if (userRole === "User") {
           notifyAdmin("User created a rule", `A new rule "${rule}" has been created by the user.`);
         }
       })

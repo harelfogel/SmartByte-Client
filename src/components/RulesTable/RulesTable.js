@@ -8,7 +8,7 @@ import classes from "./RulesTable.module.scss";
 // import Switch from '@mui/material/Switch';
 import { toast } from "react-toastify";
 import "font-awesome/css/font-awesome.min.css";
-import {updateRule } from "../../services/rules.service";
+import { updateRule } from "../../services/rules.service";
 import { SnackBar } from "../Snackbar/SnackBar";
 import EditIcon from "@material-ui/icons/Edit";
 import {
@@ -52,7 +52,7 @@ const RulesTable = ({ rules, onRuleClick, selectedRule, searchText, userRole }) 
       console.error("Failed to send email notification to admin:", error);
     }
   };
-  
+
 
   const deleteRule = async (id) => {
     try {
@@ -86,7 +86,7 @@ const RulesTable = ({ rules, onRuleClick, selectedRule, searchText, userRole }) 
               isSelected={rule.id === selectedRule}
               isSearched={isSearched(rule)}
               classes={classes}
-              isStrict={rule.isStrict} 
+              isStrict={rule.isStrict}
 
             >
               <ActiveCellStyled>
@@ -102,7 +102,6 @@ const RulesTable = ({ rules, onRuleClick, selectedRule, searchText, userRole }) 
                       editing={editedRule === rule.id}
                       defaultValue={editedRule === rule.id ? rule.rule : ""}
                       onBlur={async (e) => {
-                        console.log('im in the onZBLur function');
                         setEditedRule(null);
                         const inputValue = e.target.value;
                         if (await updateRule(rule.id, { rule: inputValue })) {
@@ -117,7 +116,7 @@ const RulesTable = ({ rules, onRuleClick, selectedRule, searchText, userRole }) 
                           setOpenFailureSnackbar(true);
                         }
 
-                        if(userRole === "User"){
+                        if (userRole === "User") {
                           console.log('before calling fuctnion in notfy admin');
                           await notifyAdmin("User created a rule", `The rule "${rule.rule}"has been modified by the user.`)
                         }
