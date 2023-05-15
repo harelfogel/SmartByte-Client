@@ -34,7 +34,9 @@ export const SuggestionsTable = ({ setNewSuggestionsCount }) => {
   const [currentPage, setCurrentPage] = useState(1);
   useEffect(() => {
     const fetchData = async () => {
+      console.log('fetch data for suggestiona!');
       const fetchedSuggestions = await getSuggestions();
+      console.log({ fetchedSuggestions })
       setSuggestions(fetchedSuggestions);
     };
     fetchData();
