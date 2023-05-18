@@ -67,9 +67,6 @@ const RulesDashboard = ({ addRule }) => {
       const [_, comparator, hour] = match.split(" ");
       return `hour ${comparator} ${inverseHourMap[hour] || hour}`;
     });
-
-    console.log({ transformedInput })
-
     return transformedInput;
   }
 

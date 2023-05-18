@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { connect } from "react-redux";
 import { toggleSideDrawer } from "./../../store/ui/ui.actions";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -16,9 +16,14 @@ const Header = ({ toggleSideDrawer, user, onLogout, newSuggestionsCount }) => {
   const firstName = user ? user.fullName.split(' ')[0] : '';
   const greeting = getGreeting();
   const location = useLocation();
+  const navigate = useNavigate();
 
   const isCurrentPage = (path) => {
     return location.pathname.startsWith(path);
+  };
+
+  const handleRoomsClick = () => {
+    navigate("/rooms");
   };
 
   return (
@@ -32,9 +37,10 @@ const Header = ({ toggleSideDrawer, user, onLogout, newSuggestionsCount }) => {
         <div className={classes.Navigation}>
           <Navigation>
             <NavigationItem
-              to="/rooms-dashboard"
+              to="/rooms"
+              onClick={handleRoomsClick}
               activeClassName={classes.ActiveNavLink}
-              className={isCurrentPage('/rooms-dashboard') ? classes.ActiveNavLink : ''}
+              className={isCurrentPage('/rooms') ? classes.ActiveNavLink : ''}
             >
               Rooms
             </NavigationItem>
@@ -57,7 +63,7 @@ const Header = ({ toggleSideDrawer, user, onLogout, newSuggestionsCount }) => {
               activeClassName={classes.ActiveNavLink}
               className={isCurrentPage('/suggestions') ? classes.ActiveNavLink : ''}
             >
-              Suggestions <NewSuggestionsCount value={newSuggestionsCount}/>
+              Suggestions <NewSuggestionsCount value={newSuggestionsCount} />
             </NavigationItem>
             <NavigationItem
               to="/insights"

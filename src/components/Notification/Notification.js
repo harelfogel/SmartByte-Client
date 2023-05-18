@@ -1,46 +1,32 @@
 import React, { useEffect, useState } from "react";
-import { connectWebSocket, sendWebSocketMessage } from "./websocket";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { getSuggestions } from "../Suggestions/suggestions.service";
+import { eventEmitter } from '../../WebSocket/ws.js'; // import eventEmitter instead of ws
 
-const WebSocket = window.WebSocket;
-
-export const Notification = ({setNewSuggestionsCount, newSuggestionsCount}) => {
+export const Notification = ({ setNewSuggestionsCount, newSuggestionsCount }) => {
   const [notification, setNotification] = useState("");
   const [allowAudioPlayback, setAllowAudioPlayback] = useState(false);
 
-
-
-
-
   useEffect(() => {
-    const socket = new WebSocket("ws://localhost:8080");
-
-    socket.addEventListener("message", handleMessageReceived);
-
-    return () => {
-      socket.removeEventListener("message", handleMessageReceived);
-    };
-  }, []);
-
-  function handleMessageReceived(event) {
-    const message = event.data;
-    setNotification(message);
-    toast.info(event.data);
-    if (allowAudioPlayback) {
-      const notificationSound = new Audio(
-        "/assets/mixkit-bubble-pop-up-alert-notification-2357.wav"
-      );
-      notificationSound.play();
+    function handleMessageReceived(message) {
+      setNotification(message);
+      toast.info(message);
+      if (allowAudioPlayback) {
+        const notificationSound = new Audio(
+          "/assets/mixkit-bubble-pop-up-alert-notification-2357.wav"
+        );
+        notificationSound.play();
+      }
+      if (message !== 'Welcome to the WebSocket Server!')
+        setNewSuggestionsCount(newSuggestionsCount + 1);
     }
-    if(message !== 'Welcome to the WebSocket Server!')
-      setNewSuggestionsCount(newSuggestionsCount + 1);
-  }
 
-  useEffect(() => {
-    console.log({ notification });
-  }, [notification]);
+    // eventEmitter.on('motionDetected', handleMessageReceived);
+
+    // return () => {
+    //   eventEmitter.off('motionDetected', handleMessageReceived);
+    // };
+  }, [newSuggestionsCount, allowAudioPlayback]);
 
   const handleButtonClick = () => {
     setAllowAudioPlayback(true);
@@ -48,7 +34,9 @@ export const Notification = ({setNewSuggestionsCount, newSuggestionsCount}) => {
     notificationSound.play();
   };
 
-  connectWebSocket();
+  useEffect(() => {
+    console.log({ notification });
+  }, [notification]);
 
   return (
     <div>
