@@ -16,7 +16,7 @@ export const TableStyled = styled.table`
   margin-bottom: 2rem;
   margin: auto;
 
-  @media (max-width: ${TABLET_WIDTH}) {
+  @media (max-width: ${TABLET_WIDTH}px) {
     width: 100%;
   }
 `;
@@ -138,7 +138,7 @@ export const ButtonStyled = styled.div`
   }
   color: #3b5998;
 
-  @media (max-width: ${TABLET_WIDTH}) {
+  @media (max-width: ${TABLET_WIDTH}px) {
     font-size: 12px;
     min-width: 30px;
     min-height: 25px;

@@ -23,7 +23,7 @@ const iconMapper = {
 };
 
 const deviceIconMapper = {
-    "AC": { icon: <FontAwesomeIcon color='blue' className={styles.animatedIcon} icon={faWind} />, name: "AC" },
+    "AC": { icon: <FontAwesomeIcon  icon={faWind} />, name: "AC" },
     "fan": { icon: <FontAwesomeIcon icon={faFan} />, name: "Fan" },
     "laundry": { icon: <FontAwesomeIcon icon={faTshirt} />, name: "Laundry Machine" },
     "heater": { icon: <FontAwesomeIcon icon={faTemperatureHigh} />, name: "Heater" },
@@ -182,7 +182,7 @@ const HouseMap = ({ onClose }) => {
                             );
                         })}
                     </div>
-                    {true &&
+                    {room.motionDetected &&
                         <div className={styles.motionIcon}>
                             <FontAwesomeIcon icon={faUser} size="2x" color="red" className={styles.flicker} />
                         </div>

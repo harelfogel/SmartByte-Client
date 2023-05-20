@@ -29,6 +29,7 @@ import {
   ModalStyled,
 } from "./suggestions.styles";
 import { RuleModal } from "./RuleModal";
+import { TABLET_HEIGHT, TABLET_WIDTH } from "../../consts";
 
 const itemsPerPage = 7; // Define how many items you want per page
 export const SuggestionsTable = ({ setNewSuggestionsCount }) => {
@@ -36,8 +37,29 @@ export const SuggestionsTable = ({ setNewSuggestionsCount }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedRule, setSelectedRule] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isClickable, setIsClickable] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const { innerWidth, innerHeight } = window;
+      setIsClickable(
+        innerWidth <= TABLET_WIDTH && innerHeight <= TABLET_HEIGHT
+      );
+    };
+
+    handleResize();
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   const handleRuleClick = (rule) => {
+    console.log("Yovel", isClickable);
+    if (!isClickable) return;
+
     setSelectedRule(rule);
     setIsModalOpen(true);
   };
