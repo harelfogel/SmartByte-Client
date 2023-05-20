@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { forwardRef, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { ButtonStyled } from "./suggestions.styles";
 
@@ -42,6 +42,13 @@ export const ButtonStyledNew = styled.div`
 
 export const RuleModal = ({ selectedRule, setIsModalOpen }) => {
 
+
+    const handleCopy = () => {
+        const ruleText = selectedRule;
+        navigator.clipboard.writeText(ruleText);
+        setIsModalOpen(false);
+    }
+
     const [showContent, setShowContent] = useState(false);
 
     useEffect(() => {
@@ -55,10 +62,11 @@ export const RuleModal = ({ selectedRule, setIsModalOpen }) => {
         
       {selectedRule}
       <ModalButtonsContainer>
-        <ButtonStyledNew onClick={() => console.log("click")}>Copy</ButtonStyledNew>
+        <ButtonStyledNew onClick={handleCopy}>Copy</ButtonStyledNew>
         <ButtonStyledNew onClick={() => setIsModalOpen(false)}>Close</ButtonStyledNew>
       </ModalButtonsContainer>
     </RuleModalContainer>}
     </>
   );
 };
+
