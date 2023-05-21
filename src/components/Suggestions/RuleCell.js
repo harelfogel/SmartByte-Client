@@ -14,6 +14,7 @@ const RuleCellStyled = styled.div`
   flex-direction: row;
   display: inline-flex;
   flex-direction: row;
+  cursor: pointer;
 `;
 
 const TextStyled = styled.div`
