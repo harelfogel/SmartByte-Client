@@ -39,7 +39,6 @@ const sensorIconMapper = {
 
 const Item = ({ device, map }) => {
     const deviceIcon = map[device];
-  
     return (
       <div style={{ display: 'flex', alignItems: 'center', height: '20px' }}>
         {_.get(deviceIcon,'icon')}

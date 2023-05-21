@@ -43,7 +43,7 @@ export const SuggestionsTable = ({ setNewSuggestionsCount }) => {
     const handleResize = () => {
       const { innerWidth, innerHeight } = window;
       setIsClickable(
-        innerWidth <= TABLET_WIDTH && innerHeight <= TABLET_HEIGHT
+        innerWidth <= 5000 && innerHeight <= TABLET_HEIGHT
       );
     };
 
@@ -165,7 +165,7 @@ export const SuggestionsTable = ({ setNewSuggestionsCount }) => {
       </PaginationContainer>
 
       {isModalOpen && (
-        <ModalStyled isOpen={isModalOpen}>
+        <ModalStyled isOpen={isModalOpen} className={isModalOpen ? '' : 'closing'}>
           <RuleModal
             selectedRule={selectedRule}
             setIsModalOpen={setIsModalOpen}

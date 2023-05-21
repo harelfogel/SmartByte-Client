@@ -152,18 +152,41 @@ export const PaginationContainer = styled.div`
   padding: 10px;
 `;
 
+
 const fadeIn = keyframes`
-  from {
+  0% {
     opacity: 0;
     width: 0;
     height: 0;
   }
-  to {
+  50% {
+    opacity: 1;
+    width: 45%;
+    height: 40%;
+  }
+  100% {
     opacity: 1;
     width: 40%; /* Final width value */
     height: 35%; /* Final height value */
   }
 `;
+
+
+
+const fadeOut = keyframes`
+from {
+  opacity: 1;
+  width: 40%; /* Final width value */
+  height: 35%; /* Final height value */
+}
+to {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+`;
+
+
 
 export const ModalStyled = styled(Modal)`
   position: fixed;
@@ -172,18 +195,24 @@ export const ModalStyled = styled(Modal)`
   transform: translate(-50%, -50%);
   background: #fff;
   border-radius: 4px;
-  width: 40%; // reduce the width
-  height: 35%; // reduce the height
+  width: 40%; 
+  height: 35%; 
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
   margin: 1rem;
   overflow: auto;
   display: flex;
   justify-content: center;
   border: none;
+  outline: none; 
 
   //animation
-  opacity: 0; /* Start with 0 opacity */
-  width: 0; /* Start with 0 width */
-  height: 0; /* Start with 0 height */
-  animation: ${fadeIn} 0.3s ease-in-out forwards; /* Apply the fade-in animation */
+  opacity: 0; 
+  width: 0;
+  height: 0;
+  animation: ${fadeIn} 0.3s ease-in-out forwards; 
+
+  &.closing {
+    animation: ${fadeOut} 0.3s ease-in-out forwards;
+  }
 `;
+

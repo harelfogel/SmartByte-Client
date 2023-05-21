@@ -7,15 +7,14 @@ export const RuleModalContainer = styled.div`
   align-items: center;
   justify-content: center;
   flex-direction: column;
-//   margin-top: 40px;
+  //   margin-top: 40px;
 `;
 
 export const ModalButtonsContainer = styled.div`
-    margin-top: 20px;
-    display: flex;
-    gap: 10px;
-`
-
+  margin-top: 20px;
+  display: flex;
+  gap: 10px;
+`;
 
 export const ButtonStyledNew = styled.div`
   background-color: #f6f7ff;
@@ -41,32 +40,31 @@ export const ButtonStyledNew = styled.div`
 `;
 
 export const RuleModal = ({ selectedRule, setIsModalOpen }) => {
+  const handleCopy = () => {
+    const ruleText = selectedRule;
+    navigator.clipboard.writeText(ruleText);
+    setIsModalOpen(false);
+  };
 
+  const [showContent, setShowContent] = useState(false);
 
-    const handleCopy = () => {
-        const ruleText = selectedRule;
-        navigator.clipboard.writeText(ruleText);
-        setIsModalOpen(false);
-    }
-
-    const [showContent, setShowContent] = useState(false);
-
-    useEffect(() => {
-        setTimeout(() => setShowContent(true), 270)
-    },[])
+  useEffect(() => {
+    setTimeout(() => setShowContent(true), 270);
+  }, []);
 
   return (
     <>
-    
-    { showContent &&<RuleModalContainer>
-        
-      {selectedRule}
-      <ModalButtonsContainer>
-        <ButtonStyledNew onClick={handleCopy}>Copy</ButtonStyledNew>
-        <ButtonStyledNew onClick={() => setIsModalOpen(false)}>Close</ButtonStyledNew>
-      </ModalButtonsContainer>
-    </RuleModalContainer>}
+      {showContent && (
+        <RuleModalContainer>
+          {selectedRule}
+          <ModalButtonsContainer>
+            <ButtonStyledNew onClick={handleCopy}>Copy</ButtonStyledNew>
+            <ButtonStyledNew onClick={() => setIsModalOpen(false)}>
+              Close
+            </ButtonStyledNew>
+          </ModalButtonsContainer>
+        </RuleModalContainer>
+      )}
     </>
   );
 };
-
