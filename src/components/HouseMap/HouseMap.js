@@ -10,7 +10,7 @@ import Modal from 'react-modal';
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { Notification } from '../Notification/Notification';
 import { eventEmitter } from '../../WebSocket/ws.js';
-
+import _ from 'lodash';
 
 Modal.setAppElement('#root');
 const iconMapper = {
@@ -23,7 +23,7 @@ const iconMapper = {
 };
 
 const deviceIconMapper = {
-    "AC": { icon: <FontAwesomeIcon icon={faWind} />, name: "AC" },
+    "AC": { icon: <FontAwesomeIcon  icon={faWind} />, name: "AC" },
     "fan": { icon: <FontAwesomeIcon icon={faFan} />, name: "Fan" },
     "laundry": { icon: <FontAwesomeIcon icon={faTshirt} />, name: "Laundry Machine" },
     "heater": { icon: <FontAwesomeIcon icon={faTemperatureHigh} />, name: "Heater" },
@@ -37,6 +37,24 @@ const sensorIconMapper = {
     "moition": { icon: <FontAwesomeIcon icon={faBroadcastTower} size="3x" />, name: "Motion" },
 };
 
+const Item = ({ device, map }) => {
+    const deviceIcon = map[device];
+    return (
+      <div style={{ display: 'flex', alignItems: 'center', height: '20px' }}>
+        {_.get(deviceIcon,'icon')}
+        <p style={{ marginLeft: '10px' }}>{_.get(deviceIcon,'name')}</p>
+      </div>
+    );
+  };
+  
+
+const ItemsList = ({devices, map}) => {
+    return (
+        devices.map(device => {
+           return <Item device={device} map={map} />
+        })
+    )
+}
 
 const HouseMap = ({ onClose }) => {
     const [rooms, setRooms] = useState([]);
@@ -68,6 +86,7 @@ const HouseMap = ({ onClose }) => {
 
     useEffect(() => {
         const handleMotionDetected = (roomId) => {
+            console.log("Yovel", {roomId})
             showPersonIcon(roomId);
         };
 
@@ -135,18 +154,11 @@ const HouseMap = ({ onClose }) => {
             {rooms.map((room) => (
                 <div className={`${styles.room} ${styles[room.name.toLowerCase().replace(/\s/g, "-")]}`} key={room.id}>
                     <div className={styles.roomHeader}>
-                        <h3>{room.name}</h3>
+                        <p style={{marginRight:'10px', marginLeft: '10px', fontSize: '20px'}}>{room.name}</p>
                         {iconMapper[room.icon]}
                     </div>
                     <div className={styles.devices}>
-                        {room.devices.map((device, index) => (
-                            deviceIconMapper[device] && (
-                                <div key={index}>
-                                    <p>{deviceIconMapper[device].name}</p>
-                                    {deviceIconMapper[device].icon}
-                                </div>
-                            )
-                        ))}
+                        <ItemsList devices={room.devices} map={deviceIconMapper} />
                     </div>
                     <div className={styles.sensors}>
                         {Object.entries(room.sensors).map(([sensorId, sensorName], index) => {
@@ -158,20 +170,20 @@ const HouseMap = ({ onClose }) => {
                             const color = isActive ? "green" : "red";
 
                             return (
-                                <div key={index}>
-                                    <p>{sensor.name}</p>
+                                <div key={index} style={{display: 'flex', alignItems: 'center', height: '30px'}}>
                                     <FontAwesomeIcon
                                         icon={sensor.icon.props.icon}
                                         color={color}
                                         className={isActive ? styles.animatedIcon : ""}
-                                    />
+                                        />
+                                        <p style={{marginRight: '10px', marginLeft: '10px'}}>{sensor.name}</p>
                                 </div>
                             );
                         })}
                     </div>
                     {room.motionDetected &&
                         <div className={styles.motionIcon}>
-                            <FontAwesomeIcon icon={faUser} size="3x" color="red" className={styles.flicker} />
+                            <FontAwesomeIcon icon={faUser} size="2x" color="red" className={styles.flicker} />
                         </div>
                     }
 

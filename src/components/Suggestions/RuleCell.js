@@ -14,6 +14,7 @@ const RuleCellStyled = styled.div`
   flex-direction: row;
   display: inline-flex;
   flex-direction: row;
+  cursor: pointer;
 `;
 
 const TextStyled = styled.div`
@@ -43,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
     padding: '8px',
   },
 }));
-export const RuleCell = forwardRef(({ children }, ref) => {
+export const RuleCell = forwardRef(({ children, onClick }, ref) => {
   const [isTooltipOpen, setIsTooltipOpen] = useState(false);
 
   const divRef = useRef(null);
@@ -56,7 +57,7 @@ export const RuleCell = forwardRef(({ children }, ref) => {
     setTimeout(() => setIsTooltipOpen(false), 1000);
   };
   return (
-    <RuleCellStyled>
+    <RuleCellStyled onClick={() => onClick(children)}>
       <Tooltip title={children}>
         <TextStyled ref={divRef}>{children}</TextStyled>
       </Tooltip>

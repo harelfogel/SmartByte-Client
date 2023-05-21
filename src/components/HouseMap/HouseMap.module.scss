@@ -56,12 +56,15 @@
 .roomHeader {
     align-self: flex-start;
     order: -5; // This will push it to the top
+    display: flex;
+    align-items: center;
 }
 
 .sensors {
     position: absolute;
     top: 0;
     right: 0;
+    // display: flex;
 }
 
 @keyframes flicker {
@@ -73,13 +76,14 @@
   .motionIcon {
     display: flex;
     justify-content: center;
-    align-items: center;
+    // align-items: center;
     height: 100%;
     width: 100%;
     position: absolute;
-    top: 0;
-    left: 0;
-  
+    // bottom: 0;
+    left: 120px;
+    top: 170px;
+    
     .flicker {
       animation: flicker 1s infinite;
     }
@@ -154,9 +158,9 @@
 
 .kitchen { grid-area: 1 / 1 / 2 / 2; }
 .living-room { grid-area: 1 / 2 / 2 / 3; }
-.bedroom { grid-area: 2 / 1 / 3 / 2; }
+.dining-room  { grid-area: 2 / 1 / 3 / 2; }
 .bathroom { grid-area: 2 / 2 / 3 / 3; }
-.dining-room { grid-area: 1 / 3 / 3 / 4; } 
+.bedroom { grid-area: 1 / 3 / 3 / 4; } 
 
 /* For devices with a max-width of 768px (like tablets), change the grid layout to 2 columns */
 @media screen and (max-width: 768px) {

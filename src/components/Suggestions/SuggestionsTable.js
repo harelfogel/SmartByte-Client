@@ -1,5 +1,6 @@
 import { Button, Tooltip } from "@material-ui/core";
-import Pagination from '@material-ui/lab/Pagination';
+import Modal from "react-modal";
+import Pagination from "@material-ui/lab/Pagination";
 import React from "react";
 import { useState, useEffect } from "react";
 import {
@@ -25,18 +26,49 @@ import {
   TdStyled,
   ThStyled,
   TitleStyled,
+  ModalStyled,
 } from "./suggestions.styles";
+import { RuleModal } from "./RuleModal";
+import { TABLET_HEIGHT, TABLET_WIDTH } from "../../consts";
 
-
-const itemsPerPage = 7;  // Define how many items you want per page
+const itemsPerPage = 7; // Define how many items you want per page
 export const SuggestionsTable = ({ setNewSuggestionsCount }) => {
   const [suggestions, setSuggestions] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectedRule, setSelectedRule] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isClickable, setIsClickable] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const { innerWidth, innerHeight } = window;
+      setIsClickable(
+        innerWidth <= 5000 && innerHeight <= TABLET_HEIGHT
+      );
+    };
+
+    handleResize();
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  const handleRuleClick = (rule) => {
+    console.log("Yovel", isClickable);
+    if (!isClickable) return;
+
+    setSelectedRule(rule);
+    setIsModalOpen(true);
+  };
+
+  console.log("Yovel", selectedRule);
+
   useEffect(() => {
     const fetchData = async () => {
-      console.log('fetch data for suggestiona!');
       const fetchedSuggestions = await getSuggestions();
-      console.log({ fetchedSuggestions })
       setSuggestions(fetchedSuggestions);
     };
     fetchData();
@@ -55,7 +87,10 @@ export const SuggestionsTable = ({ setNewSuggestionsCount }) => {
   };
 
   // Calculate the suggestions for the current page
-  const suggestionsOnPage = suggestions.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+  const suggestionsOnPage = suggestions.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
 
   return (
     <TableContainer>
@@ -86,7 +121,7 @@ export const SuggestionsTable = ({ setNewSuggestionsCount }) => {
                 </TdStyled>
                 <TdStyled>
                   <Tooltip title={rule}>
-                    <RuleCell>{rule}</RuleCell>
+                    <RuleCell onClick={handleRuleClick}>{rule}</RuleCell>
                   </Tooltip>
                 </TdStyled>
                 <TdStyled>
@@ -129,6 +164,14 @@ export const SuggestionsTable = ({ setNewSuggestionsCount }) => {
         />
       </PaginationContainer>
 
+      {isModalOpen && (
+        <ModalStyled isOpen={isModalOpen} className={isModalOpen ? '' : 'closing'}>
+          <RuleModal
+            selectedRule={selectedRule}
+            setIsModalOpen={setIsModalOpen}
+          />
+        </ModalStyled>
+      )}
     </TableContainer>
   );
 };

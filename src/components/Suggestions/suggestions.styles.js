@@ -1,4 +1,6 @@
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
+import { TABLET_WIDTH } from "../../consts";
+import Modal from "react-modal";
 
 export const TableContainer = styled.div`
   display: flex;
@@ -13,6 +15,10 @@ export const TableStyled = styled.table`
   width: 90%;
   margin-bottom: 2rem;
   margin: auto;
+
+  @media (max-width: ${TABLET_WIDTH}px) {
+    width: 100%;
+  }
 `;
 
 export const ThStyled = styled.th`
@@ -77,7 +83,7 @@ export const DeviceCellContent = styled.div`
 
 export const TitleStyled = styled.p`
   font-size: 1.5rem;
-  padding-top:2rem;
+  padding-top: 2rem;
 `;
 
 export const TableContent = styled.div`
@@ -112,8 +118,6 @@ export const NewTagText = styled.p`
   top: 0.2rem;
 `;
 
-
-
 export const ButtonStyled = styled.div`
   background-color: #f6f7ff;
   color: "#3B5998";
@@ -133,6 +137,13 @@ export const ButtonStyled = styled.div`
     opacity: 1;
   }
   color: #3b5998;
+
+  @media (max-width: ${TABLET_WIDTH}px) {
+    font-size: 12px;
+    min-width: 30px;
+    min-height: 25px;
+    padding: 0 0.5rem;
+  }
 `;
 
 export const PaginationContainer = styled.div`
@@ -140,3 +151,68 @@ export const PaginationContainer = styled.div`
   justify-content: center;
   padding: 10px;
 `;
+
+
+const fadeIn = keyframes`
+  0% {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  50% {
+    opacity: 1;
+    width: 45%;
+    height: 40%;
+  }
+  100% {
+    opacity: 1;
+    width: 40%; /* Final width value */
+    height: 35%; /* Final height value */
+  }
+`;
+
+
+
+const fadeOut = keyframes`
+from {
+  opacity: 1;
+  width: 40%; /* Final width value */
+  height: 35%; /* Final height value */
+}
+to {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+`;
+
+
+
+export const ModalStyled = styled(Modal)`
+  position: fixed;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #fff;
+  border-radius: 4px;
+  width: 40%; 
+  height: 35%; 
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  margin: 1rem;
+  overflow: auto;
+  display: flex;
+  justify-content: center;
+  border: none;
+  outline: none; 
+
+  //animation
+  opacity: 0; 
+  width: 0;
+  height: 0;
+  animation: ${fadeIn} 0.3s ease-in-out forwards; 
+
+  &.closing {
+    animation: ${fadeOut} 0.3s ease-in-out forwards;
+  }
+`;
+
