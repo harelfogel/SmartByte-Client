@@ -49,7 +49,7 @@ export const RuleModal = ({ selectedRule, setIsModalOpen }) => {
   const [showContent, setShowContent] = useState(false);
 
   useEffect(() => {
-    setTimeout(() => setShowContent(true), 270);
+    setTimeout(() => setShowContent(true), 150);
   }, []);
 
   return (
