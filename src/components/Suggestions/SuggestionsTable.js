@@ -57,14 +57,12 @@ export const SuggestionsTable = ({ setNewSuggestionsCount }) => {
   }, []);
 
   const handleRuleClick = (rule) => {
-    console.log("Yovel", isClickable);
     if (!isClickable) return;
 
     setSelectedRule(rule);
     setIsModalOpen(true);
   };
 
-  console.log("Yovel", selectedRule);
 
   useEffect(() => {
     const fetchData = async () => {

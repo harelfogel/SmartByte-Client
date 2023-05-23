@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { SERVER_URL } from "../../consts";
+import { ROOMS_IDS, SERVER_URL } from "../../consts";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCouch, faUtensils, faBed, faBath, faBroadcastTower, faConciergeBell } from '@fortawesome/free-solid-svg-icons';
 import { faWind, faFan, faTshirt, faTemperatureHigh, faLightbulb } from '@fortawesome/free-solid-svg-icons';
@@ -23,11 +23,19 @@ const iconMapper = {
 };
 
 const deviceIconMapper = {
-    "AC": { icon: <FontAwesomeIcon  icon={faWind} />, name: "AC" },
+    "AC": { icon: <FontAwesomeIcon   icon={faWind} />, name: "AC" },
     "fan": { icon: <FontAwesomeIcon icon={faFan} />, name: "Fan" },
     "laundry": { icon: <FontAwesomeIcon icon={faTshirt} />, name: "Laundry Machine" },
     "heater": { icon: <FontAwesomeIcon icon={faTemperatureHigh} />, name: "Heater" },
     "lights": { icon: <FontAwesomeIcon icon={faLightbulb} />, name: "Lights" },
+};
+
+const deviceONIconMapper = {
+    "AC": { icon: <FontAwesomeIcon color='blue' className={styles.animatedIcon}  icon={faWind} />, name: "AC" },
+    "fan": { icon: <FontAwesomeIcon color='orange' className={styles.animatedIcon} icon={faFan} />, name: "Fan" },
+    "laundry": { icon: <FontAwesomeIcon color='green' className={styles.animatedIcon} icon={faTshirt} />, name: "Laundry Machine" },
+    "heater": { icon: <FontAwesomeIcon color='red' className={styles.animatedIcon} icon={faTemperatureHigh} />, name: "Heater" },
+    "lights": { icon: <FontAwesomeIcon color='orange' className={styles.animatedIcon} icon={faLightbulb} />, name: "Lights" },
 };
 
 const sensorIconMapper = {
@@ -38,7 +46,9 @@ const sensorIconMapper = {
 };
 
 const Item = ({ device, map }) => {
-    const deviceIcon = map[device];
+    console.log("Yovel", device);
+    const {device_name, state} = device;
+    const deviceIcon = state === 'off' ?  map[device_name] : deviceONIconMapper[device_name];
     return (
       <div style={{ display: 'flex', alignItems: 'center', height: '20px' }}>
         {_.get(deviceIcon,'icon')}
@@ -58,6 +68,7 @@ const ItemsList = ({devices, map}) => {
 
 const HouseMap = ({ onClose }) => {
     const [rooms, setRooms] = useState([]);
+    const [roomsWithDevices, setRoomsWithDevices] = useState([]);
     const [sensors, setSensors] = useState([]);
 
     useEffect(() => {
@@ -86,7 +97,6 @@ const HouseMap = ({ onClose }) => {
 
     useEffect(() => {
         const handleMotionDetected = (roomId) => {
-            console.log("Yovel", {roomId})
             showPersonIcon(roomId);
         };
 
@@ -144,6 +154,58 @@ const HouseMap = ({ onClose }) => {
         };
     }, [rooms]);
 
+    // const getRoomDevices = async (roomId) => {
+    //     const response = await axios.get(`${SERVER_URL}/room-devices/${roomId}`);
+    //     return response.data;
+    // }   
+
+
+
+    useEffect(() => {
+
+    
+        const getRoomDevices = async (roomId) => {
+            const devicesResponse = await axios.get(`${SERVER_URL}/devices`);
+            const devices = devicesResponse.data;
+            const devicesMap = devices.reduce((acc, device) => {
+                acc[device.device_id] = device.name;
+                return acc;
+            },{})
+           const kitchenDevicesResponse = await axios.get(`${SERVER_URL}/room-devices/${ROOMS_IDS.KITCHEN}`);
+           const livingRoomDevicesResponse = await axios.get(`${SERVER_URL}/room-devices/${ROOMS_IDS.LIVING_ROOM}`);
+           const bathroomDevicesResponse = await axios.get(`${SERVER_URL}/room-devices/${ROOMS_IDS.BATHROOM}`);
+           const diningRoomDevicesResponse = await axios.get(`${SERVER_URL}/room-devices/${ROOMS_IDS.DINING_ROOM}`);
+           const bedroomDevicesResponse = await axios.get(`${SERVER_URL}/room-devices/${ROOMS_IDS.BEDROOM}`);
+
+            const kitchenDevices = kitchenDevicesResponse.data.data;
+            const livingRoomDevices = livingRoomDevicesResponse.data.data;
+            const bathroomDevices = bathroomDevicesResponse.data.data;
+            const diningRoomDevices = diningRoomDevicesResponse.data.data;
+            const bedroomDevices = bedroomDevicesResponse.data.data;
+
+            
+           const roomDevicesMap = {
+            [ROOMS_IDS.KITCHEN]: kitchenDevices,
+            [ROOMS_IDS.LIVING_ROOM]: livingRoomDevices,
+            [ROOMS_IDS.BATHROOM]: bathroomDevices,
+            [ROOMS_IDS.DINING_ROOM]: diningRoomDevices,
+            [ROOMS_IDS.BEDROOM]: bedroomDevices
+           }
+
+           const roomsWithDevices = rooms.map(room => {
+            return {...room, actualDevices: roomDevicesMap[room.id]}
+           })
+
+           console.log("Yovel", roomsWithDevices)
+
+           setRoomsWithDevices(roomsWithDevices);
+
+        }
+        getRoomDevices();
+
+    },[rooms])
+
+
 
 
     return (
@@ -151,14 +213,17 @@ const HouseMap = ({ onClose }) => {
             <button className={styles.closeButton} onClick={onClose}>
                 <FontAwesomeIcon icon={faTimes} />
             </button>
-            {rooms.map((room) => (
-                <div className={`${styles.room} ${styles[room.name.toLowerCase().replace(/\s/g, "-")]}`} key={room.id}>
+            {
+
+            roomsWithDevices.map((room) => {
+                return <div className={`${styles.room} ${styles[room.name.toLowerCase().replace(/\s/g, "-")]}`} key={room.id}>
+                    
                     <div className={styles.roomHeader}>
                         <p style={{marginRight:'10px', marginLeft: '10px', fontSize: '20px'}}>{room.name}</p>
                         {iconMapper[room.icon]}
                     </div>
                     <div className={styles.devices}>
-                        <ItemsList devices={room.devices} map={deviceIconMapper} />
+                        <ItemsList devices={room.actualDevices} map={deviceIconMapper} />
                     </div>
                     <div className={styles.sensors}>
                         {Object.entries(room.sensors).map(([sensorId, sensorName], index) => {
@@ -189,7 +254,7 @@ const HouseMap = ({ onClose }) => {
 
 
                 </div>
-            ))}
+})}
             <Notification showPersonIcon={showPersonIcon} hidePersonIcon={hidePersonIcon} />
         </div>
     );

@@ -235,7 +235,6 @@ export const NewDevice = ({ device, onToggleDeviceSwitch }) => {
           setOpenControlsCard={setOpenControlsCard}
           openControlsCard={openControlsCard}
           onClick={() => {
-            console.log("yovel OPEN");
             setOpenControlsCard(!openControlsCard);
           }}
         />
