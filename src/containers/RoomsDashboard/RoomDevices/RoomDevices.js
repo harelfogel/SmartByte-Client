@@ -74,13 +74,12 @@ const IDS_TOGGLES_MAP = {
 };
 
 
-const RoomDevices = ({
-  fetchRoomDevices,
-}) => {
+const RoomDevices = () => {
 
   const [devices, setDevices] = React.useState([]);
   const [laundryDetails, setLaundryDetails] = React.useState({});
   const [room, setRoom] = useState({});
+  const [roomDevices, setRoomDevices] = useState([]);
 
   const fetchLaundryDetails = async () => {
     try {
@@ -97,6 +96,8 @@ const RoomDevices = ({
       fetchLaundryDetails();
     }
   }, [devices]);
+
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -122,9 +123,29 @@ const RoomDevices = ({
     }
   };
 
+  const fetchRoomDevices = async () => {
+    try {
+      const response = await axios.get(`${SERVER_URL}/room-devices/${id}`);
+      setRoomDevices(_.get(response, 'data.data', []));
+    }
+    catch(err) {
+      console.error(err);
+    }
+  }
+
+  
+
   useEffect(() => {
     fetchRoomData();
+    fetchRoomDevices();
   },[])
+
+
+  useEffect(() => {
+    console.log("Yovel", {roomDevices})
+  },[roomDevices])
+
+
 
   if (!devices) return null;
 
@@ -137,18 +158,16 @@ const RoomDevices = ({
       <H1>{_.get(room, 'name')}</H1>
       {/* <div className={classes.RoomDevices}> */}
       <DevicesSection>
-        {devices.map((device) => {
+        {roomDevices.map((device) => {
           const rooms = _.get(device, "rooms", []);
           const { device_id } = device;
           return (
             <div key={device_id} className={classes.Column}>
-              {rooms.includes(id) && (
                 <NewDevice
                   device={device}
                   onToggleDeviceSwitch={IDS_TOGGLES_MAP[device_id]}
                   laundryDetails={device.name === "laundry" ? laundryDetails : null}
                 />
-              )}
             </div>
           );
         })}

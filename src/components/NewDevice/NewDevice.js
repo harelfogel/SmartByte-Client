@@ -162,11 +162,11 @@ export const NewDevice = ({ device, onToggleDeviceSwitch }) => {
   const [openFailureSnackBar, setOpenFailureSnackbar] = useState(false);
   const [openControlsCard, setOpenControlsCard] = useState(false);
 
-  const { name } = device;
+  const { device_name } = device;
 
-  const isAcDevice = name === "ac";
-  const isHeaterDevice = name === "heater";
-  const isLaundryDevice = name === "laundry";
+  const isAcDevice = device_name.toLowerCase() === "ac";
+  const isHeaterDevice = device_name.toLowerCase() === "heater";
+  const isLaundryDevice = device_name.toLowerCase() === "laundry";
 
   const isWithControls = isAcDevice || isLaundryDevice;
 
@@ -175,6 +175,8 @@ export const NewDevice = ({ device, onToggleDeviceSwitch }) => {
     // Replace this with the actual API call to your server.
     console.log(`Updated mode for device ${controlId}: ${updatedMode}`);
   };
+
+  console.log("Yovel device", device_name, state);
 
   const onDeviceChange = async (e) => {
     const newState = e.target.checked;
@@ -207,7 +209,7 @@ export const NewDevice = ({ device, onToggleDeviceSwitch }) => {
       isLaundryDevice={isLaundryDevice}
     >
       <TopRow>
-        <H2>{name}</H2>
+        <H2>{device_name}</H2>
         <Switch onChange={(e) => onDeviceChange(e)} checked={state} />
       </TopRow>
       {openSeccessSnackBar && (
