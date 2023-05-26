@@ -32,8 +32,8 @@ const deviceIconMapper = {
 
 const deviceONIconMapper = {
     "AC": { icon: <FontAwesomeIcon color='blue' className={styles.animatedIcon}  icon={faWind} />, name: "AC" },
-    "fan": { icon: <FontAwesomeIcon color='orange' className={styles.animatedIcon} icon={faFan} />, name: "Fan" },
-    "laundry": { icon: <FontAwesomeIcon color='green' className={styles.animatedIcon} icon={faTshirt} />, name: "Laundry Machine" },
+    "fan": { icon: <FontAwesomeIcon color='green' className={styles.animatedIcon} icon={faFan} />, name: "Fan" },
+    "laundry": { icon: <FontAwesomeIcon color='purple' className={styles.animatedIcon} icon={faTshirt} />, name: "Laundry Machine" },
     "heater": { icon: <FontAwesomeIcon color='red' className={styles.animatedIcon} icon={faTemperatureHigh} />, name: "Heater" },
     "lights": { icon: <FontAwesomeIcon color='orange' className={styles.animatedIcon} icon={faLightbulb} />, name: "Lights" },
 };

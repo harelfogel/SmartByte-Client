@@ -162,11 +162,11 @@ export const NewDevice = ({ device, onToggleDeviceSwitch }) => {
   const [openFailureSnackBar, setOpenFailureSnackbar] = useState(false);
   const [openControlsCard, setOpenControlsCard] = useState(false);
 
-  const { name } = device;
+  const { room_id, device_id, device_name, id } = device;
 
-  const isAcDevice = name === "ac";
-  const isHeaterDevice = name === "heater";
-  const isLaundryDevice = name === "laundry";
+  const isAcDevice = device_name.toLowerCase() === "ac";
+  const isHeaterDevice = device_name.toLowerCase() === "heater";
+  const isLaundryDevice = device_name.toLowerCase() === "laundry";
 
   const isWithControls = isAcDevice || isLaundryDevice;
 
@@ -176,15 +176,20 @@ export const NewDevice = ({ device, onToggleDeviceSwitch }) => {
     console.log(`Updated mode for device ${controlId}: ${updatedMode}`);
   };
 
+
   const onDeviceChange = async (e) => {
     const newState = e.target.checked;
     setState(newState);
-    const response = await onToggleDeviceSwitch({
-      state: newState,
-      id: device.id,
-      temperature,
-    });
-    console.log(response);
+
+    let response, roomDeviceResponse;
+    if(onToggleDeviceSwitch){
+      response= await onToggleDeviceSwitch({
+        state: newState,
+        id: device.id,
+        temperature,
+      });
+    }
+     roomDeviceResponse = await axios.put(`${SERVER_URL}/room-devices`, {state: newState, id});
     if (response.statusCode === 200) {
       setOpenSuccessSnackbar(true);
     } else {
@@ -207,12 +212,12 @@ export const NewDevice = ({ device, onToggleDeviceSwitch }) => {
       isLaundryDevice={isLaundryDevice}
     >
       <TopRow>
-        <H2>{name}</H2>
+        <H2>{device_name}</H2>
         <Switch onChange={(e) => onDeviceChange(e)} checked={state} />
       </TopRow>
       {openSeccessSnackBar && (
         <SnackBar
-          message={`${device.name.toUpperCase()} is now ${
+          message={`${device.device_name.toUpperCase()} is now ${
             state ? "ON" : "OFF"
           }`}
           isOpen={true}
