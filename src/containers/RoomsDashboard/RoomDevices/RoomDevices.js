@@ -36,7 +36,7 @@ const NavLinkStyled = styled(NavLink)`
   // padding: 10rem;
 `;
 
-const DEVICED_IDS = {
+const DEVICES_IDS_MAP = {
   AC: '9EimtVDZ',
   LAUNDRY: '0e4be594-13bb-fe76-f092-c8dbdede80b2',
   HEATER: '061751378caab5219d31'
@@ -68,9 +68,9 @@ const toggleHeater = async (value) => {
 };
 
 const IDS_TOGGLES_MAP = {
-  [DEVICED_IDS.AC]: toggleAcState,
-  [DEVICED_IDS.LAUNDRY]: laundryToggle,
-  [DEVICED_IDS.HEATER]:  toggleHeater, 
+  [DEVICES_IDS_MAP.AC]: toggleAcState,
+  [DEVICES_IDS_MAP.LAUNDRY]: laundryToggle,
+  [DEVICES_IDS_MAP.HEATER]:  toggleHeater, 
 };
 
 

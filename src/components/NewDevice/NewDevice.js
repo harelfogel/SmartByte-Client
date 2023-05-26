@@ -162,7 +162,7 @@ export const NewDevice = ({ device, onToggleDeviceSwitch }) => {
   const [openFailureSnackBar, setOpenFailureSnackbar] = useState(false);
   const [openControlsCard, setOpenControlsCard] = useState(false);
 
-  const { device_name } = device;
+  const { room_id, device_id, device_name, id } = device;
 
   const isAcDevice = device_name.toLowerCase() === "ac";
   const isHeaterDevice = device_name.toLowerCase() === "heater";
@@ -176,17 +176,20 @@ export const NewDevice = ({ device, onToggleDeviceSwitch }) => {
     console.log(`Updated mode for device ${controlId}: ${updatedMode}`);
   };
 
-  console.log("Yovel device", device_name, state);
 
   const onDeviceChange = async (e) => {
     const newState = e.target.checked;
     setState(newState);
-    const response = await onToggleDeviceSwitch({
-      state: newState,
-      id: device.id,
-      temperature,
-    });
-    console.log(response);
+
+    let response, roomDeviceResponse;
+    if(onToggleDeviceSwitch){
+      response= await onToggleDeviceSwitch({
+        state: newState,
+        id: device.id,
+        temperature,
+      });
+    }
+     roomDeviceResponse = await axios.put(`${SERVER_URL}/room-devices`, {state: newState, id});
     if (response.statusCode === 200) {
       setOpenSuccessSnackbar(true);
     } else {
@@ -214,7 +217,7 @@ export const NewDevice = ({ device, onToggleDeviceSwitch }) => {
       </TopRow>
       {openSeccessSnackBar && (
         <SnackBar
-          message={`${device.name.toUpperCase()} is now ${
+          message={`${device.device_name.toUpperCase()} is now ${
             state ? "ON" : "OFF"
           }`}
           isOpen={true}
