@@ -14,7 +14,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import { toggleAcState } from "../../../services/ac.service";
-import { NewDevice } from "../../../components/NewDevice/NewDevice";
+import { Device } from "../../../components/NewDevice/Device";
 import { SERVER_URL } from "../../../consts";
 import _ from "lodash";
 import styled from "styled-components";
@@ -163,7 +163,7 @@ const RoomDevices = () => {
           const { device_id } = device;
           return (
             <div key={device_id} className={classes.Column}>
-                <NewDevice
+                <Device
                   device={device}
                   onToggleDeviceSwitch={IDS_TOGGLES_MAP[device_id]}
                   laundryDetails={device.name === "laundry" ? laundryDetails : null}
@@ -173,6 +173,7 @@ const RoomDevices = () => {
         })}
         </DevicesSection>
       {/* </div> */}
+
     </RoomContainer>
   );
 };
