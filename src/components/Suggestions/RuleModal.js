@@ -7,11 +7,12 @@ export const RuleModalContainer = styled.div`
   align-items: center;
   justify-content: center;
   flex-direction: column;
+  text-align: center;
   //   margin-top: 40px;
 `;
 
 export const ModalButtonsContainer = styled.div`
-  margin-top: 20px;
+  margin-top: 60px;
   display: flex;
   gap: 10px;
 `;
