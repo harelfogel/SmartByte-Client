@@ -14,11 +14,55 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import { toggleAcState } from "../../../services/ac.service";
-import { NewDevice } from "../../../components/NewDevice/NewDevice";
+import { Device } from "../../../components/Device/Device";
 import { SERVER_URL } from "../../../consts";
 import _ from "lodash";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
+import { NewDevice } from "../../../components/Device/NewDevice";
+import Modal from "react-modal";
+import { NewDeviceModal } from "../../../components/Device/NewDeviceModal";
 
+const fadeIn = keyframes`
+  0% {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  50% {
+    opacity: 1;
+    width: 45%;
+    height: 40%;
+  }
+  100% {
+    opacity: 1;
+    width: 40%; /* Final width value */
+    height: 35%; /* Final height value */
+  }
+`;
+
+export const ModalStyled = styled(Modal)`
+  position: fixed;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #fff;
+  border-radius: 4px;
+  width: 40%;
+  height: 35%;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  margin: 1rem;
+  overflow: auto;
+  display: flex;
+  justify-content: center;
+  border: none;
+  outline: none;
+
+  //animation
+  opacity: 0;
+  width: 0;
+  height: 0;
+  animation: ${fadeIn} 0.3s ease-in-out forwards;
+`;
 
 const DevicesSection = styled.div`
   display: flex;
@@ -37,10 +81,10 @@ const NavLinkStyled = styled(NavLink)`
 `;
 
 const DEVICES_IDS_MAP = {
-  AC: '9EimtVDZ',
-  LAUNDRY: '0e4be594-13bb-fe76-f092-c8dbdede80b2',
-  HEATER: '061751378caab5219d31'
-}
+  AC: "9EimtVDZ",
+  LAUNDRY: "0e4be594-13bb-fe76-f092-c8dbdede80b2",
+  HEATER: "061751378caab5219d31",
+};
 
 const H1 = styled.p`
   font-size: 2rem;
@@ -70,16 +114,17 @@ const toggleHeater = async (value) => {
 const IDS_TOGGLES_MAP = {
   [DEVICES_IDS_MAP.AC]: toggleAcState,
   [DEVICES_IDS_MAP.LAUNDRY]: laundryToggle,
-  [DEVICES_IDS_MAP.HEATER]:  toggleHeater, 
+  [DEVICES_IDS_MAP.HEATER]: toggleHeater,
 };
 
 
-const RoomDevices = () => {
 
+const RoomDevices = () => {
   const [devices, setDevices] = React.useState([]);
   const [laundryDetails, setLaundryDetails] = React.useState({});
   const [room, setRoom] = useState({});
   const [roomDevices, setRoomDevices] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const fetchLaundryDetails = async () => {
     try {
@@ -97,15 +142,13 @@ const RoomDevices = () => {
     }
   }, [devices]);
 
-
-
   useEffect(() => {
     const fetchData = async () => {
       try {
         const devicesFromDB = await axios.get(`${SERVER_URL}/devices`);
         setDevices(devicesFromDB.data);
       } catch (error) {
-      console.error(error);
+        console.error(error);
       }
     };
 
@@ -117,7 +160,7 @@ const RoomDevices = () => {
   const fetchRoomData = async () => {
     try {
       const response = await axios.get(`${SERVER_URL}/rooms/${id}`);
-      setRoom(response.data)
+      setRoom(response.data);
     } catch (e) {
       console.error(e);
     }
@@ -126,26 +169,20 @@ const RoomDevices = () => {
   const fetchRoomDevices = async () => {
     try {
       const response = await axios.get(`${SERVER_URL}/room-devices/${id}`);
-      setRoomDevices(_.get(response, 'data.data', []));
-    }
-    catch(err) {
+      setRoomDevices(_.get(response, "data.data", []));
+    } catch (err) {
       console.error(err);
     }
-  }
-
-  
+  };
 
   useEffect(() => {
     fetchRoomData();
     fetchRoomDevices();
-  },[])
-
+  }, []);
 
   useEffect(() => {
-    console.log("Yovel", {roomDevices})
-  },[roomDevices])
-
-
+    console.log("Yovel", { roomDevices });
+  }, [roomDevices]);
 
   if (!devices) return null;
 
@@ -155,7 +192,7 @@ const RoomDevices = () => {
         <FontAwesomeIcon icon={faChevronLeft} />
         <span>Back to Rooms</span>
       </NavLinkStyled>
-      <H1>{_.get(room, 'name')}</H1>
+      <H1>{_.get(room, "name")}</H1>
       {/* <div className={classes.RoomDevices}> */}
       <DevicesSection>
         {roomDevices.map((device) => {
@@ -163,16 +200,25 @@ const RoomDevices = () => {
           const { device_id } = device;
           return (
             <div key={device_id} className={classes.Column}>
-                <NewDevice
-                  device={device}
-                  onToggleDeviceSwitch={IDS_TOGGLES_MAP[device_id]}
-                  laundryDetails={device.name === "laundry" ? laundryDetails : null}
-                />
+              <Device
+                device={device}
+                onToggleDeviceSwitch={IDS_TOGGLES_MAP[device_id]}
+                laundryDetails={
+                  device.name === "laundry" ? laundryDetails : null
+                }
+              />
             </div>
           );
         })}
-        </DevicesSection>
+        <NewDevice setIsModalOpen={setIsModalOpen} />
+      </DevicesSection>
       {/* </div> */}
+
+      {isModalOpen && 
+      <ModalStyled isOpen={isModalOpen} >
+          <NewDeviceModal setIsModalOpen={setIsModalOpen} roomId={id} fetchRoomDevices={fetchRoomDevices}/>
+        </ModalStyled>
+        }
     </RoomContainer>
   );
 };
