@@ -28,8 +28,6 @@ export const Notification = () => {
       const suggestionsPattern = /\b(Suggestion)\b/;
       if(suggestionsPattern.test(message))
         toast.info(event.data); 
-      const notificationSound = new Audio('../../sounds/relentless-572.mp3');
-      notificationSound.play();
     }
 
     useEffect(() => {
