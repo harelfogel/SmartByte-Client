@@ -12,6 +12,7 @@ const RoomsDashboard = () => {
   useEffect(() => {
     const getRooms = async () => {
       const response = await axios.get(`${SERVER_URL}/rooms`);
+      console.log(response.data)
       setRoomsTest(response.data);
     };
     getRooms();
