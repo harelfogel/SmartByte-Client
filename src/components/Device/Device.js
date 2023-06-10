@@ -184,6 +184,19 @@ export const Device = ({ device, onToggleDeviceSwitch, pumpDuration, setPumpDura
     const newState = e.target.checked;
     setState(newState);
 
+    // If the device is a pump, use SpeechSynthesisUtterance to play an audio message
+    if (isPumpDevice) {
+      let msg;
+
+      if (newState) { // Pump is turned on
+        msg = new SpeechSynthesisUtterance("Watering system activated");
+      } else { // Pump is turned off
+        msg = new SpeechSynthesisUtterance("Watering system deactivated");
+      }
+
+      window.speechSynthesis.speak(msg);
+    }
+
     let response, roomDeviceResponse;
     if (onToggleDeviceSwitch) {
       response = await onToggleDeviceSwitch({
@@ -199,6 +212,8 @@ export const Device = ({ device, onToggleDeviceSwitch, pumpDuration, setPumpDura
       setOpenFailureSnackbar(true);
     }
   };
+
+
 
   const onChangeTemperature = (value) => {
     setTemperature(value);
