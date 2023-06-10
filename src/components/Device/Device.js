@@ -2,7 +2,7 @@
 // import { Button, CircularProgress, Snackbar, MuiAlert } from '@material-ui/core';
 import { Button } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
-import styled, {css} from "styled-components";
+import styled, { css } from "styled-components";
 import { Temperature } from "./Controls/CustomControls/Temperature";
 import { SnackBar } from "../Snackbar/SnackBar";
 import Switch from "../UI/Switch/Switch";
@@ -14,6 +14,8 @@ import axios from "axios";
 import { SERVER_URL } from "../../consts";
 import { AcControls } from "./Controls/CustomControls/AcControls";
 import { LaundryControls } from "./Controls/CustomControls/LaundryControls";
+import { PumpControls } from "./Controls/CustomControls/PumpControls";
+
 
 const DeviceCard = styled.div`
   width: 18rem;
@@ -110,7 +112,7 @@ const StyledSwitch = styled(Switch)`
 
 const ShowControlsContainer = styled.div`
   width: 12rem;
-  displat: flex;
+  display: flex;
   justify-content: space-between;
   flex-direction: column;
   cursor: pointer;
@@ -120,7 +122,7 @@ const ShowControlsContainer = styled.div`
 const ShowControlsIcon = styled(FontAwesomeIcon)`
   transition: transform 0.5s ease;
 
-  ${({rotate}) => rotate && css`transform: rotate(180deg)`}
+  ${({ rotate }) => rotate && css`transform: rotate(180deg)`}
 `;
 
 const ShowControlsText = styled.span`
@@ -142,20 +144,20 @@ const ShowControls = ({ setOpenControlsCard, openControlsCard }) => {
         setRotate(!rotate);
       }}
     >
-      <ShowControlsIcon 
-      icon={faChevronDown} 
-      size="1x"
-      rotate={rotate ? 'rotate' : ''}
+      <ShowControlsIcon
+        icon={faChevronDown}
+        size="1x"
+        rotate={rotate ? 'rotate' : ''}
       />
 
-     <ShowControlsText>
-      {`${openControlsCard ? "Hide" : "Show"} Controls`}
+      <ShowControlsText>
+        {`${openControlsCard ? "Hide" : "Show"} Controls`}
       </ShowControlsText>
     </ShowControlsContainer>
   );
 };
 
-export const Device = ({ device, onToggleDeviceSwitch }) => {
+export const Device = ({ device, onToggleDeviceSwitch, pumpDuration, setPumpDuration }) => {
   const [state, setState] = useState(device.state === "on");
   const [temperature, setTemperature] = useState(24);
   const [openSeccessSnackBar, setOpenSuccessSnackbar] = useState(false);
@@ -167,8 +169,9 @@ export const Device = ({ device, onToggleDeviceSwitch }) => {
   const isAcDevice = device_name.toLowerCase() === "ac";
   const isHeaterDevice = device_name.toLowerCase() === "heater";
   const isLaundryDevice = device_name.toLowerCase() === "laundry";
+  const isPumpDevice = device_name.toLowerCase() === "pump";
 
-  const isWithControls = isAcDevice || isLaundryDevice;
+  const isWithControls = isAcDevice || isLaundryDevice || isPumpDevice;
 
   const onUpdateModeValueHandler = (controlId, updatedMode) => {
     // Update the AC mode by sending a request to your Node.js server.
@@ -182,14 +185,14 @@ export const Device = ({ device, onToggleDeviceSwitch }) => {
     setState(newState);
 
     let response, roomDeviceResponse;
-    if(onToggleDeviceSwitch){
-      response= await onToggleDeviceSwitch({
+    if (onToggleDeviceSwitch) {
+      response = await onToggleDeviceSwitch({
         state: newState,
         id: device.id,
         temperature,
       });
     }
-     roomDeviceResponse = await axios.put(`${SERVER_URL}/room-devices`, {state: newState, id});
+    roomDeviceResponse = await axios.put(`${SERVER_URL}/room-devices`, { state: newState, id });
     if (response.statusCode === 200) {
       setOpenSuccessSnackbar(true);
     } else {
@@ -217,9 +220,8 @@ export const Device = ({ device, onToggleDeviceSwitch }) => {
       </TopRow>
       {openSeccessSnackBar && (
         <SnackBar
-          message={`${device.device_name.toUpperCase()} is now ${
-            state ? "ON" : "OFF"
-          }`}
+          message={`${device.device_name.toUpperCase()} is now ${state ? "ON" : "OFF"
+            }`}
           isOpen={true}
           handleCloseSnackBar={handleCloseSnackBar}
           color="green"
@@ -227,9 +229,8 @@ export const Device = ({ device, onToggleDeviceSwitch }) => {
       )}
       {openFailureSnackBar && (
         <SnackBar
-          message={`Unable to turn ${
-            state ? "ON" : "OFF"
-          } ${device.name.toUpperCase()}`}
+          message={`Unable to turn ${state ? "ON" : "OFF"
+            } ${device.name.toUpperCase()}`}
           isOpen={true}
           handleCloseSnackBar={handleCloseSnackBar}
           color="red"
@@ -245,16 +246,20 @@ export const Device = ({ device, onToggleDeviceSwitch }) => {
         />
       )}
       <ControlContainer isVisible={openControlsCard}>
-        {openControlsCard &&
-          (isAcDevice ? (
-            <AcControls
-              temperature={temperature}
-              onChangeValue={(value) => onChangeTemperature(value)}
-              acState={state}
-            />
-          ) : (
-            <LaundryControls />
-          ))}
+        {openControlsCard && (isAcDevice ? (
+          <AcControls
+            temperature={temperature}
+            onChangeValue={(value) => onChangeTemperature(value)}
+            acState={state}
+          />
+        ) : isPumpDevice ? (
+          <PumpControls
+            pumpDuration={pumpDuration}
+            setPumpDuration={setPumpDuration}
+          />
+        ) : (
+          <LaundryControls />
+        ))}
       </ControlContainer>
     </DeviceCard>
   );

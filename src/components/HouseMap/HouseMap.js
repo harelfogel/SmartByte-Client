@@ -17,6 +17,7 @@ import {
   faTshirt,
   faTemperatureHigh,
   faLightbulb,
+  faSeedling
 } from "@fortawesome/free-solid-svg-icons";
 import {
   faTint,
@@ -30,6 +31,9 @@ import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { Notification } from "../Notification/Notification";
 import { eventEmitter } from "../../WebSocket/ws.js";
 import _ from "lodash";
+import Spinner from '../Spinner/Spinner';
+import HouseMapLoading from "../Spinner/HouseMapLoading";
+
 
 const ICON_MAPPING = {
   AC: faWind,
@@ -37,8 +41,11 @@ const ICON_MAPPING = {
   laundry: faTshirt,
   heater: faTemperatureHigh,
   lights: faLightbulb,
+  pump: faSeedling,
   default: faHandshake
 };
+
+
 
 // const SENSOR_ICON_MAPPING = {
 //     couch: faCouch,
@@ -48,11 +55,14 @@ const ICON_MAPPING = {
 //     utensils: faConciergeBell
 // }
 
+
+
 const SENSOR_ICON_MAPPING = {
   humidity: faTint,
   temperature: faThermometerHalf,
   distance: faRuler,
   moition: faBroadcastTower,
+  soil: faSeedling
 };
 
 Modal.setAppElement("#root");
@@ -89,6 +99,10 @@ const HouseMap = ({ onClose }) => {
   const [rooms, setRooms] = useState([]);
   const [roomsWithDevices, setRoomsWithDevices] = useState([]);
   const [sensors, setSensors] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isMapReady, setMapReady] = useState(false);
+
+
 
   useEffect(() => {
     const getRooms = async () => {
@@ -98,7 +112,7 @@ const HouseMap = ({ onClose }) => {
           ...room,
           motionDetected: false,
         }));
-        setRooms(roomsWithMotion);
+        return roomsWithMotion;
       } catch (err) {
         console.log("There was a problem fetching room data:", err);
       }
@@ -106,12 +120,20 @@ const HouseMap = ({ onClose }) => {
 
     const getSensors = async () => {
       const response = await axios.get(`${SERVER_URL}/sensors`);
-      setSensors(response.data);
+      return response.data;
     };
 
-    getRooms();
-    getSensors();
+    Promise.all([getRooms(), getSensors()])
+      .then(([roomsData, sensorsData]) => {
+        setRooms(roomsData);
+        setSensors(sensorsData);
+        setIsLoading(false);
+        setMapReady(true);  // Set isMapReady to true when data is loaded
+        // delay setting isLoading to false by 500ms to give spinner time to fade out
+        // setTimeout(() => setIsLoading(false), 500);
+      });
   }, []);
+
 
   useEffect(() => {
     const handleMotionDetected = (roomId) => {
@@ -221,80 +243,85 @@ const HouseMap = ({ onClose }) => {
   }, [rooms]);
 
   return (
-    <div className={styles["house-map"]}>
-      <button className={styles.closeButton} onClick={onClose}>
-        <FontAwesomeIcon icon={faTimes} />
-      </button>
-      {roomsWithDevices.map((room) => {
-        return (
-          <div
-            className={`${styles.room} ${
-              styles[room.name.toLowerCase().replace(/\s/g, "-")]
-            }`}
-            key={room.id}
-          >
-            <div className={styles.roomHeader}>
-              <p
-                style={{
-                  marginRight: "10px",
-                  marginLeft: "10px",
-                  fontSize: "20px",
-                }}
+    <div className={styles["house-map-container"]}>
+      <HouseMapLoading isLoading={!isMapReady} />
+      {isMapReady && (
+        <div className={styles["house-map"]}>
+          <button className={styles.closeButton} onClick={onClose}>
+            <FontAwesomeIcon icon={faTimes} />
+          </button>
+          {roomsWithDevices.map((room) => {
+            return (
+              <div
+                className={`${styles.room} ${styles[room.name.toLowerCase().replace(/\s/g, "-")]
+                  }`}
+                key={room.id}
               >
-                {room.name}
-              </p>
-              {iconMapper[room.icon]}
-            </div>
-            <div className={styles.devices}>
-              <ItemsList devices={room.actualDevices} />
-            </div>
-            <div className={styles.sensors}>
-              {Object.entries(room.sensors).map(
-                ([sensorId, sensorName], index) => {
-                  const isActive = getSensorActivationStatus(sensorId) === "on";
-                  const color = isActive ? "green" : "red";
-                  console.log("Yovel", { sensorName });
-                  return (
-                    <div
-                      key={index}
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        height: "30px",
-                      }}
-                    >
-                      <FontAwesomeIcon
-                        icon={SENSOR_ICON_MAPPING[sensorName]}
-                        color={color}
-                        className={isActive ? styles.animatedIcon : ""}
-                      />
-                      <p style={{ marginRight: "10px", marginLeft: "10px" }}>
-                        {sensorName}
-                      </p>
-                    </div>
-                  );
-                }
-              )}
-            </div>
-            {room.motionDetected && (
-              <div className={styles.motionIcon}>
-                <FontAwesomeIcon
-                  icon={faUser}
-                  size="2x"
-                  color="red"
-                  className={styles.flicker}
-                />
+                <div className={styles.roomHeader}>
+                  <p
+                    style={{
+                      marginRight: "10px",
+                      marginLeft: "10px",
+                      fontSize: "20px",
+                    }}
+                  >
+                    {room.name}
+                  </p>
+                  {iconMapper[room.icon]}
+                </div>
+                <div className={styles.devices}>
+                  <ItemsList devices={room.actualDevices} />
+                </div>
+                <div className={styles.sensors}>
+                  {Object.entries(room.sensors).map(
+                    ([sensorId, sensorName], index) => {
+                      const isActive = getSensorActivationStatus(sensorId) === "on";
+                      const color = isActive ? "green" : "red";
+                      return (
+                        <div
+                          key={index}
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            height: "30px",
+                          }}
+                        >
+                          <FontAwesomeIcon
+                            icon={SENSOR_ICON_MAPPING[sensorName]}
+                            color={color}
+                            className={isActive ? styles.animatedIcon : ""}
+                          />
+                          <p style={{ marginRight: "10px", marginLeft: "10px" }}>
+                            {sensorName}
+                          </p>
+                        </div>
+                      );
+                    }
+                  )}
+                </div>
+                {room.motionDetected && (
+                  <div className={styles.motionIcon}>
+                    <FontAwesomeIcon
+                      icon={faUser}
+                      size="2x"
+                      color="red"
+                      className={styles.flicker}
+                    />
+                  </div>
+                )}
               </div>
-            )}
-          </div>
-        );
-      })}
-      <Notification
-        showPersonIcon={showPersonIcon}
-        hidePersonIcon={hidePersonIcon}
-      />
+            );
+          })}
+          <Notification
+            showPersonIcon={showPersonIcon}
+            hidePersonIcon={hidePersonIcon}
+          />
+        </div>
+      )}
     </div>
   );
+
+
 };
 
 export default HouseMap;

@@ -21,6 +21,8 @@ import styled, { keyframes } from "styled-components";
 import { NewDevice } from "../../../components/Device/NewDevice";
 import Modal from "react-modal";
 import { NewDeviceModal } from "../../../components/Device/NewDeviceModal";
+import pumpService from '../../../services/pump.service';
+
 
 const fadeIn = keyframes`
   0% {
@@ -84,11 +86,21 @@ const DEVICES_IDS_MAP = {
   AC: "9EimtVDZ",
   LAUNDRY: "0e4be594-13bb-fe76-f092-c8dbdede80b2",
   HEATER: "061751378caab5219d31",
+  PUMP: "061751378caab5219d33"
 };
 
 const H1 = styled.p`
   font-size: 2rem;
 `;
+
+const togglePump = async (state, duration) => {
+  try {
+    const response = await pumpService.controlPump(state, duration);
+    console.log(response);
+  } catch (error) {
+    console.error(error);
+  }
+};
 
 const laundryToggle = async ({ state, id }) => {
   try {
@@ -105,6 +117,7 @@ const laundryToggle = async ({ state, id }) => {
 const toggleHeater = async (value) => {
   try {
     const response = await axios.post(`${SERVER_URL}/heater`, { value });
+    console.log('toogllle hteaer!!!!')
     return response;
   } catch (error) {
     console.error(error);
@@ -115,6 +128,7 @@ const IDS_TOGGLES_MAP = {
   [DEVICES_IDS_MAP.AC]: toggleAcState,
   [DEVICES_IDS_MAP.LAUNDRY]: laundryToggle,
   [DEVICES_IDS_MAP.HEATER]: toggleHeater,
+  [DEVICES_IDS_MAP.PUMP]: togglePump,
 };
 
 
@@ -125,6 +139,8 @@ const RoomDevices = () => {
   const [room, setRoom] = useState({});
   const [roomDevices, setRoomDevices] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [pumpState, setPumpState] = useState('OFF');
+  const [pumpDuration, setPumpDuration] = useState(0.05);
 
   const fetchLaundryDetails = async () => {
     try {
@@ -175,13 +191,23 @@ const RoomDevices = () => {
     }
   };
 
+  const handlePumpToggle = async ({ state, duration }) => {
+    try {
+      const newState = pumpState === 'ON' ? 'OFF' : 'ON';
+      await pumpService.controlPump(newState, duration * 60); // Convert minutes to seconds
+      setPumpState(newState);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+
   useEffect(() => {
     fetchRoomData();
     fetchRoomDevices();
   }, []);
 
   useEffect(() => {
-    console.log("Yovel", { roomDevices });
   }, [roomDevices]);
 
   if (!devices) return null;
@@ -193,7 +219,6 @@ const RoomDevices = () => {
         <span>Back to Rooms</span>
       </NavLinkStyled>
       <H1>{_.get(room, "name")}</H1>
-      {/* <div className={classes.RoomDevices}> */}
       <DevicesSection>
         {roomDevices.map((device) => {
           const rooms = _.get(device, "rooms", []);
@@ -202,9 +227,13 @@ const RoomDevices = () => {
             <div key={device_id} className={classes.Column}>
               <Device
                 device={device}
-                onToggleDeviceSwitch={IDS_TOGGLES_MAP[device_id]}
+                onToggleDeviceSwitch={
+                  device.device_name === 'pump' ?
+                    () => handlePumpToggle({ state: pumpState, duration: pumpDuration })
+                    : IDS_TOGGLES_MAP[device_id]
+                }
                 laundryDetails={
-                  device.name === "laundry" ? laundryDetails : null
+                  device.device_name === "laundry" ? laundryDetails : null
                 }
               />
             </div>
@@ -212,15 +241,15 @@ const RoomDevices = () => {
         })}
         <NewDevice setIsModalOpen={setIsModalOpen} />
       </DevicesSection>
-      {/* </div> */}
 
-      {isModalOpen && 
-      <ModalStyled isOpen={isModalOpen} >
-          <NewDeviceModal setIsModalOpen={setIsModalOpen} roomId={id} fetchRoomDevices={fetchRoomDevices}/>
+      {isModalOpen &&
+        <ModalStyled isOpen={isModalOpen}>
+          <NewDeviceModal setIsModalOpen={setIsModalOpen} roomId={id} fetchRoomDevices={fetchRoomDevices} />
         </ModalStyled>
-        }
+      }
     </RoomContainer>
   );
+
 };
 
 RoomDevices.propTypes = {
