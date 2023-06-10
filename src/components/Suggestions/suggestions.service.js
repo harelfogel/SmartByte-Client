@@ -34,6 +34,8 @@ export const generateRule = (suggestion) => {
   console.log({ generatedRule });
   return generatedRule;
 };
+
+
   
 
 export const getSuggestions = async () => {
@@ -83,4 +85,16 @@ export const getSuggestions = async () => {
     }catch(error){
       console.error('Error deleting suggestion: ' + error.message);
     }
+  }
+
+
+
+  export const addRoomToRule =  async(rule, room) => {
+    // console.log("Yovel", rule)
+    const index = rule.indexOf('")');
+    const ruleWithRoom = rule.slice(0,index) + ` in ${room}` + rule.slice(index);
+    console.log("Yovel index", ruleWithRoom);
+
+    const response = await axios.post(`${SERVER_URL}/rules`, {rule: ruleWithRoom });
+
   }

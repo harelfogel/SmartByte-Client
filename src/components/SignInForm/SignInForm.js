@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import classes from "./SignInForm.module.scss";
+import { SERVER_URL } from "../../consts";
 
 const SignInForm = ({ onSignIn }) => {
   const [email, setEmail] = useState("");
@@ -11,7 +12,7 @@ const SignInForm = ({ onSignIn }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:3001/login", {
+      const response = await axios.post(`${SERVER_URL}/login`, {
         email,
         password,
       });
