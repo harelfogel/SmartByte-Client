@@ -7,7 +7,7 @@ import {
   addSuggestedRule,
   getSuggestions,
   onDeleteSuggestion,
-  updateSuggestions,
+  updateSuggestions
 } from "./suggestions.service";
 import styled from "styled-components";
 import { RuleCell } from "./RuleCell";
@@ -27,17 +27,22 @@ import {
   ThStyled,
   TitleStyled,
   ModalStyled,
+  ChooseRoomModalStyled,
+  RuleModalStyled
 } from "./suggestions.styles";
 import { RuleModal } from "./RuleModal";
 import { TABLET_HEIGHT, TABLET_WIDTH } from "../../consts";
+import ChooseRoomModal from "./ChooseRoomModal";
 
 const itemsPerPage = 7; // Define how many items you want per page
 export const SuggestionsTable = ({ setNewSuggestionsCount }) => {
   const [suggestions, setSuggestions] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedRule, setSelectedRule] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isRuleModalOpen, setIsRuleModalOpen] = useState(false);
   const [isClickable, setIsClickable] = useState(false);
+  const [isChooseRoomModalOpen, setIsChooseRoomModalOpen] = useState(false);
+
 
   useEffect(() => {
     const handleResize = () => {
@@ -60,7 +65,7 @@ export const SuggestionsTable = ({ setNewSuggestionsCount }) => {
     if (!isClickable) return;
 
     setSelectedRule(rule);
-    setIsModalOpen(true);
+    setIsRuleModalOpen(true);
   };
 
 
@@ -126,12 +131,13 @@ export const SuggestionsTable = ({ setNewSuggestionsCount }) => {
                   <ButtonStyled
                     className="custom-button"
                     onClick={() => {
-                      addSuggestedRule(
-                        rule,
+                      setIsChooseRoomModalOpen(true);
+                      setSelectedRule(rule);
+                      onDeleteSuggestion(
                         suggestion.id,
                         suggestions,
                         setSuggestions
-                      );
+                      )
                     }}
                   >
                     <i className="fa fa-plus" aria-hidden="true"></i> Add
@@ -162,14 +168,28 @@ export const SuggestionsTable = ({ setNewSuggestionsCount }) => {
         />
       </PaginationContainer>
 
-      {isModalOpen && (
-        <ModalStyled isOpen={isModalOpen} className={isModalOpen ? '' : 'closing'}>
+      {isRuleModalOpen && (
+        <RuleModalStyled isOpen={isRuleModalOpen} className={isRuleModalOpen ? '' : 'closing'}>
           <RuleModal
             selectedRule={selectedRule}
-            setIsModalOpen={setIsModalOpen}
+            setIsModalOpen={setIsRuleModalOpen}
           />
-        </ModalStyled>
+        </RuleModalStyled>
       )}
+
+    {isChooseRoomModalOpen && (
+        <ChooseRoomModalStyled 
+        isOpen={isChooseRoomModalOpen} 
+        className={isChooseRoomModalOpen ? '' : 'closing'}
+        >
+          <ChooseRoomModal
+            selectedRule={selectedRule}
+            setIsModalOpen={setIsChooseRoomModalOpen}
+          />
+        </ChooseRoomModalStyled>
+      )}
+
+
     </TableContainer>
   );
 };

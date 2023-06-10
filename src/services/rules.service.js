@@ -1,9 +1,10 @@
 import axios from "axios";
-const SERVER_URL_1=`http://localhost:3001`; 
+import { SERVER_URL } from "../consts";
+// const SERVER_URL_1=`http://localhost:3001`; 
 
 export const fetchRules = async () => {
   try {
-    const response = await axios.get("http://localhost:3001/rules");
+    const response = await axios.get(`${SERVER_URL}/rules`);
     return response.data;
   } catch (error) {
     console.error("Error fetching rules:", error);
@@ -14,7 +15,7 @@ export const fetchRules = async () => {
 
 export const updateRule = async (id, updatedData) => {
   try{
-    const response = await axios.post(`http://localhost:3001/rules/${id}`, updatedData);
+    const response = await axios.post(`${SERVER_URL}rules/${id}`, updatedData);
     return true;
   }catch(err){
     console.log("Error updating rule:", err.message);
@@ -24,7 +25,7 @@ export const updateRule = async (id, updatedData) => {
 
 export const notifyAdmin = async (subject, text) => {
   try {
-    await axios.post(`${SERVER_URL_1}/notifyadmin`, { subject, text });
+    await axios.post(`${SERVER_URL}/notifyadmin`, { subject, text });
   } catch (error) {
     console.error("Failed to send email notification to admin:", error);
   }

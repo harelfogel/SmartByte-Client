@@ -23,8 +23,6 @@ import { SERVER_URL } from "../../consts";
 
 // const label = { inputProps: { 'aria-label': 'Switch demo' } };
 
-const SERVER_URL_1 = "http://localhost:3001";
-
 const RulesTable = ({ rules, onRuleClick, selectedRule, searchText, userRole }) => {
   const [currentRules, setCurrentRules] = useState(rules);
   const [alertVisible, setAlertVisible] = useState(false);
@@ -47,7 +45,7 @@ const RulesTable = ({ rules, onRuleClick, selectedRule, searchText, userRole }) 
 
   const notifyAdmin = async (subject, text) => {
     try {
-      await axios.post(`${SERVER_URL_1}/notifyadmin`, { subject, text });
+      await axios.post(`${SERVER_URL}/notifyadmin`, { subject, text });
     } catch (error) {
       console.error("Failed to send email notification to admin:", error);
     }

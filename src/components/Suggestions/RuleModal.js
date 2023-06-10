@@ -17,7 +17,7 @@ export const ModalButtonsContainer = styled.div`
   gap: 10px;
 `;
 
-export const ButtonStyledNew = styled.div`
+export const ButtonStyledNewBackup = styled.div`
   background-color: #f6f7ff;
   display: flex;
   color: "#3B5998";
@@ -37,6 +37,31 @@ export const ButtonStyledNew = styled.div`
     border-color: black;
     opacity: 1;
   }
+  color: #3b5998;
+`;
+
+export const ButtonStyledNew = styled.div`
+  background-color: #f6f7ff;
+  display: flex;
+  color: ${(props) => (props.disabled ? "#808080" : "#3B5998")};
+  font-size: 14px;
+  align-items: center;
+  text-align: center;
+  justify-content: center;
+  border: 1px solid #d8deea !important;
+  min-width: 65px;
+  min-height: 30px;
+  padding: 0 0.7rem;
+  border-radius: 4px;
+  transition: 0.3s;
+  cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
+  opacity: ${(props) => (props.disabled ? 0.5 : 1)};
+  
+  &:hover {
+    background-color: ${(props) => (props.disabled ? "#f6f7ff" : "#d8deea")};
+    border-color: ${(props) => (props.disabled ? "#d8deea" : "black")};
+  }
+  
   color: #3b5998;
 `;
 
