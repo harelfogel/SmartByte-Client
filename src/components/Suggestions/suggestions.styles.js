@@ -152,7 +152,6 @@ export const PaginationContainer = styled.div`
   padding: 10px;
 `;
 
-
 const fadeIn = keyframes`
   0% {
     opacity: 0;
@@ -171,22 +170,41 @@ const fadeIn = keyframes`
   }
 `;
 
-
-
-const fadeOut = keyframes`
-from {
-  opacity: 1;
-  width: 40%; /* Final width value */
-  height: 35%; /* Final height value */
-}
-to {
+const ChooseRoomModalFadeIn = keyframes`
+0% {
   opacity: 0;
   width: 0;
   height: 0;
 }
+50% {
+  opacity: 1;
+  width: 35%;
+  height: 65%;
+}
+100% {
+  opacity: 1;
+  width: 30%; /* Final width value */
+  height: 60%; /* Final height value */
+}
 `;
 
-
+const RuleModalFadeIn = keyframes`
+0% {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+50% {
+  opacity: 1;
+  width: 45%;
+  height: 40%;
+}
+100% {
+  opacity: 1;
+  width: 40%; /* Final width value */
+  height: 35%; /* Final height value */
+}
+`;
 
 export const ModalStyled = styled(Modal)`
   position: fixed;
@@ -195,24 +213,24 @@ export const ModalStyled = styled(Modal)`
   transform: translate(-50%, -50%);
   background: #fff;
   border-radius: 4px;
-  width: 40%; 
-  height: 35%; 
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
   margin: 1rem;
   overflow: auto;
   display: flex;
   justify-content: center;
   border: none;
-  outline: none; 
+  outline: none;
 
   //animation
-  opacity: 0; 
+  opacity: 0;
   width: 0;
   height: 0;
-  animation: ${fadeIn} 0.3s ease-in-out forwards; 
-
-  &.closing {
-    animation: ${fadeOut} 0.3s ease-in-out forwards;
-  }
 `;
 
+export const ChooseRoomModalStyled = styled(ModalStyled)`
+  animation: ${ChooseRoomModalFadeIn} 0.3s ease-in-out forwards;
+`;
+
+export const RuleModalStyled = styled(ModalStyled)`
+  animation: ${RuleModalFadeIn} 0.3s ease-in-out forwards;
+`;
