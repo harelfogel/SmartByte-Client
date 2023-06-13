@@ -100,6 +100,7 @@ const RulesTable = ({ rules, onRuleClick, selectedRule, searchText, userRole }) 
                       editing={editedRule === rule.id}
                       defaultValue={editedRule === rule.id ? rule.rule : ""}
                       onBlur={async (e) => {
+                        console.log("Yove blur")
                         setEditedRule(null);
                         const inputValue = e.target.value;
                         if (await updateRule(rule.id, { rule: inputValue })) {
@@ -129,7 +130,7 @@ const RulesTable = ({ rules, onRuleClick, selectedRule, searchText, userRole }) 
               </RuleCell>
               <ActionTdStyled>
                 <ActionContainer>
-                  <RuleSwitch isActive={rule.isActive} id={rule.id} currentRules={currentRules} setCurrentRules={setCurrentRules} />
+                  <RuleSwitch isActive={rule.isActive} id={rule.id} rule={rule.rule} currentRules={currentRules} setCurrentRules={setCurrentRules} />
                   {userRole !== "User" && (
                     <i
                       className="fa fa-trash"
