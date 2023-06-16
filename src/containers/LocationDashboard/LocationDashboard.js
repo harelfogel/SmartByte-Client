@@ -10,7 +10,7 @@ import { SERVER_URL } from '../../consts';
 
 
 
-const LocationDashboard = () => {
+const LocationDashboard = ({user}) => {
     const [location, setLocation] = useState({ lat: null, lng: null, accuracy: null });
     const [distance, setDistance] = useState(0);
 
@@ -33,7 +33,8 @@ const LocationDashboard = () => {
             try {
                 if (location.lat != null && location.lng != null) {
                     const response = await axios.post(`${SERVER_URL}/location`, {
-                        location
+                        location,
+                        user
                     });
                     setDistance(response.data.distance);
                 }
