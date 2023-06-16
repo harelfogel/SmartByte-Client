@@ -92,15 +92,14 @@ const RulesTable = ({ rules, onRuleClick, selectedRule, searchText, userRole }) 
               </ActiveCellStyled>
               <RuleCell>
                 <RuleText editing={editedRule === rule.id}>
-                  {rule.rule}
+                  {rule.normalizedRule}
                 </RuleText>
                 {userRole !== "User" && (
                   <>
                     <RuleInput
                       editing={editedRule === rule.id}
-                      defaultValue={editedRule === rule.id ? rule.rule : ""}
+                      defaultValue={editedRule === rule.id ? rule.normalizedRule : ""}
                       onBlur={async (e) => {
-                        console.log("Yove blur")
                         setEditedRule(null);
                         const inputValue = e.target.value;
                         if (await updateRule(rule.id, { rule: inputValue })) {

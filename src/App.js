@@ -137,13 +137,13 @@ function App() {
           <Route
             path="/location"
             element={
-              isAuthenticated ? <LocationDashboard /> : <Navigate to="/login" />
+              isAuthenticated ? <LocationDashboard user={user} /> : <Navigate to="/login" />
             }
           />
           <Route
             path="/rules"
             element={
-              isAuthenticated ? <RulesDashboard /> : <Navigate to="/login" />
+              isAuthenticated ? <RulesDashboard user={user} /> : <Navigate to="/login" />
             }
           />
           <Route

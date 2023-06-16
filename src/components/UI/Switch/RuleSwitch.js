@@ -9,7 +9,6 @@ export const RuleSwitch = (props) => {
   const [isActive, setIsActive] = React.useState(props.isActive);
 
   const ontoggleChange = async () => {
-    console.log("yovel",props);
     await axios.post(`${SERVER_URL}/rules/${props.id}`, {
       isActive: !isActive,
       rule: props.rule
