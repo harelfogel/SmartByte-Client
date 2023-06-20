@@ -78,6 +78,7 @@ const RulesTable = ({ rules, onRuleClick, selectedRule, searchText, userRole }) 
         </thead>
         <tbody>
           {currentRules.map((rule, index) => (
+            !rule.isHidden &&
             <TrStyled
               key={rule.id}
               onClick={() => onRuleClick(rule.id)}
@@ -85,7 +86,6 @@ const RulesTable = ({ rules, onRuleClick, selectedRule, searchText, userRole }) 
               isSearched={isSearched(rule)}
               classes={classes}
               isStrict={rule.isStrict}
-
             >
               <ActiveCellStyled>
                 <Circle color={rule.isActive ? "green" : "red"} />
