@@ -108,7 +108,7 @@ export const SuggestionsTable = ({ setNewSuggestionsCount }) => {
         </thead>
         <tbody>
           {suggestionsOnPage.map((suggestion, idx) => {
-            const rule = suggestion.rule;
+            const rule = suggestion.normalized_rule;
             const { is_new: isNew } = suggestion;
             return (
               <tr key={idx}>
