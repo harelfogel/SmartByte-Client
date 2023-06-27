@@ -90,11 +90,6 @@ export const getSuggestions = async () => {
 
 
   export const addRoomToRule =  async(rule, room) => {
-    // console.log("Yovel", rule)
-    const index = rule.indexOf('")');
-    const ruleWithRoom = rule.slice(0,index) + ` in ${room}` + rule.slice(index);
-    console.log("Yovel index", ruleWithRoom);
-
-    const response = await axios.post(`${SERVER_URL}/rules`, {rule: ruleWithRoom });
-
+    const ruleWithRoom = rule + ` in ${room}`;
+    await axios.post(`${SERVER_URL}/rules`, {rule: ruleWithRoom });
   }

@@ -50,6 +50,7 @@ const RoomInput = ({
 };
 
 export default function ChooseRoomModal({ setIsModalOpen, selectedRule }) {
+  console.log("Yovel", {selectedRule})
   const [showContent, setShowContent] = useState(false);
   const [checkedRooms, setCheckedRooms] = useState({});
   const [rooms, setRooms] = useState([]);
@@ -67,12 +68,11 @@ export default function ChooseRoomModal({ setIsModalOpen, selectedRule }) {
   useEffect(() => {
     const getRooms = async () => {
       const response = await axios.get(`${SERVER_URL}/rooms`);
-      console.log(response.data);
       setRooms(response.data);
     };
 
     const getRoomsThatContainsCurrentDevice = async () => {
-      const action = selectedRule.split('("')[1];
+      const action = selectedRule.split('TURN ')[1];
       const device = action.split(" ")[0];
       const response = await axios.get(`${SERVER_URL}/devices/rooms/${device}`);
       const connectedRooms = response.data;
