@@ -12,7 +12,6 @@ import {
 import styled from "styled-components";
 import { RuleCell } from "./RuleCell";
 
-//import { generateRule } from "./suggestions.service";
 import "font-awesome/css/font-awesome.min.css";
 
 import {
@@ -133,11 +132,11 @@ export const SuggestionsTable = ({ setNewSuggestionsCount }) => {
                     onClick={() => {
                       setIsChooseRoomModalOpen(true);
                       setSelectedRule(rule);
-                      onDeleteSuggestion(
-                        suggestion.id,
-                        suggestions,
-                        setSuggestions
-                      )
+                      // onDeleteSuggestion(
+                      //   suggestion.id,
+                      //   suggestions,
+                      //   setSuggestions
+                      // )
                     }}
                   >
                     <i className="fa fa-plus" aria-hidden="true"></i> Add
