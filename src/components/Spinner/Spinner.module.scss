@@ -64,17 +64,24 @@
   
 
   .house-map-loading {
+    position: absolute;
     width: 100%;
     height: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
     display: flex;
-    justify-content: center;
     align-items: center;
-    background: rgba(0, 0, 0, 0.5);  // Semi-transparent background
-  }
-  
-  .is-loading .house-map {
-    display: none;  // Hide the map when loading
-  }
+    justify-content: center;
+    z-index: 10;
+    background: rgba(0, 0, 0, 0.5);
+    transition: opacity 0.3s ease-in-out;
+    opacity: 1;
+}
+
+.house-map-loading:not(.is-loading) {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.house-map-spinner {
+    color: white;
+    font-size: 3rem;
+}

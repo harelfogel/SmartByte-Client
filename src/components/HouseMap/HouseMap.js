@@ -127,10 +127,12 @@ const HouseMap = ({ onClose }) => {
       .then(([roomsData, sensorsData]) => {
         setRooms(roomsData);
         setSensors(sensorsData);
-        setIsLoading(false);
         setMapReady(true);  // Set isMapReady to true when data is loaded
         // delay setting isLoading to false by 500ms to give spinner time to fade out
         // setTimeout(() => setIsLoading(false), 500);
+        // delay setting isLoading to false by 2 seconds to give map time to render
+        setTimeout(() => setIsLoading(false), 2000);
+
       });
   }, []);
 
@@ -244,7 +246,7 @@ const HouseMap = ({ onClose }) => {
 
   return (
     <div className={styles["house-map-container"]}>
-      <HouseMapLoading isLoading={!isMapReady} />
+      <HouseMapLoading isLoading={isLoading} />
       {isMapReady && (
         <div className={styles["house-map"]}>
           <button className={styles.closeButton} onClick={onClose}>
