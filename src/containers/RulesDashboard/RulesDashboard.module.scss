@@ -4,6 +4,7 @@
   align-items: center;
   justify-content: center;
   margin-top: 2rem;
+  padding: 2rem;
 }
 
 .RulesDashboardHeader {
@@ -54,8 +55,8 @@
   cursor: pointer;
   display: flex;
   position: absolute; 
-  left: 2rem; 
-  top: 6rem; 
+  left: 3rem; 
+  top: 8rem; 
   justify-content: end;
   font-size: 0.8rem;
   color: #000;
@@ -84,7 +85,7 @@
 
 .SearchIcon {
   position: absolute;
-  left: 22rem;
+  left: 10px;
   top: 50%;
   transform: translateY(-50%);
   cursor: pointer;

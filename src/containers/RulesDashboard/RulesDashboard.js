@@ -16,6 +16,7 @@ import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import UserContext from "../../contexts/UserContext";
 import { Switch } from "@material-ui/core";
 import { SERVER_URL } from "../../consts";
+import { SearchRuleInput } from "../../components/RulesTable/rules.styles";
 
 // Update the AddRulesSectionStyled component
 const AddRulesSectionStyled = styled.div`
@@ -46,37 +47,42 @@ const RulesDashboard = ({ addRule }) => {
   const userRole = user?.role || "User"; // Default role to "User" if user object is not available
 
   const inverseSeasonMap = {
-    '1': 'winter',
-    '2': 'spring',
-    '3': 'summer',
-    '4': 'autumn'
+    1: "winter",
+    2: "spring",
+    3: "summer",
+    4: "autumn",
   };
   const inverseHourMap = {
-    '1': 'morning',
-    '2': 'afternoon',
-    '3': 'evening'
+    1: "morning",
+    2: "afternoon",
+    3: "evening",
   };
 
+  console.log("Yovel", { filteredRules });
   const transformRuleInput = (inputValue) => {
     let transformedInput = inputValue;
-    transformedInput = transformedInput.replace(/season\s*(\!=|==)\s*\d/, (match) => {
-      const [_, comparator, season] = match.split(" ");
-      return `season ${comparator} ${inverseSeasonMap[season] || season}`;
-    });
-    transformedInput = transformedInput.replace(/hour\s*(\!=|==)\s*\d/, (match) => {
-      const [_, comparator, hour] = match.split(" ");
-      return `hour ${comparator} ${inverseHourMap[hour] || hour}`;
-    });
+    transformedInput = transformedInput.replace(
+      /season\s*(\!=|==)\s*\d/,
+      (match) => {
+        const [_, comparator, season] = match.split(" ");
+        return `season ${comparator} ${inverseSeasonMap[season] || season}`;
+      }
+    );
+    transformedInput = transformedInput.replace(
+      /hour\s*(\!=|==)\s*\d/,
+      (match) => {
+        const [_, comparator, hour] = match.split(" ");
+        return `hour ${comparator} ${inverseHourMap[hour] || hour}`;
+      }
+    );
     return transformedInput;
-  }
-
-
+  };
 
   useEffect(() => {
     const fetchAllRules = async () => {
       let fetchedRules = await fetchRules();
       // Transform fetched rules
-      fetchedRules = fetchedRules.map(rule => {
+      fetchedRules = fetchedRules.map((rule) => {
         rule.rule = transformRuleInput(rule.rule);
         return rule;
       });
@@ -84,7 +90,6 @@ const RulesDashboard = ({ addRule }) => {
 
       setRules(fetchedRules);
     };
-
 
     fetchAllRules();
   }, []);
@@ -105,7 +110,10 @@ const RulesDashboard = ({ addRule }) => {
 
         // If userRole is 'User', notify the admin
         if (userRole === "User") {
-          notifyAdmin("User created a rule", `A new rule "${rule}" has been created by the user.`);
+          notifyAdmin(
+            "User created a rule",
+            `A new rule "${rule}" has been created by the user.`
+          );
         }
       })
       .catch((error) => {
@@ -132,8 +140,6 @@ const RulesDashboard = ({ addRule }) => {
       setFilteredRules([]);
     }
   };
-
-
 
   const onShowRulesClick = async () => {
     const fetchedRules = await fetchRules();
@@ -173,8 +179,9 @@ const RulesDashboard = ({ addRule }) => {
         {rules.map((rule) => (
           <div
             key={rule.id}
-            className={`${classes.FilteredRule} ${rule.id === selectedRule ? classes.selected : ""
-              }`}
+            className={`${classes.FilteredRule} ${
+              rule.id === selectedRule ? classes.selected : ""
+            }`}
             onClick={() => onRuleClickWrapper(rule.id)}
           >
             {rule.rule}
@@ -183,7 +190,6 @@ const RulesDashboard = ({ addRule }) => {
       </div>
     );
   };
-
 
   return (
     <div className={classes.RulesDashboard}>
@@ -217,7 +223,7 @@ const RulesDashboard = ({ addRule }) => {
       ) : showTable ? (
         <>
           <div className={classes.SearchContainer}>
-            <input
+            <SearchRuleInput
               type="text"
               value={search}
               onChange={onSearchInputChange}
@@ -226,11 +232,17 @@ const RulesDashboard = ({ addRule }) => {
             />
             <FontAwesomeIcon icon={faSearch} className={classes.SearchIcon} />
             {filteredRules.length > 0 && (
-              <FilteredRules rules={filteredRules} onRuleClick={handleRuleClick} selectedRule={selectedRule} />
+              <FilteredRules
+                rules={filteredRules}
+                onRuleClick={handleRuleClick}
+                selectedRule={selectedRule}
+              />
             )}
           </div>
           <RulesTable
-            rules={rules.filter((rule) => rule.rule.toLowerCase().includes(search.toLowerCase()))}
+            rules={rules.filter((rule) =>
+              rule.rule.toLowerCase().includes(search.toLowerCase())
+            )}
             onRuleClick={handleRuleClick}
             selectedRule={selectedRule}
             searchText={search}

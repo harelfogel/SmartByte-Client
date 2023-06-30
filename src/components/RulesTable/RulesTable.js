@@ -105,7 +105,7 @@ const RulesTable = ({ rules, onRuleClick, selectedRule, searchText, userRole }) 
                         if (await updateRule(rule.id, { rule: inputValue })) {
                           const newRules = currentRules.map((r) => {
                             return r.id === rule.id
-                              ? { ...r, rule: inputValue }
+                              ? { ...r, normalizedRule: inputValue }
                               : r;
                           });
                           setCurrentRules(newRules);
