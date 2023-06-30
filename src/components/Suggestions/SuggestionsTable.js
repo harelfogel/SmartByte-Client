@@ -30,8 +30,9 @@ import {
   RuleModalStyled
 } from "./suggestions.styles";
 import { RuleModal } from "./RuleModal";
-import { TABLET_HEIGHT, TABLET_WIDTH } from "../../consts";
+import { SERVER_URL, TABLET_HEIGHT, TABLET_WIDTH } from "../../consts";
 import ChooseRoomModal from "./ChooseRoomModal";
+import axios from "axios";
 
 const itemsPerPage = 7; // Define how many items you want per page
 export const SuggestionsTable = ({ setNewSuggestionsCount }) => {
@@ -66,6 +67,10 @@ export const SuggestionsTable = ({ setNewSuggestionsCount }) => {
     setSelectedRule(rule);
     setIsRuleModalOpen(true);
   };
+
+  const mlTrigger = () => {
+    const response = axios.post(`${SERVER_URL}/test`);
+  }
 
 
   useEffect(() => {
@@ -132,11 +137,11 @@ export const SuggestionsTable = ({ setNewSuggestionsCount }) => {
                     onClick={() => {
                       setIsChooseRoomModalOpen(true);
                       setSelectedRule(rule);
-                      // onDeleteSuggestion(
-                      //   suggestion.id,
-                      //   suggestions,
-                      //   setSuggestions
-                      // )
+                      onDeleteSuggestion(
+                        suggestion.id,
+                        suggestions,
+                        setSuggestions
+                      )
                     }}
                   >
                     <i className="fa fa-plus" aria-hidden="true"></i> Add
