@@ -30,8 +30,9 @@ import {
   RuleModalStyled
 } from "./suggestions.styles";
 import { RuleModal } from "./RuleModal";
-import { TABLET_HEIGHT, TABLET_WIDTH } from "../../consts";
+import { SERVER_URL, TABLET_HEIGHT, TABLET_WIDTH } from "../../consts";
 import ChooseRoomModal from "./ChooseRoomModal";
+import axios from "axios";
 
 const itemsPerPage = 7; // Define how many items you want per page
 export const SuggestionsTable = ({ setNewSuggestionsCount }) => {
@@ -39,16 +40,18 @@ export const SuggestionsTable = ({ setNewSuggestionsCount }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedRule, setSelectedRule] = useState(null);
   const [isRuleModalOpen, setIsRuleModalOpen] = useState(false);
-  const [isClickable, setIsClickable] = useState(false);
+  const [isClickable, setIsClickable] = useState(true);
   const [isChooseRoomModalOpen, setIsChooseRoomModalOpen] = useState(false);
 
 
+
+  // for making rules clickable only on tablet
   useEffect(() => {
     const handleResize = () => {
       const { innerWidth, innerHeight } = window;
-      setIsClickable(
-        innerWidth <= 5000 && innerHeight <= TABLET_HEIGHT
-      );
+      // setIsClickable(
+      //   innerWidth <= 5000 && innerHeight <= TABLET_HEIGHT
+      // );
     };
 
     handleResize();
@@ -66,6 +69,10 @@ export const SuggestionsTable = ({ setNewSuggestionsCount }) => {
     setSelectedRule(rule);
     setIsRuleModalOpen(true);
   };
+
+  const mlTrigger = () => {
+    const response = axios.post(`${SERVER_URL}/test`);
+  }
 
 
   useEffect(() => {
@@ -132,11 +139,11 @@ export const SuggestionsTable = ({ setNewSuggestionsCount }) => {
                     onClick={() => {
                       setIsChooseRoomModalOpen(true);
                       setSelectedRule(rule);
-                      // onDeleteSuggestion(
-                      //   suggestion.id,
-                      //   suggestions,
-                      //   setSuggestions
-                      // )
+                      onDeleteSuggestion(
+                        suggestion.id,
+                        suggestions,
+                        setSuggestions
+                      )
                     }}
                   >
                     <i className="fa fa-plus" aria-hidden="true"></i> Add

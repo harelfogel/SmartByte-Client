@@ -50,7 +50,6 @@ const RoomInput = ({
 };
 
 export default function ChooseRoomModal({ setIsModalOpen, selectedRule }) {
-  console.log("Yovel", {selectedRule})
   const [showContent, setShowContent] = useState(false);
   const [checkedRooms, setCheckedRooms] = useState({});
   const [rooms, setRooms] = useState([]);

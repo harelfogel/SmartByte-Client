@@ -9,6 +9,7 @@ export const RuleModalContainer = styled.div`
   flex-direction: column;
   text-align: center;
   //   margin-top: 40px;
+  padding: 3rem;
 `;
 
 export const ModalButtonsContainer = styled.div`
