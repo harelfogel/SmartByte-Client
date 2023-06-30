@@ -63,3 +63,7 @@ export const RuleInput = styled.input`
 export const RuleText = styled.div`
   display: ${(props) => (props.editing ? "none" : "block")};
 `;
+
+export const SearchRuleInput = styled.input`
+  padding-left: 30px;
+`;
