@@ -40,16 +40,18 @@ export const SuggestionsTable = ({ setNewSuggestionsCount }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedRule, setSelectedRule] = useState(null);
   const [isRuleModalOpen, setIsRuleModalOpen] = useState(false);
-  const [isClickable, setIsClickable] = useState(false);
+  const [isClickable, setIsClickable] = useState(true);
   const [isChooseRoomModalOpen, setIsChooseRoomModalOpen] = useState(false);
 
 
+
+  // for making rules clickable only on tablet
   useEffect(() => {
     const handleResize = () => {
       const { innerWidth, innerHeight } = window;
-      setIsClickable(
-        innerWidth <= 5000 && innerHeight <= TABLET_HEIGHT
-      );
+      // setIsClickable(
+      //   innerWidth <= 5000 && innerHeight <= TABLET_HEIGHT
+      // );
     };
 
     handleResize();
