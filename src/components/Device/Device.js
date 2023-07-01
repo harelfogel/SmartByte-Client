@@ -215,6 +215,7 @@ export const Device = ({ device, onToggleDeviceSwitch, pumpDuration, setPumpDura
 
 
 
+
   const onChangeTemperature = (value) => {
     setTemperature(value);
   };

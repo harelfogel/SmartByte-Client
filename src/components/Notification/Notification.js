@@ -12,34 +12,43 @@ export const Notification = () => {
   const [notification, setNotification] = useState('');
 
 
+
   useEffect(() => {
-      const socket = new WebSocket('ws://localhost:8080');
+    const socket = new WebSocket('ws://localhost:8080');
 
-      socket.addEventListener('message', handleMessageReceived);
+    socket.addEventListener('message', handleMessageReceived);
 
-      return () => {
-        socket.removeEventListener('message', handleMessageReceived);
-      };
-    }, []);
+    return () => {
+      socket.removeEventListener('message', handleMessageReceived);
+    };
+  }, []);
 
-    function handleMessageReceived(event) {
-      const message = event.data;
-      setNotification(message);
-      const suggestionsPattern = /\b(Suggestion)\b/;
-      if(suggestionsPattern.test(message))
-        toast.info(event.data); 
+  function handleMessageReceived(event) {
+    const message = event.data;
+    setNotification(message);
+    const suggestionsPattern = /\b(Suggestion)\b/;
+    const pumpPattern = /\b(PUMP)\b/;
+
+    if (suggestionsPattern.test(message))
+      toast.info(event.data);
+
+    if (pumpPattern.test(message)) {
+      let msg;
+      msg = new SpeechSynthesisUtterance("Watering system number one activated");
+      window.speechSynthesis.speak(msg);
     }
+  }
 
-    useEffect(() => {
-      console.log({notification});
-    },[notification])
+  useEffect(() => {
+    console.log({ notification });
+  }, [notification])
 
 
   connectWebSocket();
 
-return (
-  <div>
+  return (
+    <div>
       <ToastContainer />
-  </div>
-)
+    </div>
+  )
 }
