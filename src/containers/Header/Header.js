@@ -9,11 +9,16 @@ import Button from "./../../components/UI/Button/Button";
 import Navigation from "./../../components/Layout/Navigation/Navigation";
 import NavigationItem from "./../../components/Layout/Navigation/NavigationItem/NavigationItem";
 import classes from "./Header.module.scss";
-import { getGreeting } from '../../utils/utils';
+import { getGreeting } from "../../utils/utils";
 import { NewSuggestionsCount } from "../../components/Suggestions/NewSuggestionsCount";
+import styled from "styled-components";
+
+const NavigationItemContainer = styled.div`
+  display: flex;
+`;
 
 const Header = ({ toggleSideDrawer, user, onLogout, newSuggestionsCount }) => {
-  const firstName = user ? user.fullName.split(' ')[0] : '';
+  const firstName = user ? user.fullName.split(" ")[0] : "";
   const greeting = getGreeting();
   const location = useLocation();
   const navigate = useNavigate();
@@ -25,6 +30,7 @@ const Header = ({ toggleSideDrawer, user, onLogout, newSuggestionsCount }) => {
   const handleRoomsClick = () => {
     navigate("/rooms");
   };
+
 
   return (
     <header className={classes.Header}>
@@ -40,44 +46,57 @@ const Header = ({ toggleSideDrawer, user, onLogout, newSuggestionsCount }) => {
               to="/rooms"
               onClick={handleRoomsClick}
               activeClassName={classes.ActiveNavLink}
-              className={isCurrentPage('/rooms') ? classes.ActiveNavLink : ''}
+              className={isCurrentPage("/rooms") ? classes.ActiveNavLink : ""}
             >
               Rooms
             </NavigationItem>
             <NavigationItem
               to="/rules"
               activeClassName={classes.ActiveNavLink}
-              className={isCurrentPage('/rules') ? classes.ActiveNavLink : ''}
+              className={isCurrentPage("/rules") ? classes.ActiveNavLink : ""}
             >
               Rules
             </NavigationItem>
             <NavigationItem
               to="/location"
               activeClassName={classes.ActiveNavLink}
-              className={isCurrentPage('/location') ? classes.ActiveNavLink : ''}
+              className={
+                isCurrentPage("/location") ? classes.ActiveNavLink : ""
+              }
             >
+              <NavigationItemContainer>
+
               Location
+              </NavigationItemContainer>
             </NavigationItem>
             <NavigationItem
               to="/suggestions"
               activeClassName={classes.ActiveNavLink}
-              className={isCurrentPage('/suggestions') ? classes.ActiveNavLink : ''}
+              className={
+                isCurrentPage("/suggestions") ? classes.ActiveNavLink : ""
+              }
             >
-              Suggestions <NewSuggestionsCount value={newSuggestionsCount} />
+              <NavigationItemContainer>
+                Suggestions
+                {!!newSuggestionsCount && <NewSuggestionsCount value={newSuggestionsCount} />}
+              </NavigationItemContainer>
             </NavigationItem>
             <NavigationItem
               to="/insights"
               activeClassName={classes.ActiveNavLink}
-              className={isCurrentPage('/insights') ? classes.ActiveNavLink : ''}
+              className={
+                isCurrentPage("/insights") ? classes.ActiveNavLink : ""
+              }
             >
               Insights
             </NavigationItem>
-
           </Navigation>
         </div>
         {user && (
           <div className={classes.UserGreeting}>
-            <span>{greeting}, {firstName}</span>
+            <span>
+              {greeting}, {firstName}
+            </span>
             <Button onClick={onLogout}>Logout</Button>
           </div>
         )}
