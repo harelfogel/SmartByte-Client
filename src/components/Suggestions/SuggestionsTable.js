@@ -33,6 +33,8 @@ import { RuleModal } from "./RuleModal";
 import { SERVER_URL, TABLET_HEIGHT, TABLET_WIDTH } from "../../consts";
 import ChooseRoomModal from "./ChooseRoomModal";
 import axios from "axios";
+import { eventEmitter } from "../../WebSocket/ws";
+
 
 const itemsPerPage = 7; // Define how many items you want per page
 export const SuggestionsTable = ({ setNewSuggestionsCount }) => {
@@ -73,6 +75,10 @@ export const SuggestionsTable = ({ setNewSuggestionsCount }) => {
   const mlTrigger = () => {
     const response = axios.post(`${SERVER_URL}/test`);
   }
+
+
+
+
 
 
   useEffect(() => {
@@ -183,10 +189,10 @@ export const SuggestionsTable = ({ setNewSuggestionsCount }) => {
         </RuleModalStyled>
       )}
 
-    {isChooseRoomModalOpen && (
-        <ChooseRoomModalStyled 
-        isOpen={isChooseRoomModalOpen} 
-        className={isChooseRoomModalOpen ? '' : 'closing'}
+      {isChooseRoomModalOpen && (
+        <ChooseRoomModalStyled
+          isOpen={isChooseRoomModalOpen}
+          className={isChooseRoomModalOpen ? '' : 'closing'}
         >
           <ChooseRoomModal
             selectedRule={selectedRule}

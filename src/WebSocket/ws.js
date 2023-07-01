@@ -21,7 +21,17 @@ ws.addEventListener('message', (event) => {
             console.log("Emitting 'motionDetected' event with roomId:", message.roomId);
             eventEmitter.emit('motionDetected', message.roomId);
         }
+
+        // Add the following to handle pump state changes
+        if ('pumpState' in message) {
+            if (message.pumpState) {
+                eventEmitter.emit('pumpStateChange', true);
+            } else {
+                eventEmitter.emit('pumpStateChange', false);
+            }
+        }
     } catch (error) {
         console.log('Received non-JSON message:', event.data);
     }
 });
+

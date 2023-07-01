@@ -19,6 +19,7 @@ import {
 } from "../Suggestions/suggestions.styles";
 import { ActionContainer, ActionTdStyled, ActiveCellStyled, Circle, RuleCell, RuleInput, RuleText, TrStyled } from "./rules.styles";
 import { SERVER_URL } from "../../consts";
+import { eventEmitter } from "../../WebSocket/ws";
 
 
 // const label = { inputProps: { 'aria-label': 'Switch demo' } };
@@ -30,6 +31,27 @@ const RulesTable = ({ rules, onRuleClick, selectedRule, searchText, userRole }) 
   const [editedRule, setEditedRule] = useState(null);
   const [openSeccessSnackBar, setOpenSuccessSnackbar] = useState(false);
   const [openFailureSnackBar, setOpenFailureSnackbar] = useState(false);
+
+  // useEffect(() => {
+  //   const handlePumpStateChange = (newState) => {
+  //     let msg;
+  //     if (newState) { // Pump is turned on
+  //       msg = new SpeechSynthesisUtterance("Watering system number one is activated");
+  //     } else { // Pump is turned off
+  //       msg = new SpeechSynthesisUtterance("Watering system number one is deactivated");
+  //     }
+
+  //     window.speechSynthesis.speak(msg);
+  //   };
+
+  //   // Add event listener for pumpStateChange events
+  //   eventEmitter.on('pumpStateChange', handlePumpStateChange);
+
+  //   // Cleanup function to remove the event listener when the component unmounts
+  //   return () => {
+  //     eventEmitter.off('pumpStateChange', handlePumpStateChange);
+  //   };
+  // }, []); // Empty array [] makes sure this effect runs only once after the component mounts.
 
   // console.log({SERVER_URL})
 
