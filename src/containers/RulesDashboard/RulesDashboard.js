@@ -58,7 +58,6 @@ const RulesDashboard = ({ addRule }) => {
     3: "evening",
   };
 
-  console.log("Yovel", { filteredRules });
   const transformRuleInput = (inputValue) => {
     let transformedInput = inputValue;
     transformedInput = transformedInput.replace(

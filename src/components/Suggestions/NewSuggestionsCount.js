@@ -13,10 +13,10 @@ export const NotificationContainer = styled.div`
   // padding: auto;
   display: flex;
   font-size: 10px;
-  position: absolute;
-  top: 27px;
-//   left: 31.8rem;
-  left: 38.2rem;
+  position: relative;
+  top: -5px;
+  // left: 110px;
+  right: 5px;
 `;
 
 export const NewSuggestionsCount = ({ value }) => {
