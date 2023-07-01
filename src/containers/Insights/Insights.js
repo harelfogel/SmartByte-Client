@@ -80,11 +80,12 @@ const Insights = () => {
 
   const fetchGraphData = async (device, timeRange, year = null) => {
     try {
-
       let avgEnergy = 0;
       const response = await axios.get('http://127.0.0.1:5000/graph-data', {
         params: { device, time_range: timeRange, year },
       });
+
+      console.log(response.data)
 
       // Initialize an empty dataset for all months
       const monthLabels = generateMonthLabels(year);
@@ -94,28 +95,17 @@ const Insights = () => {
       };
 
       if (timeRange === 'monthly' && year !== null) {
-        const monthData = new Array(12).fill(0);
-        const monthCounts = new Array(12).fill(0);
-
         response.data.labels.forEach((label, index) => {
           const date = new Date(label);
           const monthIndex = date.getMonth();
           const labelYear = date.getFullYear();
 
           if (labelYear === year) {
-            monthData[monthIndex] += response.data.data[index];
-            monthCounts[monthIndex]++;
+            emptyData.data[monthIndex] = response.data.data[index];
           }
         });
 
-        // Calculate average for each month
-        for (let i = 0; i < 12; i++) {
-          if (monthCounts[i] > 0) {
-            emptyData.data[i] = monthData[i] / monthCounts[i];
-          }
-        }
-        avgEnergy = monthData.reduce((acc, cur) => acc + cur, 0) / 12;
-
+        avgEnergy = emptyData.data.reduce((acc, cur) => acc + cur, 0) / 12;
       } else {
         emptyData.labels = response.data.labels;
         emptyData.data = response.data.data;
